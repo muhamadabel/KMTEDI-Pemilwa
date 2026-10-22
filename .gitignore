@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+supabase-config.js
+node_modules/
+.vercel/
+.supabase/
+*.log
