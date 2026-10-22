@@ -1,23 +1,39 @@
--- Migration: NIM Verification + Admin PIN Access
--- Run this in Supabase SQL Editor once.
+-- Migration: NIM Verification + Strict @mail.ugm.ac.id domain + Admin PIN + Candidate CRUD
+-- Run this in Supabase SQL Editor.
 
--- 1. Table for tracking voters by NIM
+-- 1. Table for tracking voters by NIM & UGM Email
 create table if not exists public.registered_voters (
   nim text primary key,
   name text,
-  email text,
+  email text not null,
   has_voted boolean not null default false,
   voted_at timestamptz,
   created_at timestamptz not null default timezone('utc', now())
 );
 
+create index if not exists idx_registered_voters_email on public.registered_voters (lower(email));
 alter table public.registered_voters enable row level security;
 
 -- 2. Add admin_pin to election_settings if not exists
 alter table public.election_settings
 add column if not exists admin_pin text not null default 'KMTEDI2026';
 
--- 3. Function to cast vote using NIM (Atomic, One-Man-One-Vote, Anonymous Ballot)
+-- 3. Verifikasi PIN Admin
+create or replace function public.admin_verify_pin(p_pin text)
+returns boolean
+language sql
+stable
+security definer set search_path = public
+as $$
+  select exists (
+    select 1 from public.election_settings
+    where id = true and admin_pin = p_pin
+  );
+$$;
+
+grant execute on function public.admin_verify_pin(text) to anon, authenticated;
+
+-- 4. Function to cast vote using NIM + Strict @mail.ugm.ac.id (One Vote per Student, Anonymous Ballot)
 create or replace function public.cast_vote_by_nim(
   p_candidate_id uuid,
   p_nim text,
@@ -30,13 +46,20 @@ security definer set search_path = public
 as $$
 declare
   clean_nim text;
+  clean_email text;
   candidate_exists boolean;
   already_voted boolean := false;
 begin
-  -- Normalize NIM
+  -- Normalize & Validate NIM
   clean_nim := upper(trim(regexp_replace(coalesce(p_nim, ''), '\s+', '', 'g')));
   if length(clean_nim) < 4 then
     raise exception 'NIM tidak valid. Masukkan NIM yang benar.';
+  end if;
+
+  -- Normalize & Strictly Validate @mail.ugm.ac.id
+  clean_email := lower(trim(coalesce(p_email, '')));
+  if clean_email !~ '^[^@[:space:]]+@mail[.]ugm[.]ac[.]id$' then
+    raise exception 'Verifikasi gagal: Pemilihan hanya menerima akun resmi @mail.ugm.ac.id!';
   end if;
 
   -- Check if election is open
@@ -63,17 +86,25 @@ begin
   where nim = clean_nim;
 
   if already_voted = true then
-    raise exception 'NIM % sudah pernah menggunakan hak suara!', clean_nim;
+    raise exception 'NIM % sudah pernah digunakan untuk memilih!', clean_nim;
+  end if;
+
+  -- Check if this email already voted
+  if exists (
+    select 1 from public.registered_voters
+    where lower(email) = clean_email and has_voted = true
+  ) then
+    raise exception 'Akun email % sudah pernah digunakan untuk memilih!', clean_email;
   end if;
 
   -- Record/lock voter record
   insert into public.registered_voters (nim, name, email, has_voted, voted_at)
-  values (clean_nim, trim(coalesce(p_name, '')), trim(coalesce(p_email, '')), true, timezone('utc', now()))
+  values (clean_nim, trim(coalesce(p_name, '')), clean_email, true, timezone('utc', now()))
   on conflict (nim) do update set
     has_voted = true,
     voted_at = timezone('utc', now()),
     name = coalesce(nullif(excluded.name, ''), public.registered_voters.name),
-    email = coalesce(nullif(excluded.email, ''), public.registered_voters.email);
+    email = clean_email;
 
   -- Insert anonymous ballot (no voter identity stored with vote)
   insert into public.votes (candidate_id) values (p_candidate_id);
@@ -81,27 +112,13 @@ begin
   return jsonb_build_object(
     'success', true,
     'message', 'Suaramu berhasil dicatat secara sah dan rahasia!',
-    'nim', clean_nim
+    'nim', clean_nim,
+    'email', clean_email
   );
 end;
 $$;
 
 grant execute on function public.cast_vote_by_nim(uuid, text, text, text) to anon, authenticated;
-
--- 4. Admin PIN verification RPC
-create or replace function public.admin_verify_pin(p_pin text)
-returns boolean
-language sql
-stable
-security definer set search_path = public
-as $$
-  select exists (
-    select 1 from public.election_settings
-    where id = true and admin_pin = p_pin
-  );
-$$;
-
-grant execute on function public.admin_verify_pin(text) to anon, authenticated;
 
 -- 5. Admin stats by PIN
 create or replace function public.admin_get_stats_by_pin(p_pin text)
@@ -186,3 +203,90 @@ end;
 $$;
 
 grant execute on function public.admin_toggle_switch(text, text) to anon, authenticated;
+
+-- 8. Admin Save Candidate (Insert or Update biodata paslon)
+create or replace function public.admin_save_candidate(
+  p_pin text,
+  p_id uuid,
+  p_order_number integer,
+  p_name text,
+  p_batch text default null,
+  p_nim text default null,
+  p_photo_url text default null,
+  p_vision text default '',
+  p_mission text[] default '{}',
+  p_programs text[] default '{}',
+  p_is_active boolean default true
+)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  saved_id uuid;
+begin
+  if not public.admin_verify_pin(p_pin) then
+    raise exception 'PIN Admin salah atau tidak valid!';
+  end if;
+
+  if p_order_number is null or p_order_number < 1 then
+    raise exception 'Nomor urut calon harus angka positif (1, 2, dst)!';
+  end if;
+
+  if trim(coalesce(p_name, '')) = '' then
+    raise exception 'Nama calon tidak boleh kosong!';
+  end if;
+
+  if p_id is not null then
+    update public.candidates
+    set
+      order_number = p_order_number,
+      name = trim(p_name),
+      batch = nullif(trim(p_batch), ''),
+      nim = nullif(trim(p_nim), ''),
+      photo_url = nullif(trim(p_photo_url), ''),
+      vision = coalesce(trim(p_vision), ''),
+      mission = coalesce(p_mission, '{}'),
+      programs = coalesce(p_programs, '{}'),
+      is_active = coalesce(p_is_active, true),
+      updated_at = timezone('utc', now())
+    where id = p_id
+    returning id into saved_id;
+
+    if saved_id is null then
+      raise exception 'Calon dengan ID tersebut tidak ditemukan.';
+    end if;
+  else
+    insert into public.candidates (
+      order_number, name, batch, nim, photo_url, vision, mission, programs, is_active
+    ) values (
+      p_order_number, trim(p_name), nullif(trim(p_batch), ''), nullif(trim(p_nim), ''),
+      nullif(trim(p_photo_url), ''), coalesce(trim(p_vision), ''), coalesce(p_mission, '{}'),
+      coalesce(p_programs, '{}'), coalesce(p_is_active, true)
+    )
+    returning id into saved_id;
+  end if;
+
+  return jsonb_build_object('success', true, 'id', saved_id, 'message', 'Data calon berhasil disimpan!');
+end;
+$$;
+
+grant execute on function public.admin_save_candidate(text, uuid, integer, text, text, text, text, text, text[], text[], boolean) to anon, authenticated;
+
+-- 9. Admin Delete Candidate
+create or replace function public.admin_delete_candidate(p_pin text, p_id uuid)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if not public.admin_verify_pin(p_pin) then
+    raise exception 'PIN Admin salah atau tidak valid!';
+  end if;
+
+  delete from public.candidates where id = p_id;
+  return jsonb_build_object('success', true, 'message', 'Calon berhasil dihapus!');
+end;
+$$;
+
+grant execute on function public.admin_delete_candidate(text, uuid) to anon, authenticated;

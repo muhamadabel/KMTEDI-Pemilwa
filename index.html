@@ -773,27 +773,32 @@ section { padding: 90px 0; position: relative; }
 
 <!-- MODAL NIM VERIFICATION -->
 <div class="modal-backdrop" id="nimModal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" style="grid-template-columns:1fr;max-width:500px;background:var(--cream);color:var(--night);box-shadow:14px 14px 0 var(--coral)">
+  <div class="modal" role="dialog" aria-modal="true" style="grid-template-columns:1fr;max-width:520px;background:var(--cream);color:var(--night);box-shadow:14px 14px 0 var(--coral)">
     <button class="modal-close" id="nimModalClose" style="color:var(--maroon)">×</button>
     <div style="padding:34px 36px">
-      <div class="eyebrow" style="color:var(--red)">BILIK SUARA PEMILWA</div>
-      <h2 style="font:400 42px var(--display);margin:12px 0 14px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Verifikasi NIM</h2>
-      <p style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.5">Masukkan NIM kamu untuk verifikasi hak suara. 1 NIM hanya dapat memilih 1 kali secara sah dan rahasia.</p>
+      <div class="eyebrow" style="color:var(--red)">BILIK SUARA PEMILWA KMTEDI</div>
+      <h2 style="font:400 40px var(--display);margin:10px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Verifikasi Akun UGM</h2>
+      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Wajib menggunakan akun email resmi <b>@mail.ugm.ac.id</b> dan NIM mahasiswa aktif. 1 Akun = 1 Suara Sah.</p>
       
       <form id="voterForm">
         <div style="margin-bottom:14px">
-          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NIM MAHASISWA *</label>
-          <input type="text" id="voterNim" placeholder="Contoh: 22/505123/SV/21456" required style="width:100%;padding:13px;border:1px solid rgba(74,16,33,.3);font:700 13px var(--mono);background:#fff;color:var(--night)">
+          <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--maroon)">EMAIL UGM (@mail.ugm.ac.id) *</label>
+          <input type="email" id="voterEmail" placeholder="nama.mahasiswa@mail.ugm.ac.id" required style="width:100%;padding:13px;border:1px solid rgba(74,16,33,.3);font:700 13px 'Space Mono';background:#fff;color:var(--night)">
         </div>
         <div style="margin-bottom:14px">
-          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NAMA LENGKAP (OPSIONAL)</label>
+          <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--maroon)">NIM MAHASISWA *</label>
+          <input type="text" id="voterNim" placeholder="Contoh: 22/505123/SV/21456" required style="width:100%;padding:13px;border:1px solid rgba(74,16,33,.3);font:700 13px 'Space Mono';background:#fff;color:var(--night)">
+        </div>
+        <div style="margin-bottom:18px">
+          <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--maroon)">NAMA LENGKAP (OPSIONAL)</label>
           <input type="text" id="voterName" placeholder="Nama mahasiswa" style="width:100%;padding:13px;border:1px solid rgba(74,16,33,.3);font:13px var(--body);background:#fff;color:var(--night)">
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream)">Verifikasi & Buka Bilik ↗</button>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream)">Verifikasi & Buka Bilik Suara ↗</button>
       </form>
       <div id="nimErr" style="color:var(--red);margin-top:12px;font:700 11px var(--mono)"></div>
     </div>
   </div>
+</div>
 </div>
 
 <!-- SCRIPTS -->
@@ -847,6 +852,7 @@ const candidateCards = [...document.querySelectorAll('.candidate-card')];
 
 function getVoter() {
   return {
+    email: sessionStorage.getItem('kmtedi_voter_email') || '',
     nim: sessionStorage.getItem('kmtedi_nim') || '',
     name: sessionStorage.getItem('kmtedi_voter_name') || '',
     hasVoted: sessionStorage.getItem('kmtedi_has_voted') === 'true'
@@ -998,14 +1004,25 @@ document.getElementById('prevSlide').addEventListener('click', () => { slide = (
 
 document.getElementById('voterForm').onsubmit = e => {
   e.preventDefault();
-  const nim = document.getElementById('voterNim').value.trim();
+  const email = document.getElementById('voterEmail').value.trim().toLowerCase();
+  const nim = document.getElementById('voterNim').value.trim().toUpperCase();
   const name = document.getElementById('voterName').value.trim();
-  if (!nim) return;
+
+  if (!email.endsWith('@mail.ugm.ac.id')) {
+    alert('Verifikasi ditolak: Wajib menggunakan email dengan domain @mail.ugm.ac.id!');
+    return;
+  }
+  if (nim.length < 4) {
+    alert('Masukkan NIM mahasiswa yang valid!');
+    return;
+  }
+
+  sessionStorage.setItem('kmtedi_voter_email', email);
   sessionStorage.setItem('kmtedi_nim', nim);
   sessionStorage.setItem('kmtedi_voter_name', name);
   updateVoterBadge();
   closeNimModal();
-  alert('NIM ' + nim + ' berhasil dimasukkan! Silakan pilih salah satu calon di bawah.');
+  alert('Akun ' + email + ' (NIM: ' + nim + ') berhasil diverifikasi! Silakan pilih calon di bawah.');
   document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
 };
 
@@ -1019,26 +1036,25 @@ document.getElementById('voteCandidateBtn').addEventListener('click', async () =
     return;
   }
   const v = getVoter();
-  if (!v.nim) {
+  if (!v.nim || !v.email) {
     closeProfile();
     openNimModal();
     return;
   }
   if (v.hasVoted) {
-    alert('NIM ' + v.nim + ' sudah pernah menggunakan hak suara!');
+    alert('Akun ' + v.email + ' (NIM: ' + v.nim + ') sudah pernah menggunakan hak suara!');
     return;
   }
   const candidate = candidates[selected];
-  if (!confirm(`Kirim suara sah untuk ${candidate[0]} (Nomor Urut 0${candidate[3]})?
-
-Pilihan bersifat rahasia dan tidak dapat diubah setelah dikirim.`)) {
+  if (!confirm(`Kirim suara sah untuk ${candidate[0]} (Nomor Urut 0${candidate[3]})?\n\nPilihan bersifat rahasia dan tidak dapat diubah setelah dikirim.`)) {
     return;
   }
 
   const { data, error } = await db.rpc('cast_vote_by_nim', {
     p_candidate_id: candidate[2],
     p_nim: v.nim,
-    p_name: v.name || null
+    p_name: v.name || null,
+    p_email: v.email
   });
 
   if (error) {
@@ -1050,7 +1066,6 @@ Pilihan bersifat rahasia dan tidak dapat diubah setelah dikirim.`)) {
     alert('SELAMAT! Suaramu berhasil dicatat secara sah dan rahasia untuk ' + candidate[0] + '. Terima kasih telah berpartisipasi!');
   }
 });
-
 document.getElementById('voterActionBtn').addEventListener('click', e => {
   e.preventDefault();
   const v = getVoter();
