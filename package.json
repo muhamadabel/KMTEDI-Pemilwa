@@ -1,0 +1,8 @@
+{
+  "name": "kmtedi-pemilwa",
+  "version": "1.0.0",
+  "description": "Website Pemilwa KMTEDI",
+  "scripts": {
+    "build": "node build.js"
+  }
+}
