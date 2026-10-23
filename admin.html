@@ -525,7 +525,7 @@ async function refreshDashboard() {
             <div class="row" style="padding:10px 0">
               <div>
                 <b style="font-size:14px;color:var(--cream)">${i+1}. ${v.normalized_name}</b><br>
-                <small style="color:var(--gold)">NIM: ${v.nim}</small>
+                <small style="color:var(--gold)">NIM: ${v.nim} · ${v.email || ''}</small>
               </div>
               <small style="color:var(--muted)">${new Date(v.voted_at).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'})} WIB</small>
             </div>

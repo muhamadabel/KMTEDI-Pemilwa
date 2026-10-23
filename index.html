@@ -86,7 +86,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .navlinks a { opacity: 0.8; transition: 0.2s; }
 .navlinks a:hover { color: var(--yellow); opacity: 1; }
 
-/* USER GREETING PILL IN TOP RIGHT (CLEAN, NO AI SLOP, NO EMOJIS) */
+/* USER GREETING PILL IN TOP RIGHT */
 .user-pill {
   display: inline-flex;
   align-items: center;
@@ -276,7 +276,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .hero-dot.active { background: var(--yellow); width: 70px; }
 
-/* MARQUEE: PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 */
+/* MARQUEE: PEMILWA 2026 */
 .marquee {
   overflow: hidden;
   white-space: nowrap;
@@ -347,7 +347,7 @@ section { padding: 85px 0; position: relative; }
   color: var(--maroon);
 }
 
-/* CANDIDATES SECTION: CLICK ANYWHERE ON CARD OPENS DETAIL */
+/* CANDIDATES SECTION: CLICK ANYWHERE TO OPEN DETAIL */
 .candidates { background: var(--maroon); }
 .candidates .section-kicker h2 { color: var(--cream); }
 .candidate-intro {
@@ -427,7 +427,6 @@ section { padding: 85px 0; position: relative; }
   opacity: 0.8;
 }
 
-/* TWO BUTTONS ON EACH CARD FOR DIRECT INTERACTION */
 .candidate-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -534,8 +533,9 @@ section { padding: 85px 0; position: relative; }
   border: 0;
   background: none;
   color: var(--cream);
-  font-size: 24px;
-  line-height: 1;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
   cursor: pointer;
   padding: 4px;
 }
@@ -639,6 +639,32 @@ section { padding: 85px 0; position: relative; }
   border: 1px solid rgba(0,0,0,.15);
 }
 
+/* EMAIL SUFFIX WRAPPER */
+.email-input-group {
+  display: flex;
+  border: 1px solid rgba(74,16,33,.3);
+  background: #fff;
+}
+.email-input-group input {
+  flex: 1;
+  border: 0;
+  padding: 12px 14px;
+  font: 600 13px var(--mono);
+  color: var(--night);
+  background: transparent;
+  outline: none;
+}
+.email-input-group .email-suffix {
+  padding: 12px 14px;
+  background: rgba(74,16,33,.08);
+  font: 700 11px var(--mono);
+  color: var(--maroon);
+  border-left: 1px solid rgba(74,16,33,.2);
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
 /* RESPONSIVE */
 @media (max-width: 820px) {
   .navlinks a:not(.btn-nav-verify) { display: none; }
@@ -709,7 +735,7 @@ section { padding: 85px 0; position: relative; }
   </div>
 </section>
 
-<!-- MARQUEE: PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -->
+<!-- MARQUEE: PEMILWA 2026 -->
 <div class="marquee">
   <div class="marquee-track">PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -</div>
 </div>
@@ -727,9 +753,9 @@ section { padding: 85px 0; position: relative; }
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
-        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa dan Nama Lengkap (otomatis dicocokkan dalam format huruf kapital di database). Setiap mahasiswa hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
+        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan NIM dan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id) untuk mencegah kecurangan identitas. Setiap pemilih hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
         <div class="info-pills">
-          <span class="pill">VERIFIKASI NIM & NAMA</span>
+          <span class="pill">VERIFIKASI EMAIL UGM (OTP)</span>
           <span class="pill">ONE STUDENT ONE VOTE</span>
           <span class="pill">SECRET BALLOT</span>
         </div>
@@ -825,7 +851,7 @@ section { padding: 85px 0; position: relative; }
       <div class="time-row">
         <div class="time-no">03</div>
         <h3>Pemungutan Suara</h3>
-        <p>Bilik suara dibuka. Mahasiswa memasukkan NIM dan Nama untuk memilih calon.</p>
+        <p>Bilik suara dibuka. Mahasiswa memasukkan NIM dan verifikasi OTP email UGM.</p>
         <div class="time-date">SEGERA</div>
       </div>
       <div class="time-row">
@@ -846,11 +872,11 @@ section { padding: 85px 0; position: relative; }
         <h2>Bilik<br>Suara.</h2>
         <span class="number">04 / STATUS</span>
       </div>
-      <p class="vote-copy" id="voteCopyText">Masukkan NIM dan Nama Lengkap Anda untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
+      <p class="vote-copy" id="voteCopyText">Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
       
       <div id="voterActionContainer">
         <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
-          Verifikasi Pemilih (NIM & Nama)
+          Verifikasi Pemilih (NIM & Email UGM)
         </button>
       </div>
     </div>
@@ -869,28 +895,67 @@ section { padding: 85px 0; position: relative; }
   <span>Informasi resmi panitia pemilihan</span>
 </footer>
 
-<!-- MODAL 1: VERIFIKASI PEMILIH (NIM & NAMA LENGKAP) -->
+<!-- MODAL 1: VERIFIKASI PEMILIH (2-STEP OTP EMAIL UGM) -->
 <div class="modal-backdrop" id="voterModal" aria-hidden="true">
   <div class="confirm-box" style="max-width:480px">
     <button class="modal-close" id="voterModalClose" style="color:var(--wine)">Tutup</button>
     <div class="eyebrow" style="color:var(--red)">AUTENTIKASI PEMILIH KMTEDI</div>
-    <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
-    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan Nama Lengkap mahasiswa aktif. Nama otomatis dicocokkan dalam format huruf kapital di database untuk mencegah duplikasi (1 mahasiswa = 1 suara sah).</p>
     
-    <form id="voterForm">
-      <div style="margin-bottom:14px">
-        <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NIM MAHASISWA *</label>
-        <input type="text" id="inputNim" placeholder="Contoh: 22/505123/SV/21456" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:700 13px var(--mono);background:#fff;color:var(--night)">
+    <!-- TAHAP 1: FORM IDENTITAS & EMAIL UGM -->
+    <div id="voterStep1">
+      <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
+      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan data mahasiswa. Kode OTP rahasia akan dikirimkan ke email resmi UGM Anda untuk memastikan keaslian pemilih (anti-curang).</p>
+      
+      <form id="voterFormStep1">
+        <div style="margin-bottom:14px">
+          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NIM MAHASISWA *</label>
+          <input type="text" id="inputNim" placeholder="Contoh: 22/505123/SV/21456" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:700 13px var(--mono);background:#fff;color:var(--night)">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NAMA LENGKAP MAHASISWA *</label>
+          <input type="text" id="inputName" placeholder="Nama lengkap sesuai KTM/KRS" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:600 13px var(--body);background:#fff;color:var(--night)">
+        </div>
+        <div style="margin-bottom:20px">
+          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">EMAIL RESMI UGM *</label>
+          <div class="email-input-group">
+            <input type="text" id="inputEmailPrefix" placeholder="username" required>
+            <span class="email-suffix">@mail.ugm.ac.id</span>
+          </div>
+        </div>
+        <button type="submit" id="btnRequestOtp" class="btn" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream);padding:13px">
+          Kirim Kode OTP ke Email UGM
+        </button>
+      </form>
+    </div>
+
+    <!-- TAHAP 2: INPUT 6 DIGIT OTP -->
+    <div id="voterStep2" style="display:none">
+      <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Masukkan Kode OTP</h2>
+      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">
+        6 digit kode OTP rahasia telah dikirimkan ke <b id="displayTargetEmail" style="color:var(--maroon)">...</b>. Silakan periksa kotak masuk atau spam email Anda.
+      </p>
+
+      <form id="voterFormStep2">
+        <div style="margin-bottom:20px">
+          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon);text-align:center">KODE OTP 6 ANGKA *</label>
+          <input type="text" id="inputOtp" maxlength="6" placeholder="------" required style="width:100%;padding:14px;border:2px solid var(--maroon);font:700 28px var(--mono);letter-spacing:0.35em;text-align:center;background:#fff;color:var(--night);outline:none">
+        </div>
+        <button type="submit" id="btnVerifyOtp" class="btn" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream);padding:13px">
+          Verifikasi & Masuk Bilik Suara
+        </button>
+      </form>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+        <button type="button" id="btnBackToStep1" style="background:none;border:0;color:#77515a;font:700 10px var(--mono);cursor:pointer;padding:0;text-decoration:underline">
+          Ubah Data Identitas
+        </button>
+        <button type="button" id="btnResendOtp" style="background:none;border:0;color:var(--maroon);font:700 10px var(--mono);cursor:pointer;padding:0;text-decoration:underline">
+          Kirim Ulang Kode OTP
+        </button>
       </div>
-      <div style="margin-bottom:18px">
-        <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NAMA LENGKAP MAHASISWA *</label>
-        <input type="text" id="inputName" placeholder="Nama lengkap sesuai KTM/KRS" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:600 13px var(--body);background:#fff;color:var(--night)">
-      </div>
-      <button type="submit" class="btn" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream);padding:13px">
-        Verifikasi & Lanjut Memilih
-      </button>
-    </form>
-    <div id="voterModalErr" style="color:var(--red);margin-top:12px;font:700 11px var(--mono)"></div>
+    </div>
+
+    <div id="voterModalErr" style="color:var(--red);margin-top:14px;font:700 11px var(--mono)"></div>
   </div>
 </div>
 
@@ -960,7 +1025,7 @@ section { padding: 85px 0; position: relative; }
 
     <div style="background:#fff;border:1px solid rgba(74,16,33,.2);padding:12px 14px;margin-bottom:14px">
       <b style="display:block;font:700 10px var(--mono);color:var(--maroon);margin-bottom:4px">DATA PEMILIH:</b>
-      <span id="confirmVoterDetails" style="font:700 12px var(--mono);color:var(--night)">NAMA / NIM</span>
+      <span id="confirmVoterDetails" style="font:700 12px var(--mono);color:var(--night)">NAMA / NIM / EMAIL</span>
     </div>
 
     <div style="background:#fcedea;border-left:3px solid var(--red);padding:12px 14px;margin-bottom:20px">
@@ -978,7 +1043,7 @@ section { padding: 85px 0; position: relative; }
   </div>
 </div>
 
-<!-- MODAL 4: VOTE SUCCESS RECEIPT (NO EMOJIS) -->
+<!-- MODAL 4: VOTE SUCCESS RECEIPT -->
 <div class="modal-backdrop" id="successModal" aria-hidden="true">
   <div class="confirm-box" style="text-align:center;box-shadow:18px 18px 0 var(--yellow)">
     <div class="eyebrow" style="color:var(--red);margin-bottom:8px">SUARA SAH TERCATAT</div>
@@ -1037,6 +1102,13 @@ const db = (cfg.url && cfg.anonKey) ? window.supabase.createClient(cfg.url, cfg.
 let electionSettings = null;
 let hasVoted = false;
 
+// Pending OTP Request State
+let pendingVoterData = {
+  nim: '',
+  name: '',
+  email: ''
+};
+
 const voterModal = document.getElementById('voterModal');
 const profileModal = document.getElementById('profileModal');
 const confirmVoteModal = document.getElementById('confirmVoteModal');
@@ -1056,11 +1128,13 @@ function getVoter() {
   const nim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
   const rawName = (sessionStorage.getItem('kmtedi_voter_raw_name') || '').trim();
   const normName = (sessionStorage.getItem('kmtedi_voter_norm_name') || rawName).trim().toUpperCase();
+  const email = (sessionStorage.getItem('kmtedi_voter_email') || '').trim().toLowerCase();
   const voted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
   return {
     nim: nim,
     rawName: rawName,
     normName: normName,
+    email: email,
     hasVoted: voted
   };
 }
@@ -1072,11 +1146,11 @@ function updateVoterUI() {
   const copyText = document.getElementById('voteCopyText');
   const heroBtn = document.getElementById('heroVoteBtn');
 
-  if (v.nim && v.rawName) {
+  if (v.nim && v.rawName && v.email) {
     hasVoted = v.hasVoted;
     const displayName = formatShortName(v.rawName);
 
-    // TOP RIGHT NAVBAR: Sapaan nama panggilan alami + badge hijau bersih tanpa emoji
+    // TOP RIGHT NAVBAR: Sapaan nama panggilan alami + badge hijau bersih
     container.innerHTML = `
       <div class="user-pill">
         <span class="user-greeting">${displayName}</span>
@@ -1097,7 +1171,7 @@ function updateVoterUI() {
         heroBtn.style.opacity = '0.7';
       }
     } else {
-      copyText.innerHTML = `Identitas Terverifikasi: <b>${displayName}</b> (NIM: ${v.nim}). Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
+      copyText.innerHTML = `Identitas Terverifikasi: <b>${displayName}</b> (NIM: ${v.nim} · ${v.email}). Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
       mainBtn.innerHTML = `Pilih Calon di Atas`;
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
@@ -1112,8 +1186,8 @@ function updateVoterUI() {
         Verifikasi Pemilih (NIM)
       </button>
     `;
-    copyText.innerHTML = `Masukkan NIM dan Nama Lengkap Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `Verifikasi Pemilih (NIM & Nama)`;
+    copyText.innerHTML = `Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.`;
+    mainBtn.innerHTML = `Verifikasi Pemilih (NIM & Email UGM)`;
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
     if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih`;
@@ -1126,6 +1200,7 @@ function clearVoterSession() {
   sessionStorage.removeItem('kmtedi_voter_nim');
   sessionStorage.removeItem('kmtedi_voter_raw_name');
   sessionStorage.removeItem('kmtedi_voter_norm_name');
+  sessionStorage.removeItem('kmtedi_voter_email');
   sessionStorage.removeItem('kmtedi_has_voted');
   hasVoted = false;
   updateVoterUI();
@@ -1191,7 +1266,6 @@ async function loadPublicData() {
         setHero(0);
       }
 
-      // Marquee text
       const mq = document.querySelector('.marquee-track');
       if (mq) {
         const textToUse = settings.marquee_text || 'PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -';
@@ -1242,10 +1316,12 @@ async function loadPublicData() {
   }
 }
 
-// VOTER MODAL (NIM + NAMA LENGKAP)
+// VOTER MODAL (2-STEP OTP)
 function openVoterModal(withCandidateIndex = null) {
   pendingVoteIndex = withCandidateIndex;
   document.getElementById('voterModalErr').textContent = '';
+  document.getElementById('voterStep1').style.display = 'block';
+  document.getElementById('voterStep2').style.display = 'none';
   voterModal.classList.add('open');
   voterModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -1258,69 +1334,134 @@ function closeVoterModal() {
 document.getElementById('voterModalClose').onclick = closeVoterModal;
 voterModal.onclick = e => { if (e.target === voterModal) closeVoterModal(); };
 
-document.getElementById('voterForm').onsubmit = async e => {
+// STEP 1: REQUEST OTP TO @MAIL.UGM.AC.ID
+document.getElementById('voterFormStep1').onsubmit = async e => {
   e.preventDefault();
   const rawNim = document.getElementById('inputNim').value.trim();
   const rawName = document.getElementById('inputName').value.trim();
+  const prefix = document.getElementById('inputEmailPrefix').value.trim().toLowerCase().replace(/@.*$/, '');
   const errBox = document.getElementById('voterModalErr');
-  errBox.textContent = 'Memverifikasi data pemilih...';
+  const btn = document.getElementById('btnRequestOtp');
 
-  if (!rawNim || !rawName) {
-    errBox.textContent = 'NIM dan Nama Lengkap wajib diisi!';
+  if (!rawNim || !rawName || !prefix) {
+    errBox.textContent = 'Semua kolom wajib diisi!';
     return;
   }
 
-  const cleanNim = rawNim.toUpperCase().replace(/\s+/g, '');
-  const cleanName = rawName.toUpperCase().replace(/\s+/g, ' ');
+  errBox.textContent = '';
+  btn.textContent = 'Mengirim Kode OTP...';
+  btn.disabled = true;
 
-  // Check voter state in DB
-  let voterHasVoted = false;
+  try {
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nim: rawNim,
+        name: rawName,
+        email_prefix: prefix
+      })
+    });
 
-  if (db) {
-    try {
-      const { data, error } = await db.rpc('verify_voter', {
-        p_nim: cleanNim,
-        p_name: cleanName
-      });
+    const data = await res.json();
 
-      if (error) {
-        errBox.textContent = error.message;
-        return;
-      }
-
-      if (data && !data.eligible) {
-        errBox.textContent = data.message;
-        return;
-      }
-
-      if (data) {
-        voterHasVoted = Boolean(data.has_voted);
-      }
-    } catch (err) {
-      console.warn('RPC check warning:', err);
+    if (!res.ok || !data.success) {
+      errBox.textContent = data.error || 'Gagal mengirim kode OTP.';
+      btn.textContent = 'Kirim Kode OTP ke Email UGM';
+      btn.disabled = false;
+      return;
     }
+
+    // Save pending state & transition to Step 2
+    pendingVoterData = {
+      nim: rawNim,
+      name: rawName,
+      email: data.email
+    };
+
+    document.getElementById('displayTargetEmail').textContent = data.email;
+    document.getElementById('voterStep1').style.display = 'none';
+    document.getElementById('voterStep2').style.display = 'block';
+    document.getElementById('inputOtp').value = '';
+    document.getElementById('inputOtp').focus();
+    btn.textContent = 'Kirim Kode OTP ke Email UGM';
+    btn.disabled = false;
+
+  } catch (err) {
+    errBox.textContent = 'Terjadi gangguan jaringan: ' + err.message;
+    btn.textContent = 'Kirim Kode OTP ke Email UGM';
+    btn.disabled = false;
   }
+};
 
-  // Save to Session Storage
-  sessionStorage.setItem('kmtedi_voter_nim', cleanNim);
-  sessionStorage.setItem('kmtedi_voter_raw_name', rawName);
-  sessionStorage.setItem('kmtedi_voter_norm_name', cleanName);
-  sessionStorage.setItem('kmtedi_has_voted', voterHasVoted ? 'true' : 'false');
+// STEP 2: VERIFY 6-DIGIT OTP
+document.getElementById('voterFormStep2').onsubmit = async e => {
+  e.preventDefault();
+  const otp = document.getElementById('inputOtp').value.trim();
+  const errBox = document.getElementById('voterModalErr');
+  const btn = document.getElementById('btnVerifyOtp');
 
-  closeVoterModal();
-  updateVoterUI();
-
-  if (voterHasVoted) {
-    alert(`NIM ${cleanNim} (${formatShortName(rawName)}) sudah pernah menggunakan hak suara dalam pemilihan ini.`);
+  if (otp.length < 6) {
+    errBox.textContent = 'Masukkan 6 digit angka kode OTP!';
     return;
   }
 
-  if (pendingVoteIndex !== null) {
-    triggerVote(pendingVoteIndex);
-    pendingVoteIndex = null;
-  } else {
-    document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
+  errBox.textContent = '';
+  btn.textContent = 'Memverifikasi OTP...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: pendingVoterData.email,
+        otp: otp
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      errBox.textContent = data.error || 'Kode OTP salah atau kedaluwarsa.';
+      btn.textContent = 'Verifikasi & Masuk Bilik Suara';
+      btn.disabled = false;
+      return;
+    }
+
+    const voter = data.voter;
+    sessionStorage.setItem('kmtedi_voter_nim', voter.nim);
+    sessionStorage.setItem('kmtedi_voter_raw_name', voter.raw_name);
+    sessionStorage.setItem('kmtedi_voter_norm_name', voter.normalized_name);
+    sessionStorage.setItem('kmtedi_voter_email', voter.email);
+    sessionStorage.setItem('kmtedi_has_voted', 'false');
+
+    closeVoterModal();
+    updateVoterUI();
+
+    if (pendingVoteIndex !== null) {
+      triggerVote(pendingVoteIndex);
+      pendingVoteIndex = null;
+    } else {
+      document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
+    }
+
+  } catch (err) {
+    errBox.textContent = 'Terjadi kesalahan verifikasi: ' + err.message;
+    btn.textContent = 'Verifikasi & Masuk Bilik Suara';
+    btn.disabled = false;
   }
+};
+
+// BACK TO STEP 1 / RESEND BUTTONS
+document.getElementById('btnBackToStep1').onclick = () => {
+  document.getElementById('voterModalErr').textContent = '';
+  document.getElementById('voterStep1').style.display = 'block';
+  document.getElementById('voterStep2').style.display = 'none';
+};
+
+document.getElementById('btnResendOtp').onclick = () => {
+  document.getElementById('voterFormStep1').requestSubmit();
 };
 
 // CANDIDATE PROFILE MODAL
@@ -1386,7 +1527,7 @@ function triggerVote(index) {
   }
   
   const v = getVoter();
-  if (!v.nim || !v.rawName) {
+  if (!v.nim || !v.rawName || !v.email) {
     openVoterModal(index);
     return;
   }
@@ -1405,7 +1546,7 @@ function triggerVote(index) {
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
   document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
-  document.getElementById('confirmVoterDetails').textContent = `${displayName} · NIM: ${v.nim}`;
+  document.getElementById('confirmVoterDetails').textContent = `${displayName} · NIM: ${v.nim} · ${v.email}`;
 
   closeProfile();
   confirmVoteModal.classList.add('open');
@@ -1423,7 +1564,7 @@ function closeDoubleCheck() {
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
   if (!candidateToVote || !db) return;
   const v = getVoter();
-  if (!v.nim || !v.rawName) {
+  if (!v.nim || !v.rawName || !v.email) {
     closeDoubleCheck();
     openVoterModal();
     return;
@@ -1437,7 +1578,8 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     const { data, error } = await db.rpc('cast_vote_by_nim_and_name', {
       p_candidate_id: candidateToVote[2],
       p_nim: v.nim,
-      p_name: v.rawName
+      p_name: v.rawName,
+      p_email: v.email
     });
     
     if (error) {
@@ -1494,7 +1636,7 @@ document.getElementById('voteFromModalBtn').onclick = () => {
 // MAIN VOTE BUTTON HANDLER
 function handleMainVoteClick() {
   const v = getVoter();
-  if (!v.nim || !v.rawName) {
+  if (!v.nim || !v.rawName || !v.email) {
     openVoterModal();
   } else if (!hasVoted) {
     document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
