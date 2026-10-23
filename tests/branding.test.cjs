@@ -47,6 +47,7 @@ test('candidate section has mobile horizontal carousel with scroll-snap and navi
   const css = fs.readFileSync(path.join(root, 'branding.css'), 'utf8');
   assert.ok(html.includes('class="candidate-carousel-nav"'));
   assert.ok(html.includes('class="cand-dot'));
+  assert.ok(html.includes('Para calon kandidat dengan visi misi, dan program kerja masing masing'));
   assert.match(css, /scroll-snap-type:\s*x mandatory/);
   assert.match(css, /scroll-snap-align:\s*start/);
 });
