@@ -6,7 +6,6 @@
 <title>Admin / Pemilwa KMTEDI</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#240a17;--panel:#4a1021;--wine:#68152b;--red:#ed5b42;--gold:#ffc857;--cream:#fff0d2;--muted:#d8a99c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif}
 .shell{width:min(1200px,94vw);margin:auto;padding:36px 0 80px}
@@ -58,11 +57,14 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
 .modal-close{position:absolute;right:16px;top:14px;border:0;background:none;font-size:26px;color:var(--wine);cursor:pointer}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.top{align-items:start;gap:18px;flex-direction:column}.candidate-item{grid-template-columns:1fr;align-items:start}}
 </style>
+<link rel="stylesheet" href="branding.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="theme-color" content="#000113">
 </head>
-<body>
+<body class="admin-page">
 <main class="shell">
 <div class="top">
-  <div class="brand"><i></i>KMTEDI / ADMIN PANEL</div>
+  <div class="brand admin-brand"><img class="brand-logo" src="assets/kmtedi-logo.png" width="44" height="44" alt="Logo KMTEDI"><span>KMTEDI / ADMIN PANEL</span></div>
   <div class="actions">
     <a href="/" class="btn alt" target="_blank">Lihat Web Publik ↗</a>
     <button class="btn alt hidden" id="logout">Keluar</button>
@@ -128,7 +130,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         Atur tanggal dan jam pembukaan bilik suara. Jika jadwal diatur di masa depan, di beranda web akan otomatis tampil <b>Countdown Timer (Hari, Jam, Menit, Detik)</b> menuju pembukaan bilik suara.
       </p>
       
-      <div style="background:var(--wine);padding:18px;border:1px solid rgba(255,240,210,.2);display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="schedule-grid">
         <div>
           <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--gold)">WAKTU PEMBUKAAN (COUNTDOWN START)</label>
           <input type="datetime-local" id="inputVotingStart" style="width:100%;padding:10px;border:1px solid rgba(255,240,210,.3);font:700 12px 'Space Mono';background:var(--night);color:var(--cream)">

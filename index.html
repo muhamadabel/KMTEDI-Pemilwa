@@ -9,18 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --night: #240a17;
-  --maroon: #4a1021;
-  --wine: #68152b;
-  --red: #9d2635;
-  --coral: #ed5b42;
-  --orange: #f28a3d;
-  --yellow: #ffc857;
-  --cream: #fff0d2;
-  --pink: #f5b2a3;
-  --muted: #d8a99c;
-  --green: #15803d;
-  --line: rgba(255,240,210,.2);
   --display: 'Anton', Impact, sans-serif;
   --body: 'DM Sans', sans-serif;
   --mono: 'Space Mono', monospace;
@@ -66,14 +54,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: 12px;
   font: 700 18px var(--mono);
   letter-spacing: -0.05em;
-}
-.brand-mark {
-  width: 24px; height: 24px;
-  background: var(--coral);
-  display: block;
-  transform: rotate(45deg);
-  border-radius: 8px 50% 8px 50%;
-  box-shadow: 4px 4px 0 var(--yellow);
 }
 .navlinks {
   display: flex;
@@ -712,11 +692,14 @@ section { padding: 85px 0; position: relative; }
   .footer { flex-direction: column; gap: 10px; }
 }
 </style>
+<link rel="stylesheet" href="branding.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="theme-color" content="#000113">
 </head>
 <body>
 
 <nav class="topbar" id="topbar">
-  <a class="brand" href="#atas"><i class="brand-mark"></i>KMTEDI</a>
+  <a class="brand" href="#atas" aria-label="KMTEDI, beranda"><img class="brand-logo" src="assets/kmtedi-logo.png" width="40" height="40" alt="Logo KMTEDI">KMTEDI</a>
   <div class="navlinks">
     <a href="#acara">Acara</a>
     <a href="#calon">Calon</a>
@@ -735,6 +718,7 @@ section { padding: 85px 0; position: relative; }
 
 <!-- HERO -->
 <section class="hero">
+  <img class="media-art hero-petals" src="assets/media-petals.webp" width="507" height="720" alt="" aria-hidden="true">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <div class="eyebrow">Pemilihan Ketua KMTEDI / 2026</div>
@@ -747,9 +731,9 @@ section { padding: 85px 0; position: relative; }
     </div>
     
     <div class="hero-visual">
+      <img class="media-art hero-spark" src="assets/media-spark.webp" width="529" height="561" alt="" aria-hidden="true">
       <div class="hero-card" id="heroCard">
         <img id="heroImg" src="assets/ig-panel-1.jpg" alt="Visual KMTEDI">
-        <div class="hero-sticker">KMTEDI<br>BERGERAK<br>BERSAMA</div>
         <div class="hero-art-label">
           <strong id="heroCaption">Ruang untuk<br>gagasan baru.</strong>
           <span id="heroIndex">01 / 03</span>
@@ -777,8 +761,11 @@ section { padding: 85px 0; position: relative; }
       <span class="number">01 / INFO</span>
     </div>
     <div class="about-grid">
-      <div class="about-statement">
-        Satu pemilihan umum untuk menentukan <span>Ketua KMTEDI</span> pada periode kepengurusan berikutnya.
+      <div class="about-message">
+        <div class="about-statement">
+          Satu pemilihan umum untuk menentukan <span>Ketua KMTEDI</span> pada periode kepengurusan berikutnya.
+        </div>
+        <img class="media-art about-lotus" src="assets/media-lotus.webp" width="720" height="572" loading="lazy" alt="" aria-hidden="true">
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
@@ -922,7 +909,7 @@ section { padding: 85px 0; position: relative; }
 </main>
 
 <footer class="footer">
-  <span>KMTEDI / PEMILWA 2026</span>
+  <span class="footer-brand"><img class="brand-logo" src="assets/kmtedi-logo.png" width="28" height="28" alt="Logo KMTEDI">KMTEDI / PEMILWA 2026</span>
   <span>Informasi resmi panitia pemilihan</span>
 </footer>
 
