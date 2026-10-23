@@ -539,14 +539,24 @@ section { padding: 85px 0; position: relative; }
   position: absolute;
   z-index: 10;
   right: 14px; top: 12px;
-  border: 0;
-  background: none;
-  color: var(--cream);
-  font-size: 11px;
-  font-family: var(--mono);
-  font-weight: 700;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(37, 0, 20, 0.22);
+  background: transparent;
+  color: var(--maroon);
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+.modal-close:hover {
+  background: rgba(37, 0, 20, 0.08);
+  border-color: var(--maroon);
+  color: var(--coral);
 }
 
 /* CANDIDATE DETAIL MODAL */
@@ -917,7 +927,7 @@ section { padding: 85px 0; position: relative; }
 <!-- MODAL 1: VERIFIKASI PEMILIH (2-STEP OTP EMAIL UGM, TANPA NAMA) -->
 <div class="modal-backdrop" id="voterModal" aria-hidden="true">
   <div class="confirm-box" style="max-width:480px">
-    <button class="modal-close" id="voterModalClose" style="color:var(--wine)">Tutup</button>
+    <button type="button" class="modal-close" id="voterModalClose" aria-label="Tutup">&times;</button>
     <div class="eyebrow" style="color:var(--red)">AUTENTIKASI PEMILIH KMTEDI</div>
     
     <!-- TAHAP 1: FORM NIM & EMAIL UGM -->
@@ -977,7 +987,7 @@ section { padding: 85px 0; position: relative; }
 <!-- MODAL 2: CANDIDATE DETAIL (3 SLIDES) -->
 <div class="modal-backdrop" id="profileModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true">
-    <button class="modal-close" id="modalClose" aria-label="Tutup" style="color:var(--wine)">Tutup</button>
+    <button type="button" class="modal-close" id="modalClose" aria-label="Tutup">&times;</button>
     <div class="modal-visual">
       <img id="modalImage" src="assets/ig-panel-3.jpg" alt="Visual calon">
       <div class="modal-visual-label">
@@ -1024,7 +1034,7 @@ section { padding: 85px 0; position: relative; }
 <!-- MODAL 3: DOUBLE CHECK CONFIRMATION (1 KALI PILIH - TIDAK BISA DIUBAH) -->
 <div class="modal-backdrop" id="confirmVoteModal" aria-hidden="true">
   <div class="confirm-box" role="dialog" aria-modal="true">
-    <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">Tutup</button>
+    <button type="button" class="modal-close" id="confirmModalClose" aria-label="Tutup">&times;</button>
     <div class="eyebrow" style="color:var(--red)">KONFIRMASI AKHIR PILIHAN SUARA</div>
     <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Periksa Pilihan Anda</h2>
     <p style="color:#77515a;margin:0;font-size:13.5px;line-height:1.5">Anda akan memberikan satu suara sah untuk calon ketua berikut:</p>

@@ -120,13 +120,36 @@ body::before { display: none; }
 .modal, .confirm-box { box-shadow: 8px 8px 0 var(--orange); }
 .modal-visual::after { background: linear-gradient(180deg, transparent 35%, rgba(0, 1, 19, .85)); }
 .modal-content p, .modal-slide ul, .admin-note { color: #644C58; }
-.modal-close { background: var(--night); color: var(--cream); }
+.modal-close {
+  background: transparent !important;
+  color: var(--brand-burgundy) !important;
+  border: 1.5px solid rgba(37, 0, 20, 0.22) !important;
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+  font-weight: 300 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+}
+.modal-close:hover {
+  background: rgba(37, 0, 20, 0.08) !important;
+  border-color: var(--brand-burgundy) !important;
+  color: var(--brand-orange) !important;
+  transform: rotate(90deg);
+}
 .email-input-group input { min-width: 0; }
 .email-input-group:focus-within { outline: 2px solid var(--maroon); outline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--yellow); outline-offset: 4px; }
 .modal :focus-visible, .confirm-box :focus-visible, .status-box :focus-visible { outline-color: var(--maroon); }
-.btn, .btn-nav-verify, .btn-card-profile, .btn-card-vote, .slide-btn, .modal-close { min-height: 44px; }
-.modal-close { min-width: 44px; }
+.btn, .btn-nav-verify, .btn-card-profile, .btn-card-vote, .slide-btn { min-height: 44px; }
 .hero-dot { height: 24px; background: transparent; position: relative; }
 .hero-dot::before { content: ''; position: absolute; left: 0; right: 0; height: 4px; top: 10px; background: var(--line); }
 .hero-dot.active { background: transparent; }
@@ -145,7 +168,6 @@ body::before { display: none; }
 .admin-page input[type="datetime-local"] { color-scheme: dark; }
 .admin-page .modal-box { --red: #963611; }
 .admin-page .modal-box :focus-visible { outline-color: var(--maroon); }
-.admin-page .modal-close { color: var(--cream); }
 .admin-page .admin-tab { min-height: 44px; font-weight: 700; }
 .schedule-grid { background: var(--night); padding: 18px; border: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .schedule-grid > div { min-width: 0; }
