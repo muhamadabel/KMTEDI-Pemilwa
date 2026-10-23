@@ -13,87 +13,108 @@
   --gold: var(--brand-amber);
   --red: #963611;
   --cream: #FFF9EF;
-  --pink: #E1D4DA;
-  --muted: #C9BBC3;
+  --pink: #FFF9EF;
+  --muted: #EADCE4;
   --green: #15733E;
-  --line: rgba(255, 249, 239, .2);
+  --line: rgba(255, 249, 239, .35);
   --bg: var(--brand-navy);
   --panel: var(--brand-burgundy);
 }
 
 ::selection { background: var(--yellow); color: var(--night); }
 body::before { display: none; }
-.topbar { background: var(--night); backdrop-filter: none; }
+
+/* TOPBAR */
+.topbar { background: var(--night); backdrop-filter: none; border-bottom: 1px solid var(--line); }
 .brand-logo { display: block; object-fit: contain; flex-shrink: 0; }
-.brand { gap: 10px; }
-.footer-brand, .admin-brand { display: flex; align-items: center; gap: 14px; }
-.footer { align-items: center; }
+.brand { gap: 10px; color: var(--cream); font-weight: 700; }
+.navlinks a { color: var(--cream); opacity: 1; font-weight: 700; }
+.navlinks a:hover { color: var(--yellow); }
+.btn-nav-verify { border: 1.5px solid var(--yellow); color: var(--yellow) !important; background: rgba(255, 180, 43, 0.12); font-weight: 700; }
+.btn-nav-verify:hover { background: var(--yellow); color: var(--night) !important; }
+
+/* HERO (Dark Burgundy Background) */
 .hero { background: var(--maroon); }
 .hero-grid { position: relative; z-index: 1; }
 .hero-title em { color: var(--cream); }
+.hero-lead { color: var(--cream); opacity: 1; font-size: 16.5px; font-weight: 500; }
 .hero-card { border-radius: 3px 48px 3px 3px; box-shadow: 12px 12px 0 var(--night); }
 .hero-card::after { background: linear-gradient(180deg, transparent 35%, rgba(0, 1, 19, .92)); }
 .hero-card img { filter: none; }
+.hero-art-label strong { color: var(--cream); }
+.hero-art-label span { color: var(--yellow); font-weight: 700; }
 .media-art { pointer-events: none; user-select: none; object-fit: contain; height: auto; }
 .hero-petals { position: absolute; width: clamp(180px, 24vw, 350px); right: 0; top: 60px; opacity: .5; }
 .hero-spark { position: absolute; width: 125px; top: -45px; left: -48px; z-index: 3; }
-.marquee { background: var(--brand-orange); color: var(--brand-navy); font-weight: 700; border-top: 1px solid rgba(0, 1, 19, .2); border-bottom: 1px solid rgba(0, 1, 19, .2); }
+
+/* MARQUEE RIBBON */
+.marquee { background: var(--brand-orange); color: var(--brand-navy); font-weight: 700; border-top: 1px solid rgba(0, 1, 19, .25); border-bottom: 1px solid rgba(0, 1, 19, .25); }
+
+/* 01 / INFO: KENALI ACARANYA (Light / Warm Cream Section) */
 .about { background: var(--cream); color: var(--night); }
 .about .section-kicker h2 { color: var(--maroon); }
-.about .section-kicker .number { color: var(--orange); }
+.about .section-kicker .number { color: var(--orange); font-weight: 700; }
 .about-statement { color: var(--night); }
 .about-statement span { color: var(--orange); font-weight: 700; }
 .about-info { border-top: 2px solid var(--maroon); color: #5C3A44; }
 .about-info strong { color: var(--maroon); }
-.about .pill { border-color: rgba(37, 0, 20, .25); color: var(--maroon); background: transparent; }
-.pill { color: var(--muted); border-color: var(--line); }
-/* 02 / CALON: OREN (Orange #E46527) */
+.about .pill { border-color: rgba(37, 0, 20, .3); color: var(--maroon); background: transparent; font-weight: 700; }
+.pill { color: var(--cream); border-color: var(--line); }
+
+/* 02 / CALON: OREN (Vibrant Orange Background) */
 .candidates { background: var(--brand-orange); color: var(--brand-navy); }
 .candidates .section-kicker h2 { color: var(--brand-navy); }
-.candidates .section-kicker .number { color: var(--brand-burgundy); }
-.candidate-intro { color: #1a0810; }
-.candidate-card { background: var(--brand-navy); border: 1px solid rgba(255, 249, 239, .2); box-shadow: 8px 8px 0 var(--brand-burgundy); }
-.candidate-card:hover { transform: translateY(-4px); box-shadow: 12px 12px 0 var(--brand-burgundy); }
+.candidates .section-kicker .number { color: var(--brand-burgundy); font-weight: 700; font-size: 12px; }
+.candidate-intro { color: var(--brand-navy); font-weight: 600; font-size: 16px; opacity: 1; }
+.candidate-card { background: var(--brand-navy); border: 2px solid rgba(255, 249, 239, .35); box-shadow: 10px 10px 0 var(--brand-burgundy); }
+.candidate-card:hover { transform: translateY(-4px); box-shadow: 14px 14px 0 var(--brand-burgundy); border-color: var(--yellow); }
 .candidate-image { background: var(--brand-burgundy); }
 .candidate-image::after { background: linear-gradient(150deg, transparent 45%, rgba(0, 1, 19, .75)); }
 .candidate-image img, .candidate-card:hover .candidate-image img { filter: none; }
-.candidate-name { color: var(--cream); }
-.candidate-tag { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; padding: 3px 6px; }
-.candidate-click-hint { color: var(--muted); }
-.candidate-actions { border-top-color: rgba(255, 249, 239, .2); }
-.btn-card-profile { border-color: rgba(255, 249, 239, .3); color: var(--cream); }
-.btn-card-profile:hover { border-color: var(--brand-amber); color: var(--brand-amber); }
+.candidate-no { color: var(--brand-amber); text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9); }
+.candidate-name { color: var(--cream); font-weight: 700; }
+.candidate-tag { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; padding: 4px 8px; border-radius: 2px; }
+.candidate-click-hint { color: var(--brand-amber); font-weight: 700; opacity: 1; font-size: 10px; }
+.candidate-actions { border-top-color: rgba(255, 249, 239, .3); }
+.btn-card-profile { background: rgba(255, 249, 239, .15); border: 1.5px solid var(--cream); color: var(--cream); font-weight: 700; }
+.btn-card-profile:hover { background: var(--cream); color: var(--brand-navy); border-color: var(--cream); }
 .btn-card-vote { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
 .btn-card-vote:hover { background: var(--cream); color: var(--brand-navy); }
 
-/* 03 / TIMELINE: MERAH (Burgundy Red #250014) */
+/* 03 / TIMELINE: MERAH (Deep Burgundy Red Background) */
 .timeline { background: var(--brand-burgundy); color: var(--cream); }
 .timeline .section-kicker h2 { color: var(--cream); }
-.timeline .section-kicker .number { color: var(--brand-amber); }
-.timeline-list { border-top: 1px solid rgba(255, 249, 239, .2); }
-.time-row { border-bottom: 1px solid rgba(255, 249, 239, .2); }
-.time-no { color: var(--brand-amber); }
-.time-row h3 { color: var(--cream); }
-.time-row p { color: var(--muted); }
-.time-date { color: var(--brand-amber); }
-.time-row:hover { background: rgba(228, 101, 39, .14); }
+.timeline .section-kicker .number { color: var(--brand-amber); font-weight: 700; font-size: 12px; }
+.timeline-list { border-top: 1.5px solid var(--line); }
+.time-row { border-bottom: 1.5px solid var(--line); }
+.time-no { color: var(--brand-amber); font-weight: 700; }
+.time-row h3 { color: var(--cream); font-weight: 700; }
+.time-row p { color: var(--cream); opacity: 1; font-size: 15px; font-weight: 500; }
+.time-date { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; padding: 5px 12px; border-radius: 2px; font-size: 11px; text-align: center; }
+.time-row:hover { background: rgba(255, 180, 43, .12); }
 
-/* 04 / STATUS BILIK SUARA: BIRU GELAP (Dark Navy #000113) */
+/* 04 / STATUS BILIK SUARA: BIRU GELAP (Dark Navy Background) */
 .vote { background: var(--brand-navy); color: var(--cream); }
 .vote .section-kicker h2 { color: var(--cream); }
-.vote .section-kicker .number { color: var(--brand-orange); }
-.vote-copy { color: var(--muted); }
+.vote .section-kicker .number { color: var(--brand-amber); font-weight: 700; font-size: 12px; }
+.vote-copy { color: var(--cream); opacity: 1; font-size: 20px; font-weight: 500; }
 .vote .btn-primary { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
 .vote .btn-primary:hover { background: var(--cream); color: var(--brand-navy); }
 .status-box { background: var(--brand-amber); color: var(--brand-navy); border: 0; gap: 20px; }
-.status-box small { color: var(--brand-navy); line-height: 1.6; }
-.status-box strong { color: var(--brand-navy); }
+.status-box small { color: var(--brand-navy); line-height: 1.6; font-weight: 700; font-size: 11px; }
+.status-box strong { color: var(--brand-navy); font-weight: 700; }
 .countdown-grid { justify-content: space-between; gap: 3px; }
 .countdown-item { min-width: 0; }
-.countdown-num { color: var(--brand-navy); font-variant-numeric: tabular-nums; }
+.countdown-num { color: var(--brand-navy); font-variant-numeric: tabular-nums; font-weight: 700; }
 .countdown-tag { color: var(--brand-burgundy); font-weight: 700; }
-.countdown-sep { color: var(--brand-burgundy); }
-.footer { background: var(--brand-navy); border-top: 1px solid var(--line); color: var(--muted); }
+.countdown-sep { color: var(--brand-burgundy); font-weight: 700; }
+
+/* FOOTER */
+.footer { background: var(--brand-navy); border-top: 1.5px solid var(--line); color: var(--cream); opacity: 1; align-items: center; }
+.footer span { color: var(--cream); font-weight: 700; font-size: 12px; opacity: 1; }
+.footer-brand, .admin-brand { display: flex; align-items: center; gap: 14px; }
+
+/* MODALS */
 .modal-backdrop { background: rgba(0, 1, 19, .88); }
 .modal, .confirm-box { box-shadow: 8px 8px 0 var(--orange); }
 .modal-visual::after { background: linear-gradient(180deg, transparent 35%, rgba(0, 1, 19, .85)); }
@@ -106,24 +127,25 @@ body::before { display: none; }
 .btn, .btn-nav-verify, .btn-card-profile, .btn-card-vote, .slide-btn, .modal-close { min-height: 44px; }
 .modal-close { min-width: 44px; }
 .hero-dot { height: 24px; background: transparent; position: relative; }
-.hero-dot::before { content: ''; position: absolute; left: 0; right: 0; height: 4px; top: 10px; background: var(--muted); }
+.hero-dot::before { content: ''; position: absolute; left: 0; right: 0; height: 4px; top: 10px; background: var(--line); }
 .hero-dot.active { background: transparent; }
 .hero-dot.active::before { background: var(--yellow); }
 
+/* ADMIN PAGE */
 .admin-page { --red: var(--orange); }
 .admin-page .top { border-bottom: 1px solid var(--line); padding-bottom: 24px; }
 .admin-page .admin-brand > .brand-logo { width: 56px; height: 56px; }
 .admin-page .top h1 { font-size: clamp(38px, 5vw, 56px); }
 .admin-page .panel { border-color: var(--line); }
-.admin-page .btn { background: var(--gold); color: var(--night); }
-.admin-page .btn.alt { background: transparent; border-color: var(--line); color: var(--cream); }
-.admin-page .btn.danger { background: var(--orange); color: var(--night); }
-.admin-page .input { border-color: var(--line); background: var(--night); }
+.admin-page .btn { background: var(--gold); color: var(--night); font-weight: 700; }
+.admin-page .btn.alt { background: transparent; border-color: var(--line); color: var(--cream); font-weight: 700; }
+.admin-page .btn.danger { background: var(--orange); color: var(--night); font-weight: 700; }
+.admin-page .input { border-color: var(--line); background: var(--night); color: var(--cream); }
 .admin-page input[type="datetime-local"] { color-scheme: dark; }
 .admin-page .modal-box { --red: #963611; }
 .admin-page .modal-box :focus-visible { outline-color: var(--maroon); }
 .admin-page .modal-close { color: var(--cream); }
-.admin-page .admin-tab { min-height: 44px; }
+.admin-page .admin-tab { min-height: 44px; font-weight: 700; }
 .schedule-grid { background: var(--night); padding: 18px; border: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .schedule-grid > div { min-width: 0; }
 .schedule-grid input { min-width: 0; }
