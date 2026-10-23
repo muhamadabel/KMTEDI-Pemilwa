@@ -39,3 +39,13 @@ test('existing voter flow and scheduling controls remain present', () => {
     assert.ok(admin.includes(`id="${id}"`));
   }
 });
+
+test('candidate section has mobile horizontal carousel with scroll-snap and navigation dots', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'branding.css'), 'utf8');
+  assert.ok(html.includes('class="candidate-carousel-nav"'));
+  assert.ok(html.includes('class="cand-dot'));
+  assert.match(css, /scroll-snap-type:\s*x mandatory/);
+  assert.match(css, /scroll-snap-align:\s*start/);
+});
+

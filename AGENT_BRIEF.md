@@ -14,7 +14,7 @@ Static public page (`index.html`), admin (`admin.html`), Vercel API routes, and 
   - Hero: Dark burgundy/navy with KMTEDI logo, spark, and petals artwork.
   - Marquee: Vibrant orange ribbon with dark typography.
   - Section 01 / INFO (Kenali Acaranya): Warm cream (`#FFF9EF`) bright section with dark burgundy typography.
-  - Section 02 / CALON (Kenali Calonmu): Vibrant orange (`#E46527`) background with dark navy cards and amber tags.
+  - Section 02 / CALON (Kenali Calonmu): Vibrant orange (`#E46527`) background with dark navy cards and amber tags. On mobile (<= 820px), cards render as a horizontal swipeable carousel with scroll-snap and indicator dots instead of a vertical stack. On desktop, renders as a 3-column grid.
   - Section 03 / TIMELINE (Alur Pemilwa): Deep burgundy red (`#250014`) background with cream and amber typography.
   - Section 04 / STATUS (Bilik Suara): Dark navy (`#000113`) background with golden-yellow status and countdown box.
   - Footer: Dark navy (`#000113`).

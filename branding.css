@@ -80,6 +80,7 @@ body::before { display: none; }
 .btn-card-profile:hover { background: var(--cream); color: var(--brand-navy); border-color: var(--cream); }
 .btn-card-vote { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
 .btn-card-vote:hover { background: var(--cream); color: var(--brand-navy); }
+.candidate-carousel-nav { display: none; }
 
 /* 03 / TIMELINE: MERAH (Deep Burgundy Red Background) */
 .timeline { background: var(--brand-burgundy); color: var(--cream); }
@@ -159,6 +160,54 @@ body::before { display: none; }
   .hero-title { font-size: clamp(64px, 14vw, 110px); }
   .time-row { grid-template-columns: 55px minmax(0, 1fr); }
   .time-row > * { min-width: 0; overflow-wrap: anywhere; }
+
+  /* CANDIDATES MOBILE HORIZONTAL CAROUSEL */
+  .candidates { overflow-x: clip; }
+  .candidate-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    margin-inline: -4vw !important;
+    padding-inline: 4vw !important;
+    padding-bottom: 12px !important;
+    scrollbar-width: none !important;
+  }
+  .candidate-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+  .candidate-card {
+    flex: 0 0 min(82vw, 340px) !important;
+    width: min(82vw, 340px) !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: normal !important;
+  }
+  .candidate-image {
+    height: 310px !important;
+  }
+  .candidate-carousel-nav {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+  }
+  .cand-dot {
+    border: 0 !important;
+    width: 28px !important;
+    height: 4px !important;
+    padding: 0 !important;
+    background: rgba(0, 1, 19, .3) !important;
+    border-radius: 2px !important;
+    transition: 0.25s !important;
+    cursor: pointer !important;
+  }
+  .cand-dot.active {
+    background: var(--night) !important;
+    width: 52px !important;
+  }
 }
 
 @media (max-width: 480px) {
