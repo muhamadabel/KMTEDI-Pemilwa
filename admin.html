@@ -120,7 +120,35 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
       </div>
     </section>
 
-        <section class="panel">
+            <section class="panel">
+      <div class="panel-head">
+        <h2>Jadwal & Countdown Pembukaan Bilik Suara</h2>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 16px">
+        Atur tanggal dan jam pembukaan bilik suara. Jika jadwal diatur di masa depan, di beranda web akan otomatis tampil <b>Countdown Timer (Hari, Jam, Menit, Detik)</b> menuju pembukaan bilik suara.
+      </p>
+      
+      <div style="background:var(--wine);padding:18px;border:1px solid rgba(255,240,210,.2);display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div>
+          <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--gold)">WAKTU PEMBUKAAN (COUNTDOWN START)</label>
+          <input type="datetime-local" id="inputVotingStart" style="width:100%;padding:10px;border:1px solid rgba(255,240,210,.3);font:700 12px 'Space Mono';background:var(--night);color:var(--cream)">
+          <small style="color:var(--muted);display:block;margin-top:4px;font-size:11px">Web akan countdown menuju tanggal & jam ini.</small>
+        </div>
+        <div>
+          <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--gold)">WAKTU PENUTUPAN (OPSIONAL)</label>
+          <input type="datetime-local" id="inputVotingEnd" style="width:100%;padding:10px;border:1px solid rgba(255,240,210,.3);font:700 12px 'Space Mono';background:var(--night);color:var(--cream)">
+          <small style="color:var(--muted);display:block;margin-top:4px;font-size:11px">Bilik otomatis tertutup setelah jam ini.</small>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="btn alt" id="clearScheduleBtn">Hapus Jadwal (Mode Manual)</button>
+        <button type="button" class="btn" id="saveScheduleBtn">Simpan Jadwal Countdown ⏱️</button>
+      </div>
+      <div id="scheduleStatusText" style="margin-top:12px;font:700 11px 'Space Mono';color:var(--gold)"></div>
+    </section>
+
+    <section class="panel">
       <div class="panel-head">
         <h2>Daftar Mahasiswa yang Telah Memilih (Presensi)</h2>
       </div>
@@ -468,6 +496,34 @@ async function refreshDashboard() {
       $('votingStatusBadge').style.color = stats.voting_open ? 'var(--gold)' : 'var(--red)';
       $('votingStateText').textContent = stats.voting_open ? 'Bilik Suara: SEDANG DIBUKA' : 'Bilik Suara: SEDANG DITUTUP';
       $('votingStateDesc').textContent = stats.voting_open ? 'Mahasiswa dapat memberikan suara saat ini.' : 'Voting dikunci, mahasiswa belum bisa memilih.';
+
+    // Populate schedule & countdown
+    function toLocalDatetimeInput(isoStr) {
+      if (!isoStr) return '';
+      const d = new Date(isoStr);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    if (stats.voting_start) {
+      $('inputVotingStart').value = toLocalDatetimeInput(stats.voting_start);
+      const d = new Date(stats.voting_start);
+      const now = new Date();
+      if (now < d) {
+        $('scheduleStatusText').innerHTML = `⏱️ Countdown Aktif: Menuju pembukaan pada <b>${d.toLocaleString('id-ID')} WIB</b>`;
+      } else {
+        $('scheduleStatusText').innerHTML = `✓ Waktu pembukaan telah tercapai (${d.toLocaleString('id-ID')} WIB).`;
+      }
+    } else {
+      $('inputVotingStart').value = '';
+      $('scheduleStatusText').textContent = 'Mode Manual: Bilik suara dikontrol langsung via tombol Buka/Tutup di atas.';
+    }
+
+    if (stats.voting_end) {
+      $('inputVotingEnd').value = toLocalDatetimeInput(stats.voting_end);
+    } else {
+      $('inputVotingEnd').value = '';
+    }
       $('toggleVotingBtn').textContent = stats.voting_open ? 'Kunci / Tutup Voting' : 'Buka Bilik Suara';
       $('toggleResultsBtn').textContent = stats.results_published ? 'Sembunyikan Hasil dari Publik' : 'Buka Hasil ke Publik';
 
@@ -739,6 +795,45 @@ $('resetVotesBtn').onclick = async () => {
   if (error) alert(error.message);
   else {
     alert('Kotak suara berhasil dikosongkan!');
+    await refreshDashboard();
+  }
+};
+
+$('saveScheduleBtn').onclick = async () => {
+  const startVal = $('inputVotingStart').value;
+  const endVal = $('inputVotingEnd').value;
+
+  const p_start = startVal ? new Date(startVal).toISOString() : null;
+  const p_end = endVal ? new Date(endVal).toISOString() : null;
+
+  $('scheduleStatusText').textContent = 'Menyimpan jadwal...';
+
+  const { data, error } = await db.rpc('admin_set_schedule', {
+    p_pin: currentPin,
+    p_start: p_start,
+    p_end: p_end
+  });
+
+  if (error) {
+    alert('Gagal menyimpan jadwal: ' + error.message);
+  } else {
+    alert('Jadwal countdown berhasil disimpan!');
+    await refreshDashboard();
+  }
+};
+
+$('clearScheduleBtn').onclick = async () => {
+  if (!confirm('Hapus jadwal countdown dan kembali ke mode manual?')) return;
+  const { data, error } = await db.rpc('admin_set_schedule', {
+    p_pin: currentPin,
+    p_start: null,
+    p_end: null
+  });
+  if (error) alert(error.message);
+  else {
+    $('inputVotingStart').value = '';
+    $('inputVotingEnd').value = '';
+    alert('Jadwal berhasil dihapus!');
     await refreshDashboard();
   }
 };

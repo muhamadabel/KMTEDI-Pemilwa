@@ -503,6 +503,35 @@ section { padding: 85px 0; position: relative; }
 }
 .status-box small { font: 700 10px var(--mono); letter-spacing: 0.1em; }
 .status-box strong { font: 400 56px var(--display); line-height: 0.85; text-transform: uppercase; }
+.countdown-grid {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 10px 0;
+}
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 48px;
+}
+.countdown-num {
+  font: 400 clamp(36px, 5.2vw, 58px) var(--display);
+  line-height: 0.88;
+  color: var(--night);
+}
+.countdown-tag {
+  font: 700 9px var(--mono);
+  color: var(--maroon);
+  margin-top: 4px;
+  letter-spacing: 0.08em;
+}
+.countdown-sep {
+  font: 400 clamp(28px, 4.2vw, 48px) var(--display);
+  color: var(--maroon);
+  opacity: 0.5;
+  line-height: 0.88;
+}
 
 /* FOOTER */
 .footer {
@@ -880,9 +909,11 @@ section { padding: 85px 0; position: relative; }
         </button>
       </div>
     </div>
-    <div class="status-box">
-      <small>STATUS BILIK SUARA</small>
-      <strong id="votingStatusBigText">Voting<br>Terbuka</strong>
+    <div class="status-box" id="statusBoxContainer">
+      <small id="votingStatusLabel">STATUS BILIK SUARA</small>
+      <div id="votingStatusMain">
+        <strong id="votingStatusBigText">Voting<br>Terbuka</strong>
+      </div>
       <small id="votingStatusNote">Bilik suara sedang DIBUKA. Mahasiswa dapat memilih.</small>
     </div>
   </div>
@@ -1212,19 +1243,89 @@ function renderCandidateCards() {
   }
 }
 
-function updateVotingStatus() {
-  const bigText = document.getElementById('votingStatusBigText');
-  const note = document.getElementById('votingStatusNote');
-  if (!bigText || !electionSettings) return;
-  if (electionSettings.voting_open) {
-    bigText.innerHTML = 'Voting<br>Terbuka';
-    bigText.style.color = 'var(--night)';
-    note.textContent = 'Bilik suara sedang DIBUKA. Mahasiswa dapat memilih.';
-  } else {
-    bigText.innerHTML = 'Belum<br>Dibuka';
-    note.textContent = 'Bilik suara ditutup sementara oleh panitia.';
-  }
+function isVotingActive() {
+  if (!electionSettings) return false;
+  const now = new Date();
+  const startTime = electionSettings.voting_start ? new Date(electionSettings.voting_start) : null;
+  const endTime = electionSettings.voting_end ? new Date(electionSettings.voting_end) : null;
+  if (!electionSettings.voting_open) return false;
+  if (startTime && now < startTime) return false;
+  if (endTime && now > endTime) return false;
+  return true;
 }
+
+function formatCountdownNumber(n) {
+  return String(Math.max(0, Math.floor(n))).padStart(2, '0');
+}
+
+function updateVotingStatus() {
+  const label = document.getElementById('votingStatusLabel');
+  const main = document.getElementById('votingStatusMain');
+  const note = document.getElementById('votingStatusNote');
+  if (!label || !main || !note || !electionSettings) return;
+
+  const now = new Date();
+  const startTime = electionSettings.voting_start ? new Date(electionSettings.voting_start) : null;
+  const endTime = electionSettings.voting_end ? new Date(electionSettings.voting_end) : null;
+  const isOpenToggle = Boolean(electionSettings.voting_open);
+
+  // 1. COUNTDOWN MENUJU PEMBUKAAN
+  if (startTime && now < startTime && isOpenToggle) {
+    const diff = startTime.getTime() - now.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / 1000 / 60) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+
+    label.textContent = 'COUNTDOWN MENUJU PEMBUKAAN';
+    main.innerHTML = `
+      <div class="countdown-grid">
+        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(days)}</span><span class="countdown-tag">HARI</span></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(hours)}</span><span class="countdown-tag">JAM</span></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(mins)}</span><span class="countdown-tag">MENIT</span></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(secs)}</span><span class="countdown-tag">DETIK</span></div>
+      </div>
+    `;
+    const opts = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    note.textContent = `Bilik suara dibuka otomatis pada ${startTime.toLocaleDateString('id-ID', opts)} WIB.`;
+    return;
+  }
+
+  // 2. SUDAH MELEWATI WAKTU PENUTUPAN
+  if (endTime && now > endTime) {
+    label.textContent = 'STATUS BILIK SUARA';
+    main.innerHTML = `<strong id="votingStatusBigText">Voting<br>Selesai</strong>`;
+    note.textContent = 'Waktu pemilihan telah berakhir. Menunggu pengumuman rekapitulasi resmi panitia.';
+    return;
+  }
+
+  // 3. SEDANG DIBUKA
+  if (isOpenToggle) {
+    label.textContent = 'STATUS BILIK SUARA';
+    main.innerHTML = `<strong id="votingStatusBigText" style="color:var(--night)">Voting<br>Terbuka</strong>`;
+    if (endTime && now < endTime) {
+      const diffClose = endTime.getTime() - now.getTime();
+      const h = Math.floor(diffClose / (1000 * 60 * 60));
+      const m = Math.floor((diffClose / 1000 / 60) % 60);
+      const s = Math.floor((diffClose / 1000) % 60);
+      note.textContent = `Bilik suara sedang DIBUKA. Ditutup dalam: ${h}j ${m}m ${s}d.`;
+    } else {
+      note.textContent = 'Bilik suara sedang DIBUKA. Mahasiswa dapat memberikan suara.';
+    }
+    return;
+  }
+
+  // 4. DITUTUP MANUAL OLEH ADMIN
+  label.textContent = 'STATUS BILIK SUARA';
+  main.innerHTML = `<strong id="votingStatusBigText">Belum<br>Dibuka</strong>`;
+  note.textContent = 'Bilik suara ditutup sementara oleh panitia.';
+}
+
+// Tick live countdown every second
+setInterval(updateVotingStatus, 1000);
 
 async function loadPublicData() {
   if (!db) return;
@@ -1493,8 +1594,14 @@ function closeProfile() {
 
 // "TINGGAL PILIH" TRIGGER (HANYA BISA SEKALI)
 function triggerVote(index) {
-  if (!electionSettings?.voting_open) {
-    alert('Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.');
+  if (!isVotingActive()) {
+    const now = new Date();
+    const startTime = electionSettings?.voting_start ? new Date(electionSettings.voting_start) : null;
+    if (startTime && now < startTime) {
+      alert(`Bilik suara belum dibuka. Pembukaan dijadwalkan pada ${startTime.toLocaleString('id-ID')} WIB.\n\nSilakan pelajari visi, misi, dan program kerja calon ketua terlebih dahulu.`);
+    } else {
+      alert('Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.');
+    }
     return;
   }
   
