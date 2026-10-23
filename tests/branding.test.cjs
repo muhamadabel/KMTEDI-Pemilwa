@@ -35,9 +35,11 @@ test('existing voter flow and scheduling controls remain present', () => {
     assert.ok(html.includes(`id="${id}"`));
   }
   assert.ok(!html.includes('id="inputName"'));
+  assert.ok(!html.includes('href="/admin"'), 'Admin link should be removed from public navigation');
   for (const id of ['inputVotingStart', 'inputVotingEnd', 'saveScheduleBtn']) {
     assert.ok(admin.includes(`id="${id}"`));
   }
+  assert.ok(!admin.includes('Default: KMTEDI2026'), 'Old default PIN should not be exposed in placeholder');
 });
 
 test('candidate section has mobile horizontal carousel with scroll-snap and navigation dots', () => {
