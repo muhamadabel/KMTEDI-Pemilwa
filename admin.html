@@ -115,6 +115,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         <div class="actions">
           <button class="btn" id="toggleVotingBtn">Buka / Tutup Voting</button>
           <button class="btn alt" id="toggleResultsBtn">Publikasikan Hasil</button>
+          <button class="btn danger" id="resetVotesBtn" style="font-size:10px">Reset Kotak Suara</button>
         </div>
       </div>
     </section>
@@ -700,6 +701,17 @@ $('toggleVotingBtn').onclick = async () => {
   const { error } = await db.rpc('admin_toggle_switch', { p_pin: currentPin, p_field: 'voting_open' });
   if (error) alert(error.message);
   else await refreshDashboard();
+};
+
+
+$('resetVotesBtn').onclick = async () => {
+  if (!confirm('PERHATIAN: Yakin ingin mengosongkan seluruh kotak suara dan me-reset status semua pemilih menjadi belum memilih?')) return;
+  const { data, error } = await db.rpc('admin_reset_votes', { p_pin: currentPin });
+  if (error) alert(error.message);
+  else {
+    alert('Kotak suara berhasil dikosongkan!');
+    await refreshDashboard();
+  }
 };
 
 $('toggleResultsBtn').onclick = async () => {

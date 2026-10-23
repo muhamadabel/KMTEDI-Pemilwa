@@ -405,3 +405,25 @@ end;
 $$;
 
 grant execute on function public.cast_vote(uuid) to authenticated, anon;
+
+
+-- 11. Admin Reset Votes (Clears test votes)
+create or replace function public.admin_reset_votes(p_pin text)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if not public.admin_verify_pin(p_pin) then
+    raise exception 'PIN Admin salah atau tidak valid!';
+  end if;
+
+  delete from public.votes;
+  update public.registered_voters set has_voted = false, voted_at = null;
+  update public.profiles set has_voted = false, voted_at = null;
+
+  return jsonb_build_object('success', true, 'message', 'Semua kotak suara dan status pemilih berhasil di-reset!');
+end;
+$$;
+
+grant execute on function public.admin_reset_votes(text) to anon, authenticated;
