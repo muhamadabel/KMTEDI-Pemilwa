@@ -2,7 +2,6 @@ const nodemailer = require('nodemailer');
 const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async function handler(req, res) {
-  // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -16,10 +15,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { nim, name, email_prefix } = req.body || {};
+    const { nim, email_prefix } = req.body || {};
 
-    if (!nim || !name || !email_prefix) {
-      return res.status(400).json({ success: false, error: 'NIM, Nama Lengkap, dan Email UGM wajib diisi!' });
+    if (!nim || !email_prefix) {
+      return res.status(400).json({ success: false, error: 'NIM dan Email UGM wajib diisi!' });
     }
 
     let cleanPrefix = email_prefix.trim().toLowerCase();
@@ -35,7 +34,6 @@ module.exports = async function handler(req, res) {
     // Generate OTP di database
     const { data, error } = await db.rpc('generate_voter_otp', {
       p_nim: nim.trim(),
-      p_name: name.trim(),
       p_email: fullEmail
     });
 
@@ -64,7 +62,7 @@ module.exports = async function handler(req, res) {
         <div style="font-family:sans-serif;background:#240a17;color:#fff0d2;padding:32px 24px;border-radius:8px;max-width:500px;margin:auto">
           <div style="font-size:11px;font-weight:bold;letter-spacing:0.15em;color:#ffc857;margin-bottom:8px">PEMILWA KMTEDI 2026</div>
           <h2 style="margin:0 0 16px;color:#fff0d2;font-size:22px;text-transform:uppercase">Kode Verifikasi Hak Suara</h2>
-          <p style="color:#d8a99c;font-size:14px;line-height:1.5">Halo <strong>${name}</strong> (NIM: ${nim}),</p>
+          <p style="color:#d8a99c;font-size:14px;line-height:1.5">Halo Mahasiswa KMTEDI (NIM: <strong>${nim}</strong>),</p>
           <p style="color:#d8a99c;font-size:14px;line-height:1.5">Berikut adalah 6 digit kode OTP rahasia Anda untuk membuka bilik suara pemilihan Ketua KMTEDI 2026:</p>
           <div style="background:#4a1021;border:2px solid #ffc857;color:#ffc857;font-size:36px;font-weight:bold;letter-spacing:0.25em;text-align:center;padding:16px;border-radius:6px;margin:20px 0">
             ${otpCode}
