@@ -20,7 +20,6 @@
   --pink: #f5b2a3;
   --muted: #d8a99c;
   --green: #15803d;
-  --green-light: #22c55e;
   --line: rgba(255,240,210,.2);
   --display: 'Anton', Impact, sans-serif;
   --body: 'DM Sans', sans-serif;
@@ -114,9 +113,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: #ffffff;
 }
 .user-badge.voted {
-  background: var(--wine);
-  color: var(--yellow);
-  border: 1px solid var(--yellow);
+  background: var(--green);
+  color: #ffffff;
 }
 .btn-change-voter {
   background: transparent;
@@ -278,7 +276,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .hero-dot.active { background: var(--yellow); width: 70px; }
 
-/* MARQUEE */
+/* MARQUEE: PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 */
 .marquee {
   overflow: hidden;
   white-space: nowrap;
@@ -287,12 +285,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--coral);
   color: var(--night);
   padding: 12px 0;
-  font: 700 11px var(--mono);
-  letter-spacing: 0.1em;
+  font: 700 12px var(--mono);
+  letter-spacing: 0.12em;
 }
 .marquee-track {
   display: inline-block;
-  animation: marquee 25s linear infinite;
+  animation: marquee 20s linear infinite;
 }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
@@ -373,12 +371,9 @@ section { padding: 85px 0; position: relative; }
   display: flex;
   flex-direction: column;
 }
-.candidate-card.active-choice {
-  border-color: var(--yellow);
-  box-shadow: 0 0 0 2px var(--yellow), 10px 10px 0 rgba(242,138,61,.35);
-}
 .candidate-card:hover {
   transform: translateY(-8px);
+  border-color: var(--yellow);
 }
 .candidate-image {
   height: 310px;
@@ -452,10 +447,11 @@ section { padding: 85px 0; position: relative; }
   cursor: pointer;
 }
 .btn-card-vote:hover { background: var(--cream); }
-.btn-card-vote.selected-vote {
-  background: var(--green);
-  color: #fff;
-  cursor: default;
+.btn-card-vote:disabled {
+  background: rgba(255,240,210,.12);
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* TIMELINE SECTION */
@@ -702,9 +698,9 @@ section { padding: 85px 0; position: relative; }
   </div>
 </section>
 
-<!-- MARQUEE -->
+<!-- MARQUEE: PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -->
 <div class="marquee">
-  <div class="marquee-track">KMTEDI / PEMILWA 2026 &nbsp; ✦ &nbsp; SATU SUARA SATU KETUA &nbsp; ✦ &nbsp; PILIH DENGAN SADAR &nbsp; ✦ &nbsp; BACA GAGASANNYA &nbsp; ✦ &nbsp; KMTEDI / PEMILWA 2026 &nbsp; ✦ &nbsp; SATU SUARA SATU KETUA &nbsp; ✦ &nbsp; PILIH DENGAN SADAR &nbsp; ✦ &nbsp; BACA GAGASANNYA &nbsp; ✦ &nbsp;</div>
+  <div class="marquee-track">PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -</div>
 </div>
 
 <!-- ABOUT -->
@@ -720,7 +716,7 @@ section { padding: 85px 0; position: relative; }
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
-        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa dan Nama Lengkap (otomatis dicocokkan dalam format huruf kapital di database). Selama bilik suara dibuka panitia, pemilih dapat meninjau dan memperbarui pilihannya.</span>
+        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa dan Nama Lengkap (otomatis dicocokkan dalam format huruf kapital di database). Setiap mahasiswa hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
         <div class="info-pills">
           <span class="pill">VERIFIKASI NIM & NAMA</span>
           <span class="pill">ONE STUDENT ONE VOTE</span>
@@ -865,7 +861,7 @@ section { padding: 85px 0; position: relative; }
     <button class="modal-close" id="voterModalClose" style="color:var(--wine)">×</button>
     <div class="eyebrow" style="color:var(--red)">AUTENTIKASI PEMILIH KMTEDI</div>
     <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
-    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan Nama Lengkap mahasiswa aktif. Nama otomatis dicocokkan dalam format huruf kapital di database untuk mencegah kecurangan/duplikasi.</p>
+    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan Nama Lengkap mahasiswa aktif. Nama otomatis dicocokkan dalam format huruf kapital di database untuk mencegah kecurangan/duplikasi (1 mahasiswa = 1 suara).</p>
     
     <form id="voterForm">
       <div style="margin-bottom:14px">
@@ -931,13 +927,13 @@ section { padding: 85px 0; position: relative; }
   </div>
 </div>
 
-<!-- MODAL 3: DOUBLE CHECK CONFIRMATION (BISA GANTI PILIHAN) -->
+<!-- MODAL 3: DOUBLE CHECK CONFIRMATION (1 KALI PILIH - TIDAK BISA DIUBAH) -->
 <div class="modal-backdrop" id="confirmVoteModal" aria-hidden="true">
   <div class="confirm-box" role="dialog" aria-modal="true">
     <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">×</button>
-    <div class="eyebrow" style="color:var(--red)" id="confirmModeLabel">KONFIRMASI PILIHAN SUARA</div>
-    <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92" id="confirmHeading">Periksa Pilihan Anda</h2>
-    <p style="color:#77515a;margin:0;font-size:13.5px;line-height:1.5" id="confirmDesc">Anda akan memberikan satu suara sah untuk calon ketua berikut:</p>
+    <div class="eyebrow" style="color:var(--red)">KONFIRMASI AKHIR PILIHAN SUARA</div>
+    <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Periksa Pilihan Anda</h2>
+    <p style="color:#77515a;margin:0;font-size:13.5px;line-height:1.5">Anda akan memberikan satu suara sah untuk calon ketua berikut:</p>
     
     <div class="confirm-candidate">
       <img id="confirmPhoto" src="assets/ig-panel-1.jpg" class="confirm-thumb" alt="Foto Calon">
@@ -954,10 +950,10 @@ section { padding: 85px 0; position: relative; }
     </div>
 
     <div style="background:#fcedea;border-left:3px solid var(--red);padding:12px 14px;margin-bottom:20px">
-      <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">ℹ️ KETENTUAN BILIK SUARA:</b>
-      <p style="margin:0;font-size:12px;color:#7a323a;line-height:1.45" id="confirmRulesText">
-        1. Suara Anda bersifat <b>RAHASIA</b> (Secret Ballot) dan dicatat sah ke kotak suara.<br>
-        2. Selama bilik suara masih dibuka oleh panitia, Anda masih dapat meninjau atau <b>mengganti pilihan</b> Anda.
+      <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">⚠️ PERINGATAN PENTING:</b>
+      <p style="margin:0;font-size:12px;color:#7a323a;line-height:1.45">
+        1. Suara Anda bersifat <b>RAHASIA</b> (Secret Ballot).<br>
+        2. Pemilihan <b>HANYA DAPAT DILAKUKAN SEKALI</b> dan <b>TIDAK DAPAT DIUBAH</b> setelah Anda menekan tombol konfirmasi di bawah.
       </p>
     </div>
 
@@ -973,9 +969,9 @@ section { padding: 85px 0; position: relative; }
   <div class="confirm-box" style="text-align:center;box-shadow:18px 18px 0 var(--yellow)">
     <div style="font-size:52px;line-height:1;margin-bottom:12px">🎉</div>
     <div class="eyebrow" style="color:var(--red)">SUARA SAH TERCATAT</div>
-    <h2 style="font:400 40px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Pilihan Berhasil Dicatat</h2>
-    <p id="successReceiptText" style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Suara Anda telah berhasil dicatat. Selama bilik suara dibuka panitia, Anda masih dapat meninjau atau memperbarui pilihan Anda.</p>
-    <button type="button" class="btn" id="successCloseBtn" style="background:var(--maroon);color:var(--cream);margin:auto">Kembali ke Beranda ↗</button>
+    <h2 style="font:400 40px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Suara Sah Tercatat!</h2>
+    <p id="successReceiptText" style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara digital Pemilwa KMTEDI 2026. Pilihan bersifat final.</p>
+    <button type="button" class="btn" id="successCloseBtn" style="background:var(--maroon);color:var(--cream);margin:auto">Tutup & Kembali ke Beranda ↗</button>
   </div>
 </div>
 
@@ -1027,7 +1023,6 @@ const cfg = window.KMTEDI_SUPABASE_CONFIG || {};
 const db = (cfg.url && cfg.anonKey) ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
 let electionSettings = null;
 let hasVoted = false;
-let currentCandidateId = null;
 
 const voterModal = document.getElementById('voterModal');
 const profileModal = document.getElementById('profileModal');
@@ -1038,7 +1033,6 @@ const successModal = document.getElementById('successModal');
 function formatShortName(fullName) {
   if (!fullName) return '';
   const parts = fullName.trim().split(/\s+/);
-  // Ambil maksimal 2 kata pertama (misal: "Muhammad Abel")
   const shortParts = parts.slice(0, 2);
   return shortParts.map(word => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
@@ -1050,13 +1044,11 @@ function getVoter() {
   const rawName = (sessionStorage.getItem('kmtedi_voter_raw_name') || '').trim();
   const normName = (sessionStorage.getItem('kmtedi_voter_norm_name') || rawName).trim().toUpperCase();
   const voted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
-  const candId = sessionStorage.getItem('kmtedi_voter_cand_id') || null;
   return {
     nim: nim,
     rawName: rawName,
     normName: normName,
-    hasVoted: voted,
-    candidateId: candId
+    hasVoted: voted
   };
 }
 
@@ -1069,32 +1061,27 @@ function updateVoterUI() {
 
   if (v.nim && v.rawName) {
     hasVoted = v.hasVoted;
-    currentCandidateId = v.candidateId;
     const displayName = formatShortName(v.rawName);
 
-    // Cari paslon terpilih
-    const chosenCandidate = candidates.find(c => c[2] === currentCandidateId);
-    const chosenNumber = chosenCandidate ? `Paslon 0${chosenCandidate[3]}` : 'Tercatat';
-
-    // TOP RIGHT NAVBAR: Sapaan nama panggilan alami + badge hijau siap memilih
+    // TOP RIGHT NAVBAR: Sapaan nama panggilan alami + badge hijau
     container.innerHTML = `
       <div class="user-pill">
         <span class="user-greeting">${displayName}</span>
         <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">
-          ${hasVoted ? 'Pilihan: ' + chosenNumber : 'Siap Memilih'}
+          ${hasVoted ? '✓ Sudah Memilih' : 'Siap Memilih'}
         </span>
         <button class="btn-change-voter" onclick="clearVoterSession()" title="Ganti identitas pemilih">Ganti Data</button>
       </div>
     `;
 
     if (hasVoted) {
-      copyText.innerHTML = `Halo <b>${displayName}</b>! Suara Anda saat ini tersimpan untuk <b>${chosenCandidate ? chosenCandidate[0] : 'pilihan Anda'}</b>. Selama bilik suara dibuka, Anda masih dapat memperbarui pilihan Anda di atas.`;
-      mainBtn.innerHTML = `Ganti Pilihan di Atas 🗳️`;
-      mainBtn.disabled = false;
-      mainBtn.style.opacity = '1';
+      copyText.innerHTML = `Halo <b>${displayName}</b> (NIM: ${v.nim})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
+      mainBtn.innerHTML = `Sudah Memilih ✓`;
+      mainBtn.disabled = true;
+      mainBtn.style.opacity = '0.6';
       if (heroBtn) {
-        heroBtn.innerHTML = `Pilihan: ${chosenNumber} (Ganti) 🗳️`;
-        heroBtn.style.opacity = '1';
+        heroBtn.innerHTML = `Sudah Memilih ✓`;
+        heroBtn.style.opacity = '0.7';
       }
     } else {
       copyText.innerHTML = `Identitas Terverifikasi: <b>${displayName}</b> (NIM: ${v.nim}). Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
@@ -1107,7 +1094,6 @@ function updateVoterUI() {
     }
   } else {
     hasVoted = false;
-    currentCandidateId = null;
     container.innerHTML = `
       <button class="btn-nav-verify" onclick="openVoterModal()">
         🗳️ Verifikasi Pemilih (NIM) ↗
@@ -1128,16 +1114,12 @@ function clearVoterSession() {
   sessionStorage.removeItem('kmtedi_voter_raw_name');
   sessionStorage.removeItem('kmtedi_voter_norm_name');
   sessionStorage.removeItem('kmtedi_has_voted');
-  sessionStorage.removeItem('kmtedi_voter_cand_id');
   hasVoted = false;
-  currentCandidateId = null;
   updateVoterUI();
 }
 
-// RENDER CANDIDATES: BISA PILIH / GANTI PILIHAN
+// RENDER CANDIDATES: HANYA BISA MEMILIH SEKALI
 function renderCandidateCards() {
-  const v = getVoter();
-
   for (let i = 0; i < 3; i++) {
     const card = document.getElementById(`candCard${i}`);
     const c = candidates[i];
@@ -1153,19 +1135,12 @@ function renderCandidateCards() {
     
     const voteBtn = document.getElementById(`voteBtn${i}`);
     if (voteBtn) {
-      const isCurrentChoice = (v.hasVoted && c[2] && v.candidateId === c[2]);
-      
-      card.classList.toggle('active-choice', isCurrentChoice);
-
-      if (isCurrentChoice) {
-        voteBtn.textContent = '✓ Pilihan Anda';
-        voteBtn.classList.add('selected-vote');
-      } else if (v.hasVoted) {
-        voteBtn.textContent = `Ganti ke 0${c[3] || i + 1} ↻`;
-        voteBtn.classList.remove('selected-vote');
+      if (hasVoted) {
+        voteBtn.textContent = 'Sudah Memilih ✓';
+        voteBtn.disabled = true;
       } else {
         voteBtn.textContent = `PILIH 0${c[3] || i + 1} 🗳️`;
-        voteBtn.classList.remove('selected-vote');
+        voteBtn.disabled = false;
       }
     }
   }
@@ -1203,9 +1178,11 @@ async function loadPublicData() {
         setHero(0);
       }
 
-      if (settings.marquee_text) {
-        const mq = document.querySelector('.marquee-track');
-        if (mq) mq.textContent = settings.marquee_text + ' ' + settings.marquee_text;
+      // Marquee text from settings or default to user preference
+      const mq = document.querySelector('.marquee-track');
+      if (mq) {
+        const textToUse = settings.marquee_text || 'PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -';
+        mq.textContent = textToUse + ' ' + textToUse;
       }
 
       if (settings.about_statement) {
@@ -1285,7 +1262,6 @@ document.getElementById('voterForm').onsubmit = async e => {
 
   // Check voter state in DB
   let voterHasVoted = false;
-  let voterCandidateId = null;
 
   if (db) {
     try {
@@ -1306,7 +1282,6 @@ document.getElementById('voterForm').onsubmit = async e => {
 
       if (data) {
         voterHasVoted = Boolean(data.has_voted);
-        voterCandidateId = data.current_candidate_id || null;
       }
     } catch (err) {
       console.warn('RPC check warning:', err);
@@ -1318,12 +1293,14 @@ document.getElementById('voterForm').onsubmit = async e => {
   sessionStorage.setItem('kmtedi_voter_raw_name', rawName);
   sessionStorage.setItem('kmtedi_voter_norm_name', cleanName);
   sessionStorage.setItem('kmtedi_has_voted', voterHasVoted ? 'true' : 'false');
-  if (voterCandidateId) {
-    sessionStorage.setItem('kmtedi_voter_cand_id', voterCandidateId);
-  }
 
   closeVoterModal();
   updateVoterUI();
+
+  if (voterHasVoted) {
+    alert(`NIM ${cleanNim} (${formatShortName(rawName)}) sudah pernah menggunakan hak suara dalam pemilihan ini.`);
+    return;
+  }
 
   if (pendingVoteIndex !== null) {
     triggerVote(pendingVoteIndex);
@@ -1362,19 +1339,10 @@ function renderModal() {
   document.getElementById('slideCount').textContent = `0${slide + 1} / 03`;
 
   const voteBtn = document.getElementById('voteFromModalBtn');
-  const v = getVoter();
-  const isCurrentChoice = (v.hasVoted && c[2] && v.candidateId === c[2]);
-
-  if (isCurrentChoice) {
-    voteBtn.textContent = '✓ Pilihan Anda Saat Ini';
+  if (hasVoted) {
+    voteBtn.textContent = 'Sudah Memilih ✓';
     voteBtn.disabled = true;
-    voteBtn.style.opacity = '0.6';
-    voteBtn.style.background = 'var(--green)';
-  } else if (v.hasVoted) {
-    voteBtn.textContent = `Ganti Pilihan ke Paslon 0${c[3] || selected + 1} ↻`;
-    voteBtn.disabled = false;
-    voteBtn.style.opacity = '1';
-    voteBtn.style.background = 'var(--maroon)';
+    voteBtn.style.opacity = '0.5';
   } else {
     voteBtn.textContent = `Pilih Paslon 0${c[3] || selected + 1} 🗳️`;
     voteBtn.disabled = false;
@@ -1397,7 +1365,7 @@ function closeProfile() {
   document.body.style.overflow = '';
 }
 
-// "TINGGAL PILIH" / GANTI PILIHAN TRIGGER
+// "TINGGAL PILIH" TRIGGER (HANYA BISA SEKALI)
 function triggerVote(index) {
   if (!electionSettings?.voting_open) {
     alert('Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.');
@@ -1410,32 +1378,21 @@ function triggerVote(index) {
     return;
   }
 
-  candidateToVote = candidates[index];
-  if (!candidateToVote) return;
-
-  // Cek apakah memilih calon yang sama
-  if (v.hasVoted && v.candidateId === candidateToVote[2]) {
-    alert(`Suara Anda sudah tercatat untuk ${candidateToVote[0]}.`);
+  if (v.hasVoted) {
+    alert(`NIM ${v.nim} (${formatShortName(v.rawName)}) sudah pernah menggunakan hak suara. Pemilihan hanya dapat dilakukan 1 kali.`);
     return;
   }
 
-  const isChanging = v.hasVoted && v.candidateId && (v.candidateId !== candidateToVote[2]);
-  const displayName = formatShortName(v.rawName);
+  candidateToVote = candidates[index];
+  if (!candidateToVote) return;
 
-  // Set Modal Double Check Copy
-  document.getElementById('confirmModeLabel').textContent = isChanging ? 'KONFIRMASI GANTI PILIHAN' : 'KONFIRMASI PILIHAN SUARA';
-  document.getElementById('confirmHeading').textContent = isChanging ? 'Perbarui Pilihan Anda' : 'Periksa Pilihan Anda';
-  document.getElementById('confirmDesc').textContent = isChanging 
-    ? `Anda akan memperbarui pilihan suara sah Anda menjadi calon berikut:`
-    : `Anda akan memberikan satu suara sah untuk calon ketua berikut:`;
+  const displayName = formatShortName(v.rawName);
 
   document.getElementById('confirmPhoto').src = candidateToVote[1];
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
   document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
   document.getElementById('confirmVoterDetails').textContent = `${displayName} · NIM: ${v.nim}`;
-
-  document.getElementById('submitVoteFinalBtn').textContent = isChanging ? '✅ Ya, Perbarui Pilihan' : '✅ Ya, Kirim Suara Sah';
 
   closeProfile();
   confirmVoteModal.classList.add('open');
@@ -1449,7 +1406,7 @@ function closeDoubleCheck() {
   document.body.style.overflow = '';
 }
 
-// SUBMIT VOTE / GANTI PILIHAN KE DATABASE
+// SUBMIT VOTE FINAL KE DATABASE
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
   if (!candidateToVote || !db) return;
   const v = getVoter();
@@ -1471,24 +1428,22 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     });
     
     if (error) {
-      alert('Pemberitahuan:\n\n' + error.message);
-      btn.textContent = '✅ Konfirmasi Suara';
+      alert('Gagal Mengirim Suara:\n\n' + error.message);
+      btn.textContent = '✅ Ya, Kirim Suara Sah';
       btn.disabled = false;
       return;
     }
 
     sessionStorage.setItem('kmtedi_has_voted', 'true');
-    sessionStorage.setItem('kmtedi_voter_cand_id', candidateToVote[2]);
     hasVoted = true;
-    currentCandidateId = candidateToVote[2];
 
     closeDoubleCheck();
     
     // Open Success Modal
     const displayName = formatShortName(v.rawName);
     document.getElementById('successReceiptText').innerHTML = `
-      Pilihan suara Anda untuk <b>${candidateToVote[0]}</b> telah sah dicatat.<br><br>
-      <small style="color:#77515a">Atas nama: <b>${displayName}</b> (NIM: ${v.nim}). Selama bilik suara dibuka panitia, Anda masih dapat meninjau atau mengganti pilihan Anda.</small>
+      Terima kasih, <b>${displayName}</b> (NIM: ${v.nim})!<br>
+      Hak suara Anda telah berhasil dicatat secara sah dan rahasia ke kotak suara Pemilwa KMTEDI 2026.
     `;
     successModal.classList.add('open');
     successModal.setAttribute('aria-hidden', 'false');
@@ -1497,7 +1452,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
 
   } catch (err) {
     alert('Terjadi kesalahan: ' + err.message);
-    btn.textContent = '✅ Konfirmasi Suara';
+    btn.textContent = '✅ Ya, Kirim Suara Sah';
     btn.disabled = false;
   }
 };
@@ -1528,7 +1483,7 @@ function handleMainVoteClick() {
   const v = getVoter();
   if (!v.nim || !v.rawName) {
     openVoterModal();
-  } else {
+  } else if (!hasVoted) {
     document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
   }
 }
