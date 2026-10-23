@@ -1,3 +1,12 @@
+
+drop function if exists public.admin_get_voters_by_pin(text);
+drop function if exists public.cast_vote_by_nim_and_name(uuid, text, text);
+drop function if exists public.cast_vote_by_nim_and_name(uuid, text, text, text);
+drop function if exists public.cast_vote_by_nim_and_email(uuid, text, text);
+drop function if exists public.generate_voter_otp(text, text);
+drop function if exists public.generate_voter_otp(text, text, text);
+drop function if exists public.verify_voter_otp(text, text);
+
 -- =========================================================================
 -- MIGRATION: PEMILWA KMTEDI (VERIFIKASI CUKUP NIM & EMAIL UGM VIA OTP)
 -- =========================================================================
