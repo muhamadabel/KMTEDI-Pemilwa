@@ -9,7 +9,8 @@ Static public page (`index.html`), admin (`admin.html`), Vercel API routes, and 
 - Secondary accents: amber `#FFB42B`, orange `#E46527`. Keep these as accents, not full-page backgrounds.
 - Supplied transparent white logo: `assets/kmtedi-logo.png`. Preserve the mark; show on dark surfaces. Favicon adds a navy backing.
 - Artwork source: user-supplied `Assets media ` directory (name includes a trailing space); original files remain outside the repository.
-- `media-spark.webp`, `media-lotus.webp`, `media-star.webp`, `media-petals.webp` are optimized transparent exports. Source PNGs remain untouched. Star is available but not currently displayed.
+- `media-spark.webp`, `media-lotus.webp`, `media-star.webp`, `media-petals.webp` are optimized transparent exports. Source PNGs remain untouched. Star and lotus are available in assets but not displayed on the page per user preference.
+- Public page section rhythm: Hero is dark burgundy/navy with spark and petals artwork; Marquee ribbon is vibrant orange; Kenali Acaranya (`.about`) uses a bright warm cream background with dark typography; Calon and Timeline return to dark burgundy/navy for high visual contrast.
 - Use decoration sparingly, with empty alt text, hidden from assistive technology, and no pointer events. Preserve admin-configured hero imagery and copy.
 
 ## Verification and scope

@@ -37,13 +37,15 @@ body::before { display: none; }
 .media-art { pointer-events: none; user-select: none; object-fit: contain; height: auto; }
 .hero-petals { position: absolute; width: clamp(180px, 24vw, 350px); right: 0; top: 60px; opacity: .5; }
 .hero-spark { position: absolute; width: 125px; top: -45px; left: -48px; z-index: 3; }
-.marquee { background: var(--night); color: var(--orange); }
-.about { background: var(--night); color: var(--cream); }
-.about .section-kicker h2 { color: var(--cream); }
-.about .section-kicker .number, .about-statement span { color: var(--yellow); }
-.about-info { border-top-color: var(--orange); color: var(--muted); }
-.about-info strong { color: var(--cream); }
-.about-lotus { display: block; width: min(205px, 60%); margin-top: 26px; }
+.marquee { background: var(--brand-orange); color: var(--brand-navy); font-weight: 700; border-top: 1px solid rgba(0, 1, 19, .2); border-bottom: 1px solid rgba(0, 1, 19, .2); }
+.about { background: var(--cream); color: var(--night); }
+.about .section-kicker h2 { color: var(--maroon); }
+.about .section-kicker .number { color: var(--orange); }
+.about-statement { color: var(--night); }
+.about-statement span { color: var(--orange); font-weight: 700; }
+.about-info { border-top: 2px solid var(--maroon); color: #5C3A44; }
+.about-info strong { color: var(--maroon); }
+.about .pill { border-color: rgba(37, 0, 20, .25); color: var(--maroon); background: transparent; }
 .pill { color: var(--muted); border-color: var(--line); }
 .candidate-card { background: var(--night); border: 1px solid var(--line); }
 .candidate-card:hover { transform: translateY(-4px); box-shadow: none; }
@@ -103,7 +105,6 @@ body::before { display: none; }
   .hero-spark { width: 95px; top: -34px; left: -12px; }
   .hero-petals { top: 90px; width: 180px; opacity: .3; }
   .hero-visual { margin-top: 24px; }
-  .about-lotus { width: 155px; margin: 24px 0; }
   .footer { align-items: flex-start; }
   .hero-title { font-size: clamp(64px, 14vw, 110px); }
   .time-row { grid-template-columns: 55px minmax(0, 1fr); }
