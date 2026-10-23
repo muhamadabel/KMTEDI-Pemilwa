@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PEMILWA KMTEDI / Satu Suara, Banyak Cerita</title>
+<title>PEMILWA KMTEDI 2026 / Satu Suara, Banyak Cerita</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -77,7 +77,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .navlinks {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
   font: 700 11px var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -119,7 +119,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .btn-logout:hover { color: #fff; }
 
-.btn-nav-sso {
+.btn-nav-verify {
   border: 1px solid var(--yellow);
   padding: 8px 14px;
   color: var(--yellow) !important;
@@ -132,7 +132,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   transition: 0.2s;
   font: 700 11px var(--mono);
 }
-.btn-nav-sso:hover {
+.btn-nav-verify:hover {
   background: var(--yellow);
   color: var(--night) !important;
 }
@@ -617,7 +617,7 @@ section { padding: 85px 0; position: relative; }
 
 /* RESPONSIVE */
 @media (max-width: 820px) {
-  .navlinks a:not(.btn-nav-sso) { display: none; }
+  .navlinks a:not(.btn-nav-verify) { display: none; }
   .hero { padding-top: 110px; }
   .hero-grid, .about-grid, .vote-grid { grid-template-columns: 1fr; }
   .hero-visual { min-height: 380px; }
@@ -643,11 +643,10 @@ section { padding: 85px 0; position: relative; }
     <a href="#calon">Calon</a>
     <a href="#timeline">Alur</a>
     <a href="/admin">Admin</a>
-    <!-- Top Right User Greeting Pill or Google Sign-In Button -->
+    <!-- Top Right User Status Pill or Verification Button -->
     <span id="userStatusWrapper">
-      <button class="btn-nav-sso" onclick="loginWithGoogle()">
-        <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-        Masuk Google UGM ↗
+      <button class="btn-nav-verify" onclick="openVoterModal()">
+        🗳️ Verifikasi Pemilih (NIM) ↗
       </button>
     </span>
   </div>
@@ -704,10 +703,10 @@ section { padding: 85px 0; position: relative; }
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
-        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih langsung menggunakan akun Google resmi @mail.ugm.ac.id. Pilihan tersimpan secara rahasia (Secret Ballot).</span>
+        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa dan Nama Lengkap (otomatis dikapitalisasi di database untuk mencegah duplikasi/kecurangan). Pilihan tersimpan secara rahasia (Secret Ballot).</span>
         <div class="info-pills">
-          <span class="pill">SSO @MAIL.UGM.AC.ID</span>
-          <span class="pill">ONE ACCOUNT ONE VOTE</span>
+          <span class="pill">VERIFIKASI NIM & NAMA</span>
+          <span class="pill">ONE STUDENT ONE VOTE</span>
           <span class="pill">SECRET BALLOT</span>
         </div>
       </div>
@@ -799,7 +798,7 @@ section { padding: 85px 0; position: relative; }
       <div class="time-row">
         <div class="time-no">03</div>
         <h3>Pemungutan Suara</h3>
-        <p>Bilik suara dibuka. Mahasiswa masuk dengan akun UGM dan memberikan suara.</p>
+        <p>Bilik suara dibuka. Mahasiswa memasukkan NIM dan Nama untuk memilih calon.</p>
         <div class="time-date">SEGERA</div>
       </div>
       <div class="time-row">
@@ -820,12 +819,11 @@ section { padding: 85px 0; position: relative; }
         <h2>Bilik<br>Suara.</h2>
         <span class="number">04 / STATUS</span>
       </div>
-      <p class="vote-copy" id="voteCopyText">Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
+      <p class="vote-copy" id="voteCopyText">Masukkan NIM dan Nama Lengkap Anda untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
       
       <div id="voterActionContainer">
         <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-          Masuk dengan Google (@mail.ugm.ac.id) ↗
+          🗳️ Verifikasi Pemilih (NIM & Nama) ↗
         </button>
       </div>
     </div>
@@ -844,7 +842,32 @@ section { padding: 85px 0; position: relative; }
   <span>Informasi resmi panitia pemilihan</span>
 </footer>
 
-<!-- MODAL 1: CANDIDATE DETAIL (3 SLIDES) -->
+<!-- MODAL 1: VERIFIKASI PEMILIH (NIM & NAMA LENGKAP) -->
+<div class="modal-backdrop" id="voterModal" aria-hidden="true">
+  <div class="confirm-box" style="max-width:480px">
+    <button class="modal-close" id="voterModalClose" style="color:var(--wine)">×</button>
+    <div class="eyebrow" style="color:var(--red)">AUTENTIKASI PEMILIH KMTEDI</div>
+    <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
+    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan Nama Lengkap mahasiswa aktif. Nama otomatis dikapitalisasi di database untuk memastikan 1 mahasiswa hanya memiliki tepat 1 suara sah.</p>
+    
+    <form id="voterForm">
+      <div style="margin-bottom:14px">
+        <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NIM MAHASISWA *</label>
+        <input type="text" id="inputNim" placeholder="Contoh: 22/505123/SV/21456" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:700 13px var(--mono);background:#fff;color:var(--night)">
+      </div>
+      <div style="margin-bottom:18px">
+        <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NAMA LENGKAP MAHASISWA *</label>
+        <input type="text" id="inputName" placeholder="Nama lengkap sesuai KTM/KRS" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:600 13px var(--body);background:#fff;color:var(--night)">
+      </div>
+      <button type="submit" class="btn" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream);padding:13px">
+        Verifikasi & Lanjut Memilih 🗳️
+      </button>
+    </form>
+    <div id="voterModalErr" style="color:var(--red);margin-top:12px;font:700 11px var(--mono)"></div>
+  </div>
+</div>
+
+<!-- MODAL 2: CANDIDATE DETAIL (3 SLIDES) -->
 <div class="modal-backdrop" id="profileModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true">
     <button class="modal-close" id="modalClose" aria-label="Tutup">×</button>
@@ -891,7 +914,7 @@ section { padding: 85px 0; position: relative; }
   </div>
 </div>
 
-<!-- MODAL 2: DOUBLE CHECK CONFIRMATION -->
+<!-- MODAL 3: DOUBLE CHECK CONFIRMATION -->
 <div class="modal-backdrop" id="confirmVoteModal" aria-hidden="true">
   <div class="confirm-box" role="dialog" aria-modal="true">
     <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">×</button>
@@ -908,9 +931,14 @@ section { padding: 85px 0; position: relative; }
       </div>
     </div>
 
+    <div style="background:#fff;border:1px solid rgba(74,16,33,.2);padding:12px 14px;margin-bottom:14px">
+      <b style="display:block;font:700 10px var(--mono);color:var(--maroon);margin-bottom:4px">DATA IDENTITAS PEMILIH:</b>
+      <span id="confirmVoterDetails" style="font:700 12px var(--mono);color:var(--night)">NAMA / NIM</span>
+    </div>
+
     <div style="background:#fcedea;border-left:3px solid var(--red);padding:12px 14px;margin-bottom:20px">
       <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">⚠️ PERHATIAN PENTING:</b>
-      <p style="margin:0;font-size:12px;color:#7a323a;line-height:1.45">1. Pilihan Anda bersifat <b>RAHASIA</b> (Secret Ballot) dan terpisah dari data identitas Anda.<br>2. Setelah suara dikirim, pilihan ini <b>FINAL & TIDAK DAPAT DIUBAH</b>.</p>
+      <p style="margin:0;font-size:12px;color:#7a323a;line-height:1.45">1. Pilihan Anda bersifat <b>RAHASIA</b> (Secret Ballot) dan disimpan tanpa mengaitkan pilihan ke nama/NIM Anda.<br>2. Setelah suara dikirim, pilihan ini <b>FINAL & TIDAK DAPAT DIUBAH</b>.</p>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end">
@@ -920,29 +948,13 @@ section { padding: 85px 0; position: relative; }
   </div>
 </div>
 
-<!-- MODAL 3: WRONG DOMAIN MODAL (IF NOT @mail.ugm.ac.id) -->
-<div class="modal-backdrop" id="wrongDomainModal" aria-hidden="true">
-  <div class="confirm-box" style="max-width:480px;text-align:center">
-    <div style="font-size:44px;line-height:1;margin-bottom:12px">⚠️</div>
-    <div class="eyebrow" style="color:var(--red)">AKUN TIDAK MEMENUHI SYARAT</div>
-    <h2 style="font:400 34px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Wajib Akun UGM</h2>
-    <p style="color:#77515a;margin:0 0 16px;font-size:13.5px;line-height:1.5">
-      Anda masuk menggunakan akun: <br><b id="wrongEmailText" style="color:var(--maroon);font-size:15px">email@gmail.com</b><br><br>
-      Pemilwa KMTEDI hanya mengizinkan akun resmi Google Kampus dengan domain <b>@mail.ugm.ac.id</b>.
-    </p>
-    <button type="button" class="btn" id="switchAccountBtn" style="background:var(--maroon);color:var(--cream);margin:auto" onclick="switchGoogleAccount()">
-      Ganti ke Akun Google UGM ↗
-    </button>
-  </div>
-</div>
-
 <!-- MODAL 4: VOTE SUCCESS RECEIPT -->
 <div class="modal-backdrop" id="successModal" aria-hidden="true">
   <div class="confirm-box" style="text-align:center;box-shadow:18px 18px 0 var(--yellow)">
     <div style="font-size:52px;line-height:1;margin-bottom:12px">🎉</div>
     <div class="eyebrow" style="color:var(--red)">SUARA SAH TERCATAT</div>
     <h2 style="font:400 40px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Terima Kasih!</h2>
-    <p style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara digital Pemilwa KMTEDI 2026.</p>
+    <p id="successReceiptText" style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara digital Pemilwa KMTEDI 2026.</p>
     <button type="button" class="btn" id="successCloseBtn" style="background:var(--maroon);color:var(--cream);margin:auto">Tutup & Kembali ke Beranda ↗</button>
   </div>
 </div>
@@ -989,142 +1001,50 @@ let candidates = [
 let selected = 0;
 let slide = 0;
 let candidateToVote = null;
+let pendingVoteIndex = null;
 
 const cfg = window.KMTEDI_SUPABASE_CONFIG || {};
 const db = (cfg.url && cfg.anonKey) ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
 let electionSettings = null;
-let currentSession = null;
 let hasVoted = false;
 
+const voterModal = document.getElementById('voterModal');
 const profileModal = document.getElementById('profileModal');
 const confirmVoteModal = document.getElementById('confirmVoteModal');
-const wrongDomainModal = document.getElementById('wrongDomainModal');
 const successModal = document.getElementById('successModal');
 
-// CHECK URL FOR OAUTH ERRORS WITH VISUAL MODAL/ALERT
-(function checkUrlErrors() {
-  const hash = window.location.hash;
-  const search = window.location.search;
-  const hashParams = new URLSearchParams(hash.startsWith('#') ? hash.substring(1) : hash);
-  const queryParams = new URLSearchParams(search);
-  const authError = hashParams.get('error_description') || queryParams.get('error_description') || hashParams.get('error') || queryParams.get('error');
-  
-  if (authError) {
-    let msg = decodeURIComponent(authError.replace(/\+/g, ' '));
-    console.error('OAuth redirect error:', authError, msg);
-    
-    let userMsg = '';
-    if (msg.includes('Database error') || msg.includes('Only @mail.ugm.ac.id')) {
-      userMsg = 'Gagal Masuk: Akun yang dipilih bukan email resmi @mail.ugm.ac.id. Harap pilih akun Google UGM Anda.';
-    } else if (msg.includes('access_denied') || msg.includes('403')) {
-      userMsg = 'Akses Ditolak Google: Akun email Anda belum didaftarkan sebagai "Test User" di Google Cloud Console (menu Audience -> Test Users -> Add users).';
-    } else if (msg.includes('Error getting user profile') || msg.includes('server_error')) {
-      userMsg = 'Gagal Masuk (Server Error): Client Secret di Supabase tidak cocok atau trigger database menolak login. Hubungi admin untuk update Client Secret.';
-    } else {
-      userMsg = 'Gagal Masuk Google: ' + msg;
-    }
-    
-    setTimeout(() => {
-      alert(userMsg);
-    }, 300);
-    history.replaceState(null, '', window.location.pathname);
-  }
-})();
-
-// DIRECT GOOGLE SSO ONLY (NO OTHER OPTIONS)
-async function loginWithGoogle() {
-  if (!db) {
-    alert('Konfigurasi Supabase belum terpasang di supabase-config.js');
-    return;
-  }
-  const { data, error } = await db.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin + window.location.pathname,
-      queryParams: {
-        prompt: 'select_account'
-      }
-    }
-  });
-  if (error) {
-    alert('Gagal membuka login Google: ' + error.message);
-  }
+function getVoter() {
+  const nim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
+  const rawName = (sessionStorage.getItem('kmtedi_voter_raw_name') || '').trim();
+  const normName = (sessionStorage.getItem('kmtedi_voter_norm_name') || rawName).trim().toUpperCase();
+  const voted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
+  return {
+    nim: nim,
+    rawName: rawName,
+    normName: normName,
+    hasVoted: voted
+  };
 }
 
-async function logout() {
-  if (db && currentSession) {
-    await db.auth.signOut();
-  }
-  currentSession = null;
-  hasVoted = false;
-  location.reload();
-}
-
-async function switchGoogleAccount() {
-  if (db && currentSession) {
-    await db.auth.signOut();
-  }
-  wrongDomainModal.classList.remove('open');
-  loginWithGoogle();
-}
-
-// CHECK AUTH SESSION & UPDATE TOPBAR GREETING
-async function checkAuthSession() {
-  if (!db) return;
-  const { data: { session } } = await db.auth.getSession();
-  currentSession = session;
-  await handleSessionState();
-
-  db.auth.onAuthStateChange(async (event, session) => {
-    currentSession = session;
-    await handleSessionState();
-  });
-}
-
-async function handleSessionState() {
+function updateVoterUI() {
+  const v = getVoter();
   const container = document.getElementById('userStatusWrapper');
   const mainBtn = document.getElementById('mainVoteBtn');
   const copyText = document.getElementById('voteCopyText');
   const heroBtn = document.getElementById('heroVoteBtn');
 
-  if (currentSession && currentSession.user) {
-    const user = currentSession.user;
-    const email = (user.email || '').toLowerCase();
-    
-    // Check domain
-    if (!email.endsWith('@mail.ugm.ac.id')) {
-      document.getElementById('wrongEmailText').textContent = email;
-      wrongDomainModal.classList.add('open');
-      wrongDomainModal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      return;
-    }
-
-    // Get Student Name from Google metadata or email prefix
-    const rawName = user.user_metadata?.full_name || user.user_metadata?.name || '';
-    const cleanName = rawName || email.split('@')[0].replace(/\./g, ' ');
-    const displayName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
-
-    // Check if voter has already voted in DB
-    try {
-      const { data: prof } = await db.from('profiles').select('has_voted, full_name').eq('id', user.id).single();
-      hasVoted = prof?.has_voted || false;
-    } catch (e) {
-      hasVoted = false;
-    }
-
-    // UPDATE NAVBAR TOP RIGHT WITH "HALO, [NAMA]"
+  if (v.nim && v.normName) {
+    hasVoted = v.hasVoted;
     container.innerHTML = `
       <div class="user-pill">
-        <span class="user-greeting">👋 Halo, <b>${displayName}</b></span>
+        <span class="user-greeting">👋 Halo, <b>${v.normName}</b> (NIM: ${v.nim})</span>
         <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">${hasVoted ? '✓ Sudah Memilih' : '🟢 Siap Memilih'}</span>
-        <button class="btn-logout" onclick="logout()">Keluar</button>
+        <button class="btn-logout" onclick="clearVoterSession()">Ganti</button>
       </div>
     `;
 
-    // UPDATE BILIK SUARA COPY & CTA
     if (hasVoted) {
-      copyText.innerHTML = `Halo <b>${displayName}</b> (${email})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026.`;
+      copyText.innerHTML = `Halo <b>${v.normName}</b> (NIM: ${v.nim})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026.`;
       mainBtn.innerHTML = `Sudah Memilih ✓`;
       mainBtn.disabled = true;
       mainBtn.style.opacity = '0.6';
@@ -1133,7 +1053,7 @@ async function handleSessionState() {
         heroBtn.style.opacity = '0.7';
       }
     } else {
-      copyText.innerHTML = `Halo <b>${displayName}</b> (${email})! Akun resmi UGM Anda aktif. Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
+      copyText.innerHTML = `Identitas Terverifikasi: <b>${v.normName}</b> (NIM: ${v.nim}). Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
       mainBtn.innerHTML = `Tinggal Pilih Calon di Atas 🗳️`;
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
@@ -1141,27 +1061,30 @@ async function handleSessionState() {
         heroBtn.innerHTML = `Tinggal Pilih Calon 🗳️`;
       }
     }
-
   } else {
-    // NOT LOGGED IN
+    hasVoted = false;
     container.innerHTML = `
-      <button class="btn-nav-sso" onclick="loginWithGoogle()">
-        <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-        Masuk Google UGM ↗
+      <button class="btn-nav-verify" onclick="openVoterModal()">
+        🗳️ Verifikasi Pemilih (NIM) ↗
       </button>
     `;
-    copyText.innerHTML = `Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-      Masuk dengan Google (@mail.ugm.ac.id) ↗
-    `;
+    copyText.innerHTML = `Masukkan NIM dan Nama Lengkap Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
+    mainBtn.innerHTML = `🗳️ Verifikasi Pemilih (NIM & Nama) ↗`;
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
     if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih 🗳️`;
   }
 
-  // Update card buttons
   renderCandidateCards();
+}
+
+function clearVoterSession() {
+  sessionStorage.removeItem('kmtedi_voter_nim');
+  sessionStorage.removeItem('kmtedi_voter_raw_name');
+  sessionStorage.removeItem('kmtedi_voter_norm_name');
+  sessionStorage.removeItem('kmtedi_has_voted');
+  hasVoted = false;
+  updateVoterUI();
 }
 
 function renderCandidateCards() {
@@ -1223,20 +1146,17 @@ async function loadPublicData() {
       electionSettings = settings;
       updateVotingStatus();
 
-      // Dynamic Hero Slides
       if (settings.hero_slides && settings.hero_slides.length) {
         heroSlides.length = 0;
         settings.hero_slides.forEach(s => heroSlides.push([s.image, s.caption]));
         setHero(0);
       }
 
-      // Dynamic Marquee
       if (settings.marquee_text) {
         const mq = document.querySelector('.marquee-track');
         if (mq) mq.textContent = settings.marquee_text + ' ' + settings.marquee_text;
       }
 
-      // Dynamic About Statement & Info
       if (settings.about_statement) {
         const stmt = document.querySelector('.about-statement');
         if (stmt) stmt.innerHTML = settings.about_statement;
@@ -1246,7 +1166,6 @@ async function loadPublicData() {
         if (info) info.innerHTML = settings.about_info;
       }
 
-      // Dynamic Timeline Alur
       if (settings.timeline_items && settings.timeline_items.length) {
         const tlList = document.querySelector('.timeline-list');
         if (tlList) {
@@ -1280,6 +1199,77 @@ async function loadPublicData() {
     console.error('Error loading public data:', err);
   }
 }
+
+// VOTER MODAL (NIM + NAMA LENGKAP)
+function openVoterModal(withCandidateIndex = null) {
+  pendingVoteIndex = withCandidateIndex;
+  document.getElementById('voterModalErr').textContent = '';
+  voterModal.classList.add('open');
+  voterModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeVoterModal() {
+  voterModal.classList.remove('open');
+  voterModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+document.getElementById('voterModalClose').onclick = closeVoterModal;
+voterModal.onclick = e => { if (e.target === voterModal) closeVoterModal(); };
+
+document.getElementById('voterForm').onsubmit = async e => {
+  e.preventDefault();
+  const rawNim = document.getElementById('inputNim').value.trim();
+  const rawName = document.getElementById('inputName').value.trim();
+  const errBox = document.getElementById('voterModalErr');
+  errBox.textContent = 'Memverifikasi data pemilih...';
+
+  if (!rawNim || !rawName) {
+    errBox.textContent = 'NIM dan Nama Lengkap wajib diisi!';
+    return;
+  }
+
+  // Pre-verification check via RPC
+  if (db) {
+    try {
+      const { data, error } = await db.rpc('verify_voter', {
+        p_nim: rawNim,
+        p_name: rawName
+      });
+
+      if (error) {
+        errBox.textContent = error.message;
+        return;
+      }
+
+      if (data && !data.eligible) {
+        errBox.textContent = '⚠️ ' + data.message;
+        return;
+      }
+    } catch (err) {
+      console.warn('RPC check warning:', err);
+    }
+  }
+
+  // Save to Session Storage with UPPERCASE normalized name
+  const cleanNim = rawNim.toUpperCase().replace(/\s+/g, '');
+  const cleanName = rawName.toUpperCase().replace(/\s+/g, ' ');
+
+  sessionStorage.setItem('kmtedi_voter_nim', cleanNim);
+  sessionStorage.setItem('kmtedi_voter_raw_name', rawName);
+  sessionStorage.setItem('kmtedi_voter_norm_name', cleanName);
+  sessionStorage.setItem('kmtedi_has_voted', 'false');
+
+  closeVoterModal();
+  updateVoterUI();
+
+  if (pendingVoteIndex !== null) {
+    triggerVote(pendingVoteIndex);
+    pendingVoteIndex = null;
+  } else {
+    alert(`Verifikasi Berhasil!\n\nNama: ${cleanName}\nNIM: ${cleanNim}\n\nSilakan pilih calon ketua pilihan Anda di bawah.`);
+    document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
+  }
+};
 
 // CANDIDATE PROFILE MODAL
 function renderModal() {
@@ -1342,22 +1332,14 @@ function triggerVote(index) {
     return;
   }
   
-  if (!currentSession || !currentSession.user) {
-    if (confirm('Anda harus masuk dengan akun Google @mail.ugm.ac.id terlebih dahulu.\n\nMasuk dengan Google sekarang?')) {
-      loginWithGoogle();
-    }
+  const v = getVoter();
+  if (!v.nim || !v.normName) {
+    openVoterModal(index);
     return;
   }
 
-  const email = (currentSession.user.email || '').toLowerCase();
-  if (!email.endsWith('@mail.ugm.ac.id')) {
-    document.getElementById('wrongEmailText').textContent = email;
-    wrongDomainModal.classList.add('open');
-    return;
-  }
-
-  if (hasVoted) {
-    alert('Akun Anda sudah pernah menggunakan hak suara dalam pemilihan ini.');
+  if (v.hasVoted) {
+    alert(`NIM ${v.nim} (${v.normName}) sudah pernah menggunakan hak suara dalam pemilihan ini.`);
     return;
   }
 
@@ -1369,6 +1351,7 @@ function triggerVote(index) {
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
   document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
+  document.getElementById('confirmVoterDetails').textContent = `${v.normName} · NIM: ${v.nim}`;
 
   closeProfile();
   confirmVoteModal.classList.add('open');
@@ -1384,30 +1367,45 @@ function closeDoubleCheck() {
 
 // SUBMIT VOTE TO DATABASE
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
-  if (!candidateToVote || !db || !currentSession) return;
+  if (!candidateToVote || !db) return;
+  const v = getVoter();
+  if (!v.nim || !v.normName) {
+    closeDoubleCheck();
+    openVoterModal();
+    return;
+  }
 
   const btn = document.getElementById('submitVoteFinalBtn');
   btn.textContent = 'Mengirim Suara Sah...';
   btn.disabled = true;
 
   try {
-    const { data, error } = await db.rpc('cast_vote', { p_candidate_id: candidateToVote[2] });
+    const { data, error } = await db.rpc('cast_vote_by_nim_and_name', {
+      p_candidate_id: candidateToVote[2],
+      p_nim: v.nim,
+      p_name: v.normName
+    });
     
     if (error) {
-      alert('Gagal mengirim suara: ' + error.message);
+      alert('Gagal Mengirim Suara:\n\n' + error.message);
       btn.textContent = '✅ Ya, Kirim Suara Sah';
       btn.disabled = false;
       return;
     }
 
+    sessionStorage.setItem('kmtedi_has_voted', 'true');
     hasVoted = true;
     closeDoubleCheck();
     
-    // Open Success Modal
+    // Open Success Modal with personalized receipt
+    document.getElementById('successReceiptText').innerHTML = `
+      Terima kasih, <b>${v.normName}</b> (NIM: ${v.nim})!<br>
+      Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara digital Pemilwa KMTEDI 2026.
+    `;
     successModal.classList.add('open');
     successModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    await handleSessionState();
+    updateVoterUI();
 
   } catch (err) {
     alert('Terjadi kesalahan: ' + err.message);
@@ -1439,8 +1437,9 @@ document.getElementById('voteFromModalBtn').onclick = () => {
 
 // MAIN VOTE BUTTON HANDLER
 function handleMainVoteClick() {
-  if (!currentSession) {
-    loginWithGoogle();
+  const v = getVoter();
+  if (!v.nim || !v.normName) {
+    openVoterModal();
   } else if (!hasVoted) {
     document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
   }
@@ -1450,7 +1449,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeProfile();
     closeDoubleCheck();
-    wrongDomainModal.classList.remove('open');
+    closeVoterModal();
   }
   if (profileModal.classList.contains('open') && e.key === 'ArrowRight') { slide = (slide + 1) % 3; renderModal(); }
   if (profileModal.classList.contains('open') && e.key === 'ArrowLeft') { slide = (slide + 2) % 3; renderModal(); }
@@ -1459,7 +1458,7 @@ document.addEventListener('keydown', e => {
 // INIT
 renderCandidateCards();
 loadPublicData();
-checkAuthSession();
+updateVoterUI();
 </script>
 </body>
 </html>

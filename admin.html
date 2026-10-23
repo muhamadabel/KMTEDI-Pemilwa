@@ -120,6 +120,14 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
       </div>
     </section>
 
+        <section class="panel">
+      <div class="panel-head">
+        <h2>Daftar Mahasiswa yang Telah Memilih (Presensi)</h2>
+      </div>
+      <p style="color:var(--muted);font-size:12px;margin:0 0 14px">Asas Luber Jurdil: Panitia dapat memantau siapa saja mahasiswa yang sudah masuk bilik suara, namun pilihan paslon tetap 100% anonim dan rahasia.</p>
+      <div id="votersList"><div class="notice">Memuat daftar pemilih...</div></div>
+    </section>
+
     <section class="panel">
       <div class="panel-head">
         <h2>Rekapitulasi Suara (Real-time)</h2>
@@ -445,10 +453,11 @@ async function verifyAndLoad(pin) {
 async function refreshDashboard() {
   if (!currentPin || !db) return;
   try {
-    const [statsRes, resultsRes, candidatesRes] = await Promise.all([
+    const [statsRes, resultsRes, candidatesRes, votersRes] = await Promise.all([
       db.rpc('admin_get_stats_by_pin', { p_pin: currentPin }),
       db.rpc('admin_get_results_by_pin', { p_pin: currentPin }),
-      db.from('candidates').select('*').order('order_number')
+      db.from('candidates').select('*').order('order_number'),
+      db.rpc('admin_get_voters_by_pin', { p_pin: currentPin })
     ]);
 
     const stats = statsRes.data?.[0];
@@ -507,6 +516,26 @@ async function refreshDashboard() {
     } else {
       $('resultsList').innerHTML = '<div class="notice">Belum ada data calon atau suara masuk.</div>';
     }
+
+    const voters = votersRes.data || [];
+    if (voters.length) {
+      $('votersList').innerHTML = `
+        <div style="max-height:260px;overflow-y:auto">
+          ${voters.map((v, i) => `
+            <div class="row" style="padding:10px 0">
+              <div>
+                <b style="font-size:14px;color:var(--cream)">${i+1}. ${v.normalized_name}</b><br>
+                <small style="color:var(--gold)">NIM: ${v.nim}</small>
+              </div>
+              <small style="color:var(--muted)">${new Date(v.voted_at).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'})} WIB</small>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      $('votersList').innerHTML = '<div class="notice">Belum ada mahasiswa yang memilih.</div>';
+    }
+
 
     loadedCandidates = candidatesRes.data || [];
     if (loadedCandidates.length) {
