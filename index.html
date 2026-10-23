@@ -1086,6 +1086,20 @@ section { padding: 85px 0; position: relative; }
   </div>
 </div>
 
+<!-- MODAL 5: CUSTOM NOTICE POPUP (MENGGANTIKAN BROWSER ALERT) -->
+<div class="modal-backdrop" id="noticeModal" aria-hidden="true">
+  <div class="confirm-box" style="max-width:480px;text-align:left">
+    <button type="button" class="modal-close" id="noticeModalClose" aria-label="Tutup">&times;</button>
+    <div class="eyebrow" id="noticeEyebrow" style="color:var(--orange)">INFORMASI PEMILWA</div>
+    <h2 id="noticeTitle" style="font:400 34px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.95">Pemberitahuan</h2>
+    <div id="noticeMessage" style="color:#5C3A44;margin:0 0 24px;font-size:14.5px;line-height:1.6">Pesan notifikasi.</div>
+    <div class="confirm-actions" id="noticeActions" style="display:flex;gap:10px;justify-content:flex-end;border-top:1px solid rgba(74,16,33,.15);padding-top:16px">
+      <button type="button" class="btn" id="noticeSecondaryBtn" style="display:none;background:rgba(37,0,20,.06);color:var(--maroon);border:1.5px solid rgba(37,0,20,.2);font-weight:700"></button>
+      <button type="button" class="btn" id="noticePrimaryBtn" style="background:var(--brand-amber);color:var(--brand-navy);font-weight:700">Mengerti</button>
+    </div>
+  </div>
+</div>
+
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
@@ -1604,9 +1618,22 @@ function triggerVote(index) {
     const now = new Date();
     const startTime = electionSettings?.voting_start ? new Date(electionSettings.voting_start) : null;
     if (startTime && now < startTime) {
-      alert(`Bilik suara belum dibuka. Pembukaan dijadwalkan pada ${startTime.toLocaleString('id-ID')} WIB.\n\nSilakan pelajari visi, misi, dan program kerja calon ketua terlebih dahulu.`);
+      const opts = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      showNotice({
+        eyebrow: 'STATUS BILIK SUARA',
+        title: 'Bilik Suara Belum Dibuka',
+        message: `Bilik suara dijadwalkan dibuka resmi pada <b>${startTime.toLocaleDateString('id-ID', opts)} WIB</b>.<br><br>Sambil menunggu, Anda dapat mempelajari profil lengkap, visi misi, dan program kerja calon ketua terlebih dahulu.`,
+        primaryText: 'Mengerti',
+        secondaryText: 'Lihat Visi Misi',
+        onSecondary: () => openProfile(index)
+      });
     } else {
-      alert('Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.');
+      showNotice({
+        eyebrow: 'STATUS BILIK SUARA',
+        title: 'Bilik Suara Ditutup',
+        message: 'Bilik suara saat ini sedang ditutup sementara oleh panitia pemilwa.<br><br>Silakan pantau jadwal dan pengumuman resmi dari panitia.',
+        primaryText: 'Mengerti'
+      });
     }
     return;
   }
@@ -1618,7 +1645,12 @@ function triggerVote(index) {
   }
 
   if (v.hasVoted) {
-    alert(`NIM ${v.nim} sudah pernah menggunakan hak suara. Pemilihan hanya dapat dilakukan 1 kali.`);
+    showNotice({
+      eyebrow: 'VERIFIKASI SUARA',
+      title: 'Hak Suara Telah Digunakan',
+      message: `NIM <b>${v.nim}</b> sudah tercatat pernah memberikan hak suara.<br><br>Sesuai asas Pemilwa KMTEDI (Satu Mahasiswa, Satu Suara), pemilihan hanya dapat dilakukan 1 kali dan tidak dapat diubah kembali.`,
+      primaryText: 'Mengerti'
+    });
     return;
   }
 
@@ -1702,6 +1734,89 @@ document.getElementById('successCloseBtn').onclick = () => {
   document.body.style.overflow = '';
 };
 
+// CUSTOM ON-BRAND NOTICE POPUP (MENGGANTIKAN BROWSER ALERT)
+function showNotice({
+  title = 'Pemberitahuan',
+  message = '',
+  eyebrow = 'INFORMASI PEMILWA',
+  primaryText = 'Mengerti',
+  onPrimary = null,
+  secondaryText = '',
+  onSecondary = null
+} = {}) {
+  const modal = document.getElementById('noticeModal');
+  if (!modal) return;
+  
+  document.getElementById('noticeEyebrow').textContent = eyebrow;
+  document.getElementById('noticeTitle').textContent = title;
+  
+  const msgEl = document.getElementById('noticeMessage');
+  msgEl.innerHTML = String(message).replace(/\n/g, '<br>');
+  
+  const pBtn = document.getElementById('noticePrimaryBtn');
+  pBtn.textContent = primaryText;
+  pBtn.onclick = () => {
+    closeNotice();
+    if (onPrimary) onPrimary();
+  };
+
+  const sBtn = document.getElementById('noticeSecondaryBtn');
+  if (secondaryText) {
+    sBtn.textContent = secondaryText;
+    sBtn.style.display = 'inline-flex';
+    sBtn.onclick = () => {
+      closeNotice();
+      if (onSecondary) onSecondary();
+    };
+  } else {
+    sBtn.style.display = 'none';
+  }
+
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNotice() {
+  const modal = document.getElementById('noticeModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('noticeModalClose')?.addEventListener('click', closeNotice);
+document.getElementById('noticeModal')?.addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeNotice();
+});
+
+// Override window.alert globally across the page
+window.originalAlert = window.alert;
+window.alert = function(msg) {
+  let title = 'Pemberitahuan';
+  let eyebrow = 'INFORMASI PEMILWA';
+  const text = String(msg || '');
+  const lower = text.toLowerCase();
+  
+  if (lower.includes('gagal') || lower.includes('kesalahan') || lower.includes('error')) {
+    title = 'Perhatian';
+    eyebrow = 'STATUS SISTEM';
+  } else if (lower.includes('belum dibuka') || lower.includes('ditutup')) {
+    title = 'Bilik Suara Belum Dibuka';
+    eyebrow = 'STATUS BILIK SUARA';
+  } else if (lower.includes('sudah pernah')) {
+    title = 'Hak Suara Telah Digunakan';
+    eyebrow = 'VERIFIKASI SUARA';
+  }
+  
+  showNotice({
+    eyebrow,
+    title,
+    message: text,
+    primaryText: 'Mengerti'
+  });
+};
+
 // MODAL LISTENERS
 document.getElementById('modalClose').addEventListener('click', closeProfile);
 profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
@@ -1725,6 +1840,7 @@ function handleMainVoteClick() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    closeNotice();
     closeProfile();
     closeDoubleCheck();
     closeVoterModal();

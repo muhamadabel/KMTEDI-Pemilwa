@@ -60,3 +60,12 @@ test('status bilik suara displays countdown grid with days, hours, minutes, seco
   }
 });
 
+test('custom on-brand notice popup replaces browser alerts', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.ok(html.includes('id="noticeModal"'));
+  assert.ok(html.includes('id="noticeTitle"'));
+  assert.ok(html.includes('id="noticeMessage"'));
+  assert.ok(html.includes('function showNotice'));
+  assert.ok(html.includes('window.alert = function'));
+});
+
