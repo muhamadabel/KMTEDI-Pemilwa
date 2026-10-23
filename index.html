@@ -86,7 +86,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .navlinks a { opacity: 0.8; transition: 0.2s; }
 .navlinks a:hover { color: var(--yellow); opacity: 1; }
 
-/* USER GREETING PILL IN TOP RIGHT (CLEAN, NO AI SLOP) */
+/* USER GREETING PILL IN TOP RIGHT (CLEAN, NO AI SLOP, NO EMOJIS) */
 .user-pill {
   display: inline-flex;
   align-items: center;
@@ -347,7 +347,7 @@ section { padding: 85px 0; position: relative; }
   color: var(--maroon);
 }
 
-/* CANDIDATES SECTION */
+/* CANDIDATES SECTION: CLICK ANYWHERE ON CARD OPENS DETAIL */
 .candidates { background: var(--maroon); }
 .candidates .section-kicker h2 { color: var(--cream); }
 .candidate-intro {
@@ -370,10 +370,12 @@ section { padding: 85px 0; position: relative; }
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 .candidate-card:hover {
   transform: translateY(-8px);
   border-color: var(--yellow);
+  box-shadow: 10px 10px 0 rgba(242,138,61,.3);
 }
 .candidate-image {
   height: 310px;
@@ -416,7 +418,16 @@ section { padding: 85px 0; position: relative; }
 }
 .candidate-tag { font: 700 9px var(--mono); color: var(--orange); }
 
-/* TWO BUTTONS ON EACH CARD FOR INSTANT VOTING */
+.candidate-click-hint {
+  font: 700 9px var(--mono);
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  padding: 4px;
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+/* TWO BUTTONS ON EACH CARD FOR DIRECT INTERACTION */
 .candidate-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -523,9 +534,10 @@ section { padding: 85px 0; position: relative; }
   border: 0;
   background: none;
   color: var(--cream);
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
+  padding: 4px;
 }
 
 /* CANDIDATE DETAIL MODAL */
@@ -597,9 +609,8 @@ section { padding: 85px 0; position: relative; }
   border: 1px solid var(--maroon);
   background: transparent;
   color: var(--maroon);
-  width: 36px; height: 32px;
-  display: grid;
-  place-items: center;
+  padding: 6px 12px;
+  font: 700 10px var(--mono);
 }
 .slide-btn:hover { background: var(--maroon); color: var(--yellow); }
 
@@ -659,7 +670,7 @@ section { padding: 85px 0; position: relative; }
     <!-- Top Right User Status Greeting or Verification Button -->
     <span id="userStatusWrapper">
       <button class="btn-nav-verify" onclick="openVoterModal()">
-        🗳️ Verifikasi Pemilih (NIM) ↗
+        Verifikasi Pemilih (NIM)
       </button>
     </span>
   </div>
@@ -675,7 +686,7 @@ section { padding: 85px 0; position: relative; }
       <h1 class="hero-title">Satu suara.<em>Satu cerita.</em></h1>
       <p class="hero-lead">Ruang resmi untuk mengenal calon ketua, membaca gagasan, dan menentukan arah langkah KMTEDI bersama.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#calon" id="heroVoteBtn">Lihat Calon & Pilih 🗳️</a>
+        <a class="btn btn-primary" href="#calon" id="heroVoteBtn">Lihat Calon & Pilih</a>
         <a class="btn btn-ghost" href="#acara">Tentang Pemilwa</a>
       </div>
     </div>
@@ -727,18 +738,18 @@ section { padding: 85px 0; position: relative; }
   </div>
 </section>
 
-<!-- CANDIDATES: TINGGAL PILIH LANGSUNG DARI SINI -->
+<!-- CANDIDATES: KLIK KARTU LANGSUNG BUKA DETAIL -->
 <section class="candidates" id="calon">
   <div class="wrap">
     <div class="section-kicker">
       <h2>Kenali<br>Calonmu.</h2>
       <span class="number">02 / CALON</span>
     </div>
-    <p class="candidate-intro">Kenali visi, misi, dan program kerja calon ketua. Anda dapat langsung memilih calon pilihan Anda di bawah ini.</p>
+    <p class="candidate-intro">Klik pada bagian mana saja di kartu untuk membaca profil lengkap, visi misi, dan program kerja calon ketua.</p>
     
     <div class="candidate-grid">
       <!-- Card 01 -->
-      <article class="candidate-card" id="candCard0">
+      <article class="candidate-card" id="candCard0" onclick="openProfile(0)">
         <div class="candidate-image">
           <img src="assets/ig-panel-3.jpg" alt="Visual calon 01">
           <b class="candidate-no">01</b>
@@ -747,14 +758,15 @@ section { padding: 85px 0; position: relative; }
           <div class="candidate-name">Calon<br>Satu</div>
           <span class="candidate-tag">KANDIDAT 01</span>
         </div>
+        <div class="candidate-click-hint">Klik kartu untuk detail profil</div>
         <div class="candidate-actions">
-          <button class="btn-card-profile" onclick="openProfile(0)">Profil & Visi ↗</button>
-          <button class="btn-card-vote" id="voteBtn0" onclick="triggerVote(0)">PILIH 01 🗳️</button>
+          <button type="button" class="btn-card-profile" onclick="event.stopPropagation(); openProfile(0)">Profil Lengkap</button>
+          <button type="button" class="btn-card-vote" id="voteBtn0" onclick="event.stopPropagation(); triggerVote(0)">Pilih 01</button>
         </div>
       </article>
 
       <!-- Card 02 -->
-      <article class="candidate-card" id="candCard1">
+      <article class="candidate-card" id="candCard1" onclick="openProfile(1)">
         <div class="candidate-image">
           <img src="assets/ig-panel-4.jpg" alt="Visual calon 02">
           <b class="candidate-no">02</b>
@@ -763,14 +775,15 @@ section { padding: 85px 0; position: relative; }
           <div class="candidate-name">Calon<br>Dua</div>
           <span class="candidate-tag">KANDIDAT 02</span>
         </div>
+        <div class="candidate-click-hint">Klik kartu untuk detail profil</div>
         <div class="candidate-actions">
-          <button class="btn-card-profile" onclick="openProfile(1)">Profil & Visi ↗</button>
-          <button class="btn-card-vote" id="voteBtn1" onclick="triggerVote(1)">PILIH 02 🗳️</button>
+          <button type="button" class="btn-card-profile" onclick="event.stopPropagation(); openProfile(1)">Profil Lengkap</button>
+          <button type="button" class="btn-card-vote" id="voteBtn1" onclick="event.stopPropagation(); triggerVote(1)">Pilih 02</button>
         </div>
       </article>
 
       <!-- Card 03 -->
-      <article class="candidate-card" id="candCard2">
+      <article class="candidate-card" id="candCard2" onclick="openProfile(2)">
         <div class="candidate-image">
           <img src="assets/ig-panel-5.jpg" alt="Visual calon 03">
           <b class="candidate-no">03</b>
@@ -779,9 +792,10 @@ section { padding: 85px 0; position: relative; }
           <div class="candidate-name">Calon<br>Tiga</div>
           <span class="candidate-tag">KANDIDAT 03</span>
         </div>
+        <div class="candidate-click-hint">Klik kartu untuk detail profil</div>
         <div class="candidate-actions">
-          <button class="btn-card-profile" onclick="openProfile(2)">Profil & Visi ↗</button>
-          <button class="btn-card-vote" id="voteBtn2" onclick="triggerVote(2)">PILIH 03 🗳️</button>
+          <button type="button" class="btn-card-profile" onclick="event.stopPropagation(); openProfile(2)">Profil Lengkap</button>
+          <button type="button" class="btn-card-vote" id="voteBtn2" onclick="event.stopPropagation(); triggerVote(2)">Pilih 03</button>
         </div>
       </article>
     </div>
@@ -836,7 +850,7 @@ section { padding: 85px 0; position: relative; }
       
       <div id="voterActionContainer">
         <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
-          🗳️ Verifikasi Pemilih (NIM & Nama) ↗
+          Verifikasi Pemilih (NIM & Nama)
         </button>
       </div>
     </div>
@@ -858,10 +872,10 @@ section { padding: 85px 0; position: relative; }
 <!-- MODAL 1: VERIFIKASI PEMILIH (NIM & NAMA LENGKAP) -->
 <div class="modal-backdrop" id="voterModal" aria-hidden="true">
   <div class="confirm-box" style="max-width:480px">
-    <button class="modal-close" id="voterModalClose" style="color:var(--wine)">×</button>
+    <button class="modal-close" id="voterModalClose" style="color:var(--wine)">Tutup</button>
     <div class="eyebrow" style="color:var(--red)">AUTENTIKASI PEMILIH KMTEDI</div>
     <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
-    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan Nama Lengkap mahasiswa aktif. Nama otomatis dicocokkan dalam format huruf kapital di database untuk mencegah kecurangan/duplikasi (1 mahasiswa = 1 suara).</p>
+    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan Nama Lengkap mahasiswa aktif. Nama otomatis dicocokkan dalam format huruf kapital di database untuk mencegah duplikasi (1 mahasiswa = 1 suara sah).</p>
     
     <form id="voterForm">
       <div style="margin-bottom:14px">
@@ -873,7 +887,7 @@ section { padding: 85px 0; position: relative; }
         <input type="text" id="inputName" placeholder="Nama lengkap sesuai KTM/KRS" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:600 13px var(--body);background:#fff;color:var(--night)">
       </div>
       <button type="submit" class="btn" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream);padding:13px">
-        Verifikasi & Lanjut Memilih 🗳️
+        Verifikasi & Lanjut Memilih
       </button>
     </form>
     <div id="voterModalErr" style="color:var(--red);margin-top:12px;font:700 11px var(--mono)"></div>
@@ -883,7 +897,7 @@ section { padding: 85px 0; position: relative; }
 <!-- MODAL 2: CANDIDATE DETAIL (3 SLIDES) -->
 <div class="modal-backdrop" id="profileModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true">
-    <button class="modal-close" id="modalClose" aria-label="Tutup">×</button>
+    <button class="modal-close" id="modalClose" aria-label="Tutup" style="color:var(--wine)">Tutup</button>
     <div class="modal-visual">
       <img id="modalImage" src="assets/ig-panel-3.jpg" alt="Visual calon">
       <div class="modal-visual-label">
@@ -918,9 +932,9 @@ section { padding: 85px 0; position: relative; }
       <div class="modal-nav">
         <span class="slide-count" id="slideCount">01 / 03</span>
         <div class="slide-controls">
-          <button class="slide-btn" id="prevSlide" aria-label="Slide sebelumnya">←</button>
-          <button class="slide-btn" id="nextSlide" aria-label="Slide berikutnya">→</button>
-          <button class="btn btn-primary" id="voteFromModalBtn" style="padding:8px 14px;background:var(--maroon);color:var(--cream);font-size:11px">✓ Pilih Calon Ini</button>
+          <button class="slide-btn" id="prevSlide" aria-label="Slide sebelumnya">Sebelumnya</button>
+          <button class="slide-btn" id="nextSlide" aria-label="Slide berikutnya">Selanjutnya</button>
+          <button class="btn btn-primary" id="voteFromModalBtn" style="padding:8px 14px;background:var(--maroon);color:var(--cream);font-size:11px">Pilih Calon Ini</button>
         </div>
       </div>
     </div>
@@ -930,7 +944,7 @@ section { padding: 85px 0; position: relative; }
 <!-- MODAL 3: DOUBLE CHECK CONFIRMATION (1 KALI PILIH - TIDAK BISA DIUBAH) -->
 <div class="modal-backdrop" id="confirmVoteModal" aria-hidden="true">
   <div class="confirm-box" role="dialog" aria-modal="true">
-    <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">×</button>
+    <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">Tutup</button>
     <div class="eyebrow" style="color:var(--red)">KONFIRMASI AKHIR PILIHAN SUARA</div>
     <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Periksa Pilihan Anda</h2>
     <p style="color:#77515a;margin:0;font-size:13.5px;line-height:1.5">Anda akan memberikan satu suara sah untuk calon ketua berikut:</p>
@@ -950,28 +964,27 @@ section { padding: 85px 0; position: relative; }
     </div>
 
     <div style="background:#fcedea;border-left:3px solid var(--red);padding:12px 14px;margin-bottom:20px">
-      <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">⚠️ PERINGATAN PENTING:</b>
+      <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">KETENTUAN PEMILIHAN:</b>
       <p style="margin:0;font-size:12px;color:#7a323a;line-height:1.45">
-        1. Suara Anda bersifat <b>RAHASIA</b> (Secret Ballot).<br>
-        2. Pemilihan <b>HANYA DAPAT DILAKUKAN SEKALI</b> dan <b>TIDAK DAPAT DIUBAH</b> setelah Anda menekan tombol konfirmasi di bawah.
+        1. Suara Anda bersifat RAHASIA (Secret Ballot).<br>
+        2. Pemilihan HANYA DAPAT DILAKUKAN SEKALI dan TIDAK DAPAT DIUBAH setelah dikonfirmasi.
       </p>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button type="button" class="btn alt" id="cancelVoteBtn" style="color:var(--maroon);border-color:var(--maroon)">← Batal / Cek Ulang</button>
-      <button type="button" class="btn" id="submitVoteFinalBtn" style="background:var(--maroon);color:var(--cream)">✅ Ya, Kirim Suara Sah</button>
+      <button type="button" class="btn alt" id="cancelVoteBtn" style="color:var(--maroon);border-color:var(--maroon)">Batal / Cek Ulang</button>
+      <button type="button" class="btn" id="submitVoteFinalBtn" style="background:var(--maroon);color:var(--cream)">Kirim Suara Sah</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL 4: VOTE SUCCESS RECEIPT -->
+<!-- MODAL 4: VOTE SUCCESS RECEIPT (NO EMOJIS) -->
 <div class="modal-backdrop" id="successModal" aria-hidden="true">
   <div class="confirm-box" style="text-align:center;box-shadow:18px 18px 0 var(--yellow)">
-    <div style="font-size:52px;line-height:1;margin-bottom:12px">🎉</div>
-    <div class="eyebrow" style="color:var(--red)">SUARA SAH TERCATAT</div>
-    <h2 style="font:400 40px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Suara Sah Tercatat!</h2>
+    <div class="eyebrow" style="color:var(--red);margin-bottom:8px">SUARA SAH TERCATAT</div>
+    <h2 style="font:400 40px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Suara Berhasil Dicatat</h2>
     <p id="successReceiptText" style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara digital Pemilwa KMTEDI 2026. Pilihan bersifat final.</p>
-    <button type="button" class="btn" id="successCloseBtn" style="background:var(--maroon);color:var(--cream);margin:auto">Tutup & Kembali ke Beranda ↗</button>
+    <button type="button" class="btn" id="successCloseBtn" style="background:var(--maroon);color:var(--cream);margin:auto">Tutup dan Kembali ke Beranda</button>
   </div>
 </div>
 
@@ -1063,47 +1076,47 @@ function updateVoterUI() {
     hasVoted = v.hasVoted;
     const displayName = formatShortName(v.rawName);
 
-    // TOP RIGHT NAVBAR: Sapaan nama panggilan alami + badge hijau
+    // TOP RIGHT NAVBAR: Sapaan nama panggilan alami + badge hijau bersih tanpa emoji
     container.innerHTML = `
       <div class="user-pill">
         <span class="user-greeting">${displayName}</span>
         <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">
-          ${hasVoted ? '✓ Sudah Memilih' : 'Siap Memilih'}
+          ${hasVoted ? 'Sudah Memilih' : 'Siap Memilih'}
         </span>
         <button class="btn-change-voter" onclick="clearVoterSession()" title="Ganti identitas pemilih">Ganti Data</button>
       </div>
     `;
 
     if (hasVoted) {
-      copyText.innerHTML = `Halo <b>${displayName}</b> (NIM: ${v.nim})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
-      mainBtn.innerHTML = `Sudah Memilih ✓`;
+      copyText.innerHTML = `Halo <b>${displayName}</b> (NIM: ${v.nim})! Hak suara Anda <b>sudah sah tercatat</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
+      mainBtn.innerHTML = `Sudah Memilih`;
       mainBtn.disabled = true;
       mainBtn.style.opacity = '0.6';
       if (heroBtn) {
-        heroBtn.innerHTML = `Sudah Memilih ✓`;
+        heroBtn.innerHTML = `Sudah Memilih`;
         heroBtn.style.opacity = '0.7';
       }
     } else {
       copyText.innerHTML = `Identitas Terverifikasi: <b>${displayName}</b> (NIM: ${v.nim}). Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
-      mainBtn.innerHTML = `Tinggal Pilih Calon di Atas 🗳️`;
+      mainBtn.innerHTML = `Pilih Calon di Atas`;
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
       if (heroBtn) {
-        heroBtn.innerHTML = `Tinggal Pilih Calon 🗳️`;
+        heroBtn.innerHTML = `Lihat Calon & Pilih`;
       }
     }
   } else {
     hasVoted = false;
     container.innerHTML = `
       <button class="btn-nav-verify" onclick="openVoterModal()">
-        🗳️ Verifikasi Pemilih (NIM) ↗
+        Verifikasi Pemilih (NIM)
       </button>
     `;
     copyText.innerHTML = `Masukkan NIM dan Nama Lengkap Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `🗳️ Verifikasi Pemilih (NIM & Nama) ↗`;
+    mainBtn.innerHTML = `Verifikasi Pemilih (NIM & Nama)`;
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
-    if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih 🗳️`;
+    if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih`;
   }
 
   renderCandidateCards();
@@ -1118,7 +1131,7 @@ function clearVoterSession() {
   updateVoterUI();
 }
 
-// RENDER CANDIDATES: HANYA BISA MEMILIH SEKALI
+// RENDER CANDIDATES: HANYA BISA MEMILIH SEKALI, BEBAS KLIK KARTU UNTUK BUKA MODAL
 function renderCandidateCards() {
   for (let i = 0; i < 3; i++) {
     const card = document.getElementById(`candCard${i}`);
@@ -1136,10 +1149,10 @@ function renderCandidateCards() {
     const voteBtn = document.getElementById(`voteBtn${i}`);
     if (voteBtn) {
       if (hasVoted) {
-        voteBtn.textContent = 'Sudah Memilih ✓';
+        voteBtn.textContent = 'Sudah Memilih';
         voteBtn.disabled = true;
       } else {
-        voteBtn.textContent = `PILIH 0${c[3] || i + 1} 🗳️`;
+        voteBtn.textContent = `Pilih 0${c[3] || i + 1}`;
         voteBtn.disabled = false;
       }
     }
@@ -1178,7 +1191,7 @@ async function loadPublicData() {
         setHero(0);
       }
 
-      // Marquee text from settings or default to user preference
+      // Marquee text
       const mq = document.querySelector('.marquee-track');
       if (mq) {
         const textToUse = settings.marquee_text || 'PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -';
@@ -1276,7 +1289,7 @@ document.getElementById('voterForm').onsubmit = async e => {
       }
 
       if (data && !data.eligible) {
-        errBox.textContent = '⚠️ ' + data.message;
+        errBox.textContent = data.message;
         return;
       }
 
@@ -1340,11 +1353,11 @@ function renderModal() {
 
   const voteBtn = document.getElementById('voteFromModalBtn');
   if (hasVoted) {
-    voteBtn.textContent = 'Sudah Memilih ✓';
+    voteBtn.textContent = 'Sudah Memilih';
     voteBtn.disabled = true;
     voteBtn.style.opacity = '0.5';
   } else {
-    voteBtn.textContent = `Pilih Paslon 0${c[3] || selected + 1} 🗳️`;
+    voteBtn.textContent = `Pilih Paslon 0${c[3] || selected + 1}`;
     voteBtn.disabled = false;
     voteBtn.style.opacity = '1';
     voteBtn.style.background = 'var(--maroon)';
@@ -1429,7 +1442,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     
     if (error) {
       alert('Gagal Mengirim Suara:\n\n' + error.message);
-      btn.textContent = '✅ Ya, Kirim Suara Sah';
+      btn.textContent = 'Kirim Suara Sah';
       btn.disabled = false;
       return;
     }
@@ -1442,7 +1455,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     // Open Success Modal
     const displayName = formatShortName(v.rawName);
     document.getElementById('successReceiptText').innerHTML = `
-      Terima kasih, <b>${displayName}</b> (NIM: ${v.nim})!<br>
+      Terima kasih, <b>${displayName}</b> (NIM: ${v.nim}).<br>
       Hak suara Anda telah berhasil dicatat secara sah dan rahasia ke kotak suara Pemilwa KMTEDI 2026.
     `;
     successModal.classList.add('open');
@@ -1452,7 +1465,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
 
   } catch (err) {
     alert('Terjadi kesalahan: ' + err.message);
-    btn.textContent = '✅ Ya, Kirim Suara Sah';
+    btn.textContent = 'Kirim Suara Sah';
     btn.disabled = false;
   }
 };
