@@ -50,12 +50,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 35;
+  z-index: 40;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px 5vw;
-  background: rgba(36, 10, 23, 0.94);
+  background: rgba(36, 10, 23, 0.95);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
@@ -77,7 +77,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .navlinks {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
   font: 700 11px var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -126,10 +126,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   opacity: 1 !important;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: transparent;
   cursor: pointer;
   transition: 0.2s;
+  font: 700 11px var(--mono);
 }
 .btn-nav-sso:hover {
   background: var(--yellow);
@@ -642,9 +643,12 @@ section { padding: 85px 0; position: relative; }
     <a href="#calon">Calon</a>
     <a href="#timeline">Alur</a>
     <a href="/admin">Admin</a>
-    <!-- User Status Greeting Container -->
+    <!-- Top Right User Greeting Pill or Google Sign-In Button -->
     <span id="userStatusWrapper">
-      <button class="btn-nav-sso" id="btnNavSso">Masuk Google UGM ↗</button>
+      <button class="btn-nav-sso" onclick="loginWithGoogle()">
+        <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Masuk Google UGM ↗
+      </button>
     </span>
   </div>
 </nav>
@@ -816,10 +820,13 @@ section { padding: 85px 0; position: relative; }
         <h2>Bilik<br>Suara.</h2>
         <span class="number">04 / STATUS</span>
       </div>
-      <p class="vote-copy" id="voteCopyText">Masuk menggunakan akun resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
+      <p class="vote-copy" id="voteCopyText">Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
       
       <div id="voterActionContainer">
-        <button class="btn btn-primary" id="mainVoteBtn" onclick="openLoginModal()">Masuk Akun UGM (@mail.ugm.ac.id) ↗</button>
+        <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          Masuk dengan Google (@mail.ugm.ac.id) ↗
+        </button>
       </div>
     </div>
     <div class="status-box">
@@ -837,49 +844,7 @@ section { padding: 85px 0; position: relative; }
   <span>Informasi resmi panitia pemilihan</span>
 </footer>
 
-<!-- MODAL 1: LOGIN MODAL (GOOGLE SSO + QUICK LOGIN FALLBACK) -->
-<div class="modal-backdrop" id="loginModal" aria-hidden="true">
-  <div class="confirm-box" style="max-width:480px">
-    <button class="modal-close" id="loginModalClose" style="color:var(--wine)">×</button>
-    <div class="eyebrow" style="color:var(--red)">AUTENTIKASI PEMILIH</div>
-    <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Masuk Akun UGM</h2>
-    <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Wajib menggunakan akun resmi kampus berakhiran <b>@mail.ugm.ac.id</b>. Setiap mahasiswa hanya memiliki tepat 1 suara sah.</p>
-    
-    <!-- OPTION A: DIRECT GOOGLE SSO -->
-    <button type="button" class="btn" style="width:100%;justify-content:center;background:#fff;color:#240a17;border:2px solid var(--maroon);margin-bottom:14px;padding:12px;font-size:12px" onclick="loginWithGoogle()">
-      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-      Masuk dengan Google SSO (@mail.ugm.ac.id)
-    </button>
-
-    <div style="display:flex;align-items:center;gap:10px;margin:14px 0">
-      <div style="flex:1;height:1px;background:rgba(74,16,33,.2)"></div>
-      <span style="font:700 9px var(--mono);color:#99727a">ATAU MASUK CEPAT</span>
-      <div style="flex:1;height:1px;background:rgba(74,16,33,.2)"></div>
-    </div>
-
-    <!-- OPTION B: SEAMLESS QUICK LOGIN -->
-    <form id="quickLoginForm">
-      <div style="margin-bottom:12px">
-        <label style="display:block;font:700 10px var(--mono);margin-bottom:4px;color:var(--maroon)">EMAIL RESMI UGM *</label>
-        <input type="email" id="quickEmail" placeholder="nama.mahasiswa@mail.ugm.ac.id" required style="width:100%;padding:11px;border:1px solid rgba(74,16,33,.3);font:700 12px var(--mono);background:#fff;color:var(--night)">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-        <div>
-          <label style="display:block;font:700 10px var(--mono);margin-bottom:4px;color:var(--maroon)">NAMA LENGKAP</label>
-          <input type="text" id="quickName" placeholder="Nama pemilih" style="width:100%;padding:11px;border:1px solid rgba(74,16,33,.3);font:12px var(--body);background:#fff;color:var(--night)">
-        </div>
-        <div>
-          <label style="display:block;font:700 10px var(--mono);margin-bottom:4px;color:var(--maroon)">NIM MAHASISWA</label>
-          <input type="text" id="quickNim" placeholder="22/xxxxxx/SV/xxxxx" style="width:100%;padding:11px;border:1px solid rgba(74,16,33,.3);font:700 12px var(--mono);background:#fff;color:var(--night)">
-        </div>
-      </div>
-      <button type="submit" class="btn" style="width:100%;justify-content:center;background:var(--maroon);color:var(--cream)">Masuk & Lanjut Memilih ↗</button>
-    </form>
-    <div id="loginModalErr" style="color:var(--red);margin-top:10px;font:700 11px var(--mono)"></div>
-  </div>
-</div>
-
-<!-- MODAL 2: CANDIDATE DETAIL (3 SLIDES) -->
+<!-- MODAL 1: CANDIDATE DETAIL (3 SLIDES) -->
 <div class="modal-backdrop" id="profileModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true">
     <button class="modal-close" id="modalClose" aria-label="Tutup">×</button>
@@ -926,7 +891,7 @@ section { padding: 85px 0; position: relative; }
   </div>
 </div>
 
-<!-- MODAL 3: DOUBLE CHECK CONFIRMATION -->
+<!-- MODAL 2: DOUBLE CHECK CONFIRMATION -->
 <div class="modal-backdrop" id="confirmVoteModal" aria-hidden="true">
   <div class="confirm-box" role="dialog" aria-modal="true">
     <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">×</button>
@@ -952,6 +917,22 @@ section { padding: 85px 0; position: relative; }
       <button type="button" class="btn alt" id="cancelVoteBtn" style="color:var(--maroon);border-color:var(--maroon)">← Batal / Cek Ulang</button>
       <button type="button" class="btn" id="submitVoteFinalBtn" style="background:var(--maroon);color:var(--cream)">✅ Ya, Kirim Suara Sah</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL 3: WRONG DOMAIN MODAL (IF NOT @mail.ugm.ac.id) -->
+<div class="modal-backdrop" id="wrongDomainModal" aria-hidden="true">
+  <div class="confirm-box" style="max-width:480px;text-align:center">
+    <div style="font-size:44px;line-height:1;margin-bottom:12px">⚠️</div>
+    <div class="eyebrow" style="color:var(--red)">AKUN TIDAK MEMENUHI SYARAT</div>
+    <h2 style="font:400 34px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Wajib Akun UGM</h2>
+    <p style="color:#77515a;margin:0 0 16px;font-size:13.5px;line-height:1.5">
+      Anda masuk menggunakan akun: <br><b id="wrongEmailText" style="color:var(--maroon);font-size:15px">email@gmail.com</b><br><br>
+      Pemilwa KMTEDI hanya mengizinkan akun resmi Google Kampus dengan domain <b>@mail.ugm.ac.id</b>.
+    </p>
+    <button type="button" class="btn" id="switchAccountBtn" style="background:var(--maroon);color:var(--cream);margin:auto" onclick="switchGoogleAccount()">
+      Ganti ke Akun Google UGM ↗
+    </button>
   </div>
 </div>
 
@@ -1015,64 +996,33 @@ let electionSettings = null;
 let currentSession = null;
 let hasVoted = false;
 
-const loginModal = document.getElementById('loginModal');
 const profileModal = document.getElementById('profileModal');
 const confirmVoteModal = document.getElementById('confirmVoteModal');
+const wrongDomainModal = document.getElementById('wrongDomainModal');
 const successModal = document.getElementById('successModal');
 
-// CHECK URL HASH ERRORS (If Google redirects with error)
+// CHECK URL FOR OAUTH ERRORS
 (function checkUrlErrors() {
   const hash = window.location.hash;
   const search = window.location.search;
   const hashParams = new URLSearchParams(hash.startsWith('#') ? hash.substring(1) : hash);
   const queryParams = new URLSearchParams(search);
-  const authError = hashParams.get('error_description') || queryParams.get('error_description') || hashParams.get('error');
+  const authError = hashParams.get('error_description') || queryParams.get('error_description') || hashParams.get('error') || queryParams.get('error');
   
   if (authError) {
     let msg = decodeURIComponent(authError.replace(/\+/g, ' '));
     if (msg.includes('Database error') || msg.includes('Only @mail.ugm.ac.id')) {
-      alert('Gagal Masuk: Akun Anda bukan email resmi @mail.ugm.ac.id! Silakan pilih akun Google UGM Anda.');
+      alert('Gagal Masuk: Akun yang dipilih bukan email resmi @mail.ugm.ac.id. Harap pilih akun Google UGM Anda.');
     } else if (msg.includes('access_denied') || msg.includes('403')) {
-      alert('Perhatian: Akun Google Anda belum ditambahkan sebagai Test User di Google Cloud. Silakan gunakan opsi Masuk Cepat di pop-up login.');
+      alert('Akses Ditolak Google: Email Anda belum didaftarkan sebagai Test User di Google Cloud Platform, atau aplikasi Google belum di-publish.');
     } else {
-      alert('Pemberitahuan Login: ' + msg);
+      console.warn('OAuth redirect notice:', msg);
     }
     history.replaceState(null, '', window.location.pathname);
   }
 })();
 
-function getActiveUser() {
-  if (currentSession && currentSession.user) {
-    const u = currentSession.user;
-    const email = (u.email || '').toLowerCase();
-    const rawName = u.user_metadata?.full_name || u.user_metadata?.name || '';
-    const cleanName = rawName || email.split('@')[0].replace('.', ' ');
-    const displayName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
-    return {
-      type: 'supabase',
-      id: u.id,
-      email: email,
-      name: displayName,
-      nim: u.user_metadata?.nim || ''
-    };
-  }
-
-  // Fallback to quick login session
-  const qEmail = sessionStorage.getItem('kmtedi_voter_email');
-  if (qEmail) {
-    return {
-      type: 'quick',
-      id: null,
-      email: qEmail,
-      name: sessionStorage.getItem('kmtedi_voter_name') || qEmail.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      nim: sessionStorage.getItem('kmtedi_nim') || ''
-    };
-  }
-
-  return null;
-}
-
-// DIRECT GOOGLE SSO
+// DIRECT GOOGLE SSO ONLY (NO OTHER OPTIONS)
 async function loginWithGoogle() {
   if (!db) {
     alert('Konfigurasi Supabase belum terpasang di supabase-config.js');
@@ -1089,11 +1039,7 @@ async function loginWithGoogle() {
     }
   });
   if (error) {
-    if (error.message && error.message.includes('provider is not enabled')) {
-      alert('Google Provider belum diaktifkan di dashboard Supabase.\n\nSilakan gunakan opsi "Masuk Cepat" di bawah untuk langsung mencoba.');
-    } else {
-      alert('Gagal login: ' + error.message);
-    }
+    alert('Gagal membuka login Google: ' + error.message);
   }
 }
 
@@ -1101,25 +1047,30 @@ async function logout() {
   if (db && currentSession) {
     await db.auth.signOut();
   }
-  sessionStorage.removeItem('kmtedi_voter_email');
-  sessionStorage.removeItem('kmtedi_voter_name');
-  sessionStorage.removeItem('kmtedi_nim');
-  sessionStorage.removeItem('kmtedi_has_voted');
   currentSession = null;
   hasVoted = false;
   location.reload();
 }
 
-async function checkAuthSession() {
-  if (db) {
-    const { data: { session } } = await db.auth.getSession();
-    currentSession = session;
-    db.auth.onAuthStateChange(async (event, session) => {
-      currentSession = session;
-      await handleSessionState();
-    });
+async function switchGoogleAccount() {
+  if (db && currentSession) {
+    await db.auth.signOut();
   }
+  wrongDomainModal.classList.remove('open');
+  loginWithGoogle();
+}
+
+// CHECK AUTH SESSION & UPDATE TOPBAR GREETING
+async function checkAuthSession() {
+  if (!db) return;
+  const { data: { session } } = await db.auth.getSession();
+  currentSession = session;
   await handleSessionState();
+
+  db.auth.onAuthStateChange(async (event, session) => {
+    currentSession = session;
+    await handleSessionState();
+  });
 }
 
 async function handleSessionState() {
@@ -1128,35 +1079,36 @@ async function handleSessionState() {
   const copyText = document.getElementById('voteCopyText');
   const heroBtn = document.getElementById('heroVoteBtn');
 
-  const user = getActiveUser();
+  if (currentSession && currentSession.user) {
+    const user = currentSession.user;
+    const email = (user.email || '').toLowerCase();
+    
+    // Check domain
+    if (!email.endsWith('@mail.ugm.ac.id')) {
+      document.getElementById('wrongEmailText').textContent = email;
+      wrongDomainModal.classList.add('open');
+      wrongDomainModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      return;
+    }
 
-  if (user) {
+    // Get Student Name from Google metadata or email prefix
+    const rawName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+    const cleanName = rawName || email.split('@')[0].replace(/\./g, ' ');
+    const displayName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
+
     // Check if voter has already voted in DB
-    if (user.type === 'supabase' && user.id) {
-      try {
-        const { data: prof } = await db.from('profiles').select('has_voted, full_name').eq('id', user.id).single();
-        hasVoted = prof?.has_voted || false;
-      } catch (e) {
-        hasVoted = false;
-      }
-    } else {
-      // Check registered_voters table for quick login
-      hasVoted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
-      if (!hasVoted && user.email) {
-        try {
-          const { data: rows } = await db.from('registered_voters').select('has_voted').eq('email', user.email);
-          if (rows && rows.length && rows[0].has_voted) {
-            hasVoted = true;
-            sessionStorage.setItem('kmtedi_has_voted', 'true');
-          }
-        } catch (e) {}
-      }
+    try {
+      const { data: prof } = await db.from('profiles').select('has_voted, full_name').eq('id', user.id).single();
+      hasVoted = prof?.has_voted || false;
+    } catch (e) {
+      hasVoted = false;
     }
 
     // UPDATE NAVBAR TOP RIGHT WITH "HALO, [NAMA]"
     container.innerHTML = `
       <div class="user-pill">
-        <span class="user-greeting">👋 Halo, <b>${user.name}</b></span>
+        <span class="user-greeting">👋 Halo, <b>${displayName}</b></span>
         <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">${hasVoted ? '✓ Sudah Memilih' : '🟢 Siap Memilih'}</span>
         <button class="btn-logout" onclick="logout()">Keluar</button>
       </div>
@@ -1164,7 +1116,7 @@ async function handleSessionState() {
 
     // UPDATE BILIK SUARA COPY & CTA
     if (hasVoted) {
-      copyText.innerHTML = `Halo <b>${user.name}</b> (${user.email})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026.`;
+      copyText.innerHTML = `Halo <b>${displayName}</b> (${email})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026.`;
       mainBtn.innerHTML = `Sudah Memilih ✓`;
       mainBtn.disabled = true;
       mainBtn.style.opacity = '0.6';
@@ -1173,7 +1125,7 @@ async function handleSessionState() {
         heroBtn.style.opacity = '0.7';
       }
     } else {
-      copyText.innerHTML = `Halo <b>${user.name}</b> (${user.email})! Akun resmi UGM Anda aktif. Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
+      copyText.innerHTML = `Halo <b>${displayName}</b> (${email})! Akun resmi UGM Anda aktif. Silakan pilih salah satu calon ketua di atas untuk memberikan suara sah.`;
       mainBtn.innerHTML = `Tinggal Pilih Calon di Atas 🗳️`;
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
@@ -1184,9 +1136,17 @@ async function handleSessionState() {
 
   } else {
     // NOT LOGGED IN
-    container.innerHTML = `<button class="btn-nav-sso" id="btnNavSso" onclick="openLoginModal()">Masuk Akun UGM ↗</button>`;
-    copyText.innerHTML = `Masuk menggunakan akun resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `Masuk Akun UGM (@mail.ugm.ac.id) ↗`;
+    container.innerHTML = `
+      <button class="btn-nav-sso" onclick="loginWithGoogle()">
+        <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Masuk Google UGM ↗
+      </button>
+    `;
+    copyText.innerHTML = `Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
+    mainBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+      Masuk dengan Google (@mail.ugm.ac.id) ↗
+    `;
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
     if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih 🗳️`;
@@ -1313,43 +1273,6 @@ async function loadPublicData() {
   }
 }
 
-// LOGIN MODAL CONTROLS
-function openLoginModal() {
-  $('loginModalErr').textContent = '';
-  loginModal.classList.add('open');
-  loginModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-function closeLoginModal() {
-  loginModal.classList.remove('open');
-  loginModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-document.getElementById('loginModalClose').onclick = closeLoginModal;
-loginModal.onclick = e => { if (e.target === loginModal) closeLoginModal(); };
-
-// QUICK LOGIN FORM SUBMIT
-document.getElementById('quickLoginForm').onsubmit = async e => {
-  e.preventDefault();
-  const email = document.getElementById('quickEmail').value.trim().toLowerCase();
-  const name = document.getElementById('quickName').value.trim();
-  const nim = document.getElementById('quickNim').value.trim();
-
-  if (!email.endsWith('@mail.ugm.ac.id')) {
-    document.getElementById('loginModalErr').textContent = 'Wajib menggunakan email berakhiran @mail.ugm.ac.id!';
-    return;
-  }
-
-  sessionStorage.setItem('kmtedi_voter_email', email);
-  sessionStorage.setItem('kmtedi_voter_name', name || email.split('@')[0]);
-  sessionStorage.setItem('kmtedi_nim', nim || 'NIM-VERIFIED');
-  
-  closeLoginModal();
-  await handleSessionState();
-  alert('Selamat datang, ' + (name || email) + '! Akun Anda aktif. Silakan pilih calon di bawah.');
-  document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
-};
-
 // CANDIDATE PROFILE MODAL
 function renderModal() {
   const c = candidates[selected];
@@ -1411,11 +1334,20 @@ function triggerVote(index) {
     return;
   }
   
-  const user = getActiveUser();
-  if (!user) {
-    openLoginModal();
+  if (!currentSession || !currentSession.user) {
+    if (confirm('Anda harus masuk dengan akun Google @mail.ugm.ac.id terlebih dahulu.\n\nMasuk dengan Google sekarang?')) {
+      loginWithGoogle();
+    }
     return;
   }
+
+  const email = (currentSession.user.email || '').toLowerCase();
+  if (!email.endsWith('@mail.ugm.ac.id')) {
+    document.getElementById('wrongEmailText').textContent = email;
+    wrongDomainModal.classList.add('open');
+    return;
+  }
+
   if (hasVoted) {
     alert('Akun Anda sudah pernah menggunakan hak suara dalam pemilihan ini.');
     return;
@@ -1444,44 +1376,23 @@ function closeDoubleCheck() {
 
 // SUBMIT VOTE TO DATABASE
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
-  if (!candidateToVote || !db) return;
-  const user = getActiveUser();
-  if (!user) {
-    closeDoubleCheck();
-    openLoginModal();
-    return;
-  }
+  if (!candidateToVote || !db || !currentSession) return;
 
   const btn = document.getElementById('submitVoteFinalBtn');
   btn.textContent = 'Mengirim Suara Sah...';
   btn.disabled = true;
 
   try {
-    let resultError = null;
-
-    if (user.type === 'supabase') {
-      const { data, error } = await db.rpc('cast_vote', { p_candidate_id: candidateToVote[2] });
-      resultError = error;
-    } else {
-      // Quick login voting via cast_vote_by_nim
-      const { data, error } = await db.rpc('cast_vote_by_nim', {
-        p_candidate_id: candidateToVote[2],
-        p_nim: user.nim || ('NIM-' + user.email.replace(/[^a-zA-Z0-9]/g, '')),
-        p_name: user.name,
-        p_email: user.email
-      });
-      resultError = error;
-    }
+    const { data, error } = await db.rpc('cast_vote', { p_candidate_id: candidateToVote[2] });
     
-    if (resultError) {
-      alert('Gagal mengirim suara: ' + resultError.message);
+    if (error) {
+      alert('Gagal mengirim suara: ' + error.message);
       btn.textContent = '✅ Ya, Kirim Suara Sah';
       btn.disabled = false;
       return;
     }
 
     hasVoted = true;
-    sessionStorage.setItem('kmtedi_has_voted', 'true');
     closeDoubleCheck();
     
     // Open Success Modal
@@ -1520,9 +1431,8 @@ document.getElementById('voteFromModalBtn').onclick = () => {
 
 // MAIN VOTE BUTTON HANDLER
 function handleMainVoteClick() {
-  const user = getActiveUser();
-  if (!user) {
-    openLoginModal();
+  if (!currentSession) {
+    loginWithGoogle();
   } else if (!hasVoted) {
     document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
   }
@@ -1532,13 +1442,11 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeProfile();
     closeDoubleCheck();
-    closeLoginModal();
+    wrongDomainModal.classList.remove('open');
   }
   if (profileModal.classList.contains('open') && e.key === 'ArrowRight') { slide = (slide + 1) % 3; renderModal(); }
   if (profileModal.classList.contains('open') && e.key === 'ArrowLeft') { slide = (slide + 2) % 3; renderModal(); }
 });
-
-const $ = id => document.getElementById(id);
 
 // INIT
 renderCandidateCards();
