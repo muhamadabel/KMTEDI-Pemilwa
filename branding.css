@@ -47,25 +47,53 @@ body::before { display: none; }
 .about-info strong { color: var(--maroon); }
 .about .pill { border-color: rgba(37, 0, 20, .25); color: var(--maroon); background: transparent; }
 .pill { color: var(--muted); border-color: var(--line); }
-.candidate-card { background: var(--night); border: 1px solid var(--line); }
-.candidate-card:hover { transform: translateY(-4px); box-shadow: none; }
-.candidate-image { background: var(--maroon); }
+/* 02 / CALON: OREN (Orange #E46527) */
+.candidates { background: var(--brand-orange); color: var(--brand-navy); }
+.candidates .section-kicker h2 { color: var(--brand-navy); }
+.candidates .section-kicker .number { color: var(--brand-burgundy); }
+.candidate-intro { color: #1a0810; }
+.candidate-card { background: var(--brand-navy); border: 1px solid rgba(255, 249, 239, .2); box-shadow: 8px 8px 0 var(--brand-burgundy); }
+.candidate-card:hover { transform: translateY(-4px); box-shadow: 12px 12px 0 var(--brand-burgundy); }
+.candidate-image { background: var(--brand-burgundy); }
 .candidate-image::after { background: linear-gradient(150deg, transparent 45%, rgba(0, 1, 19, .75)); }
 .candidate-image img, .candidate-card:hover .candidate-image img { filter: none; }
-.candidate-tag { background: var(--yellow); color: var(--night); }
-.time-row:hover { background: rgba(228, 101, 39, .08); }
-.vote { background: var(--maroon); color: var(--cream); }
+.candidate-name { color: var(--cream); }
+.candidate-tag { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; padding: 3px 6px; }
+.candidate-click-hint { color: var(--muted); }
+.candidate-actions { border-top-color: rgba(255, 249, 239, .2); }
+.btn-card-profile { border-color: rgba(255, 249, 239, .3); color: var(--cream); }
+.btn-card-profile:hover { border-color: var(--brand-amber); color: var(--brand-amber); }
+.btn-card-vote { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
+.btn-card-vote:hover { background: var(--cream); color: var(--brand-navy); }
+
+/* 03 / TIMELINE: MERAH (Burgundy Red #250014) */
+.timeline { background: var(--brand-burgundy); color: var(--cream); }
+.timeline .section-kicker h2 { color: var(--cream); }
+.timeline .section-kicker .number { color: var(--brand-amber); }
+.timeline-list { border-top: 1px solid rgba(255, 249, 239, .2); }
+.time-row { border-bottom: 1px solid rgba(255, 249, 239, .2); }
+.time-no { color: var(--brand-amber); }
+.time-row h3 { color: var(--cream); }
+.time-row p { color: var(--muted); }
+.time-date { color: var(--brand-amber); }
+.time-row:hover { background: rgba(228, 101, 39, .14); }
+
+/* 04 / STATUS BILIK SUARA: BIRU GELAP (Dark Navy #000113) */
+.vote { background: var(--brand-navy); color: var(--cream); }
 .vote .section-kicker h2 { color: var(--cream); }
-.vote .section-kicker .number { color: var(--orange); }
+.vote .section-kicker .number { color: var(--brand-orange); }
 .vote-copy { color: var(--muted); }
-.vote .btn-primary { background: var(--yellow); color: var(--night); }
-.vote .btn-primary:hover { background: var(--cream); color: var(--night); }
-.status-box { background: var(--yellow); color: var(--night); border: 0; gap: 20px; }
-.status-box small { line-height: 1.6; }
+.vote .btn-primary { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
+.vote .btn-primary:hover { background: var(--cream); color: var(--brand-navy); }
+.status-box { background: var(--brand-amber); color: var(--brand-navy); border: 0; gap: 20px; }
+.status-box small { color: var(--brand-navy); line-height: 1.6; }
+.status-box strong { color: var(--brand-navy); }
 .countdown-grid { justify-content: space-between; gap: 3px; }
 .countdown-item { min-width: 0; }
-.countdown-num { font-variant-numeric: tabular-nums; }
-.footer { background: var(--night); }
+.countdown-num { color: var(--brand-navy); font-variant-numeric: tabular-nums; }
+.countdown-tag { color: var(--brand-burgundy); font-weight: 700; }
+.countdown-sep { color: var(--brand-burgundy); }
+.footer { background: var(--brand-navy); border-top: 1px solid var(--line); color: var(--muted); }
 .modal-backdrop { background: rgba(0, 1, 19, .88); }
 .modal, .confirm-box { box-shadow: 8px 8px 0 var(--orange); }
 .modal-visual::after { background: linear-gradient(180deg, transparent 35%, rgba(0, 1, 19, .85)); }
