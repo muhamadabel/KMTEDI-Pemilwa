@@ -69,3 +69,11 @@ test('custom on-brand notice popup replaces browser alerts', () => {
   assert.ok(html.includes('window.alert = function'));
 });
 
+test('hero carousel supports direct swipe gestures and modals maintain edge padding', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'branding.css'), 'utf8');
+  assert.ok(html.includes('heroCard.addEventListener(\'touchstart\''), 'Missing hero touchstart');
+  assert.ok(html.includes('heroCard.addEventListener(\'touchend\''), 'Missing hero touchend');
+  assert.match(css, /84vw/, 'Missing modal screen-edge clearance');
+});
+

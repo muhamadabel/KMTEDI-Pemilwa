@@ -38,9 +38,24 @@ body::before { display: none; }
 .hero-grid { position: relative; z-index: 1; }
 .hero-title em { color: var(--cream); }
 .hero-lead { color: var(--cream); opacity: 1; font-size: 16.5px; font-weight: 500; }
-.hero-card { border-radius: 3px 48px 3px 3px; box-shadow: 12px 12px 0 var(--night); }
+.hero-card {
+  border-radius: 3px 48px 3px 3px;
+  box-shadow: 12px 12px 0 var(--night);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+.hero-card:active {
+  cursor: grabbing;
+}
 .hero-card::after { background: linear-gradient(180deg, transparent 35%, rgba(0, 1, 19, .92)); }
-.hero-card img { filter: none; }
+.hero-card img {
+  filter: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 .hero-art-label strong { color: var(--cream); }
 .hero-art-label span { color: var(--yellow); font-weight: 700; }
 .media-art { pointer-events: none; user-select: none; object-fit: contain; height: auto; }
@@ -123,8 +138,31 @@ body::before { display: none; }
 .footer-brand, .admin-brand { display: flex; align-items: center; gap: 14px; }
 
 /* MODALS */
-.modal-backdrop { background: rgba(0, 1, 19, .88); }
-.modal, .confirm-box { box-shadow: 8px 8px 0 var(--orange); }
+.modal-backdrop {
+  background: rgba(0, 1, 19, .88);
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+.modal, .confirm-box {
+  box-shadow: 6px 6px 0 var(--orange);
+  box-sizing: border-box;
+}
+.confirm-box {
+  width: min(440px, calc(100vw - 36px)) !important;
+  max-width: calc(100vw - 36px) !important;
+  padding: 28px 24px !important;
+  border-radius: 3px;
+  margin: auto;
+}
+.confirm-box h2 {
+  font-size: clamp(24px, 5.5vw, 32px) !important;
+  margin: 6px 0 10px !important;
+  line-height: 1 !important;
+}
+.confirm-box p, #noticeMessage {
+  font-size: 13.5px !important;
+  line-height: 1.55 !important;
+}
 .modal-visual::after { background: linear-gradient(180deg, transparent 35%, rgba(0, 1, 19, .85)); }
 .modal-content p, .modal-slide ul, .admin-note { color: #644C58; }
 .modal-close {
@@ -373,12 +411,50 @@ body::before { display: none; }
   .section-kicker .number { font-size: 9px; }
   .status-box { padding: 22px 18px; }
   .countdown-num { font-size: 42px; }
-  .confirm-box { padding: 32px 20px; max-width: 100%; }
+  .modal-backdrop { padding: 24px 20px !important; }
+  .confirm-box {
+    width: min(330px, 84vw) !important;
+    max-width: 84vw !important;
+    padding: 22px 18px !important;
+    box-shadow: 4px 4px 0 var(--orange) !important;
+    box-sizing: border-box !important;
+    margin: auto !important;
+  }
+  .confirm-box h2 {
+    font-size: clamp(20px, 5.5vw, 24px) !important;
+    margin: 4px 0 8px !important;
+    line-height: 1 !important;
+  }
+  .confirm-box .eyebrow {
+    font-size: 9px !important;
+    margin-bottom: 4px !important;
+  }
+  #noticeMessage {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 16px !important;
+  }
+  .confirm-actions {
+    display: flex !important;
+    gap: 8px !important;
+    padding-top: 12px !important;
+  }
+  .confirm-actions .btn {
+    padding: 9px 12px !important;
+    font-size: 10px !important;
+    min-height: 38px !important;
+    flex: 1 !important;
+    justify-content: center !important;
+  }
   .email-input-group input { padding: 12px 9px; font-size: 12px; }
   .email-input-group .email-suffix { padding: 12px 8px; font-size: 10px; }
-  .modal { width: 100%; }
+  .modal {
+    width: min(400px, calc(100vw - 36px)) !important;
+    max-width: calc(100vw - 36px) !important;
+    box-shadow: 5px 5px 0 var(--coral) !important;
+  }
   .modal-content { padding: 24px 18px; }
-  .modal-content h2 { font-size: 44px; }
+  .modal-content h2 { font-size: 38px; }
   .admin-page .panel { padding: 18px; }
   .schedule-grid { grid-template-columns: minmax(0, 1fr); padding: 14px; }
   #clearScheduleBtn, #saveScheduleBtn { flex: 1; padding-inline: 12px; }
