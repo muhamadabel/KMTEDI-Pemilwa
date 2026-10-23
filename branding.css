@@ -101,14 +101,14 @@ body::before { display: none; }
 .vote-copy { color: var(--cream); opacity: 1; font-size: 20px; font-weight: 500; }
 .vote .btn-primary { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
 .vote .btn-primary:hover { background: var(--cream); color: var(--brand-navy); }
-.status-box { background: var(--brand-amber); color: var(--brand-navy); border: 0; gap: 20px; }
-.status-box small { color: var(--brand-navy); line-height: 1.6; font-weight: 700; font-size: 11px; }
+.status-box { background: var(--brand-amber); color: var(--brand-navy); border: 0; padding: 28px 26px; border-radius: 4px; box-shadow: 10px 10px 0 var(--brand-burgundy); }
+.status-box small { color: var(--brand-navy); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
 .status-box strong { color: var(--brand-navy); font-weight: 700; }
-.countdown-grid { justify-content: space-between; gap: 3px; }
-.countdown-item { min-width: 0; }
-.countdown-num { color: var(--brand-navy); font-variant-numeric: tabular-nums; font-weight: 700; }
-.countdown-tag { color: var(--brand-burgundy); font-weight: 700; }
-.countdown-sep { color: var(--brand-burgundy); font-weight: 700; }
+.countdown-grid { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; margin: 12px 0 14px; }
+.countdown-item { display: flex; flex-direction: column; align-items: center; min-width: 0; flex: 1; text-align: center; }
+.countdown-num { font: 400 clamp(42px, 5.5vw, 68px) var(--display); line-height: 0.88; color: var(--brand-navy); font-variant-numeric: tabular-nums; font-weight: 700; }
+.countdown-tag { font: 700 10px var(--mono); color: var(--brand-burgundy); font-weight: 700; letter-spacing: 0.06em; margin-top: 6px; }
+.countdown-sep { font: 400 clamp(32px, 4.5vw, 52px) var(--display); color: var(--brand-burgundy); line-height: 0.88; font-weight: 700; opacity: 0.6; align-self: center; margin-bottom: 14px; }
 
 /* FOOTER */
 .footer { background: var(--brand-navy); border-top: 1.5px solid var(--line); color: var(--cream); opacity: 1; align-items: center; }

@@ -908,11 +908,19 @@ section { padding: 85px 0; position: relative; }
       </div>
     </div>
     <div class="status-box" id="statusBoxContainer">
-      <small id="votingStatusLabel">STATUS BILIK SUARA</small>
+      <small id="votingStatusLabel">MENUJU BILIK SUARA DIBUKA</small>
       <div id="votingStatusMain">
-        <strong id="votingStatusBigText">Voting<br>Terbuka</strong>
+        <div class="countdown-grid">
+          <div class="countdown-item"><span class="countdown-num">00</span><span class="countdown-tag">HARI</span></div>
+          <span class="countdown-sep">:</span>
+          <div class="countdown-item"><span class="countdown-num">00</span><span class="countdown-tag">JAM</span></div>
+          <span class="countdown-sep">:</span>
+          <div class="countdown-item"><span class="countdown-num">00</span><span class="countdown-tag">MENIT</span></div>
+          <span class="countdown-sep">:</span>
+          <div class="countdown-item"><span class="countdown-num">00</span><span class="countdown-tag">DETIK</span></div>
+        </div>
       </div>
-      <small id="votingStatusNote">Bilik suara sedang DIBUKA. Mahasiswa dapat memilih.</small>
+      <small id="votingStatusNote">Menghitung mundur pembukaan bilik suara resmi Pemilwa.</small>
     </div>
   </div>
 </section>
@@ -1260,39 +1268,13 @@ function updateVotingStatus() {
   const label = document.getElementById('votingStatusLabel');
   const main = document.getElementById('votingStatusMain');
   const note = document.getElementById('votingStatusNote');
-  if (!label || !main || !note || !electionSettings) return;
+  if (!label || !main || !note) return;
 
   const now = new Date();
-  const startTime = electionSettings.voting_start ? new Date(electionSettings.voting_start) : null;
-  const endTime = electionSettings.voting_end ? new Date(electionSettings.voting_end) : null;
-  const isOpenToggle = Boolean(electionSettings.voting_open);
+  const startTime = electionSettings?.voting_start ? new Date(electionSettings.voting_start) : null;
+  const endTime = electionSettings?.voting_end ? new Date(electionSettings.voting_end) : null;
 
-  // 1. COUNTDOWN MENUJU PEMBUKAAN
-  if (startTime && now < startTime && isOpenToggle) {
-    const diff = startTime.getTime() - now.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const mins = Math.floor((diff / 1000 / 60) % 60);
-    const secs = Math.floor((diff / 1000) % 60);
-
-    label.textContent = 'COUNTDOWN MENUJU PEMBUKAAN';
-    main.innerHTML = `
-      <div class="countdown-grid">
-        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(days)}</span><span class="countdown-tag">HARI</span></div>
-        <span class="countdown-sep">:</span>
-        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(hours)}</span><span class="countdown-tag">JAM</span></div>
-        <span class="countdown-sep">:</span>
-        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(mins)}</span><span class="countdown-tag">MENIT</span></div>
-        <span class="countdown-sep">:</span>
-        <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(secs)}</span><span class="countdown-tag">DETIK</span></div>
-      </div>
-    `;
-    const opts = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-    note.textContent = `Bilik suara dibuka otomatis pada ${startTime.toLocaleDateString('id-ID', opts)} WIB.`;
-    return;
-  }
-
-  // 2. SUDAH MELEWATI WAKTU PENUTUPAN
+  // 1. SUDAH MELEWATI WAKTU PENUTUPAN
   if (endTime && now > endTime) {
     label.textContent = 'STATUS BILIK SUARA';
     main.innerHTML = `<strong id="votingStatusBigText">Voting<br>Selesai</strong>`;
@@ -1300,8 +1282,8 @@ function updateVotingStatus() {
     return;
   }
 
-  // 3. SEDANG DIBUKA
-  if (isOpenToggle) {
+  // 2. SEDANG AKTIF TERBUKA
+  if (isVotingActive()) {
     label.textContent = 'STATUS BILIK SUARA';
     main.innerHTML = `<strong id="votingStatusBigText" style="color:var(--night)">Voting<br>Terbuka</strong>`;
     if (endTime && now < endTime) {
@@ -1316,10 +1298,36 @@ function updateVotingStatus() {
     return;
   }
 
-  // 4. DITUTUP MANUAL OLEH ADMIN
-  label.textContent = 'STATUS BILIK SUARA';
-  main.innerHTML = `<strong id="votingStatusBigText">Belum<br>Dibuka</strong>`;
-  note.textContent = 'Bilik suara ditutup sementara oleh panitia.';
+  // 3. COUNTDOWN MENUJU PEMBUKAAN (HARI, JAM, MENIT, DETIK)
+  // Default target: startTime yang disetel admin, atau besok pagi jika belum disetel
+  const targetTime = (startTime && now < startTime) 
+    ? startTime 
+    : (startTime || new Date(Date.now() + 24 * 3600 * 1000));
+
+  const diff = Math.max(0, targetTime.getTime() - now.getTime());
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / 1000 / 60) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+
+  label.textContent = 'MENUJU BILIK SUARA DIBUKA';
+  main.innerHTML = `
+    <div class="countdown-grid">
+      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(days)}</span><span class="countdown-tag">HARI</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(hours)}</span><span class="countdown-tag">JAM</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(mins)}</span><span class="countdown-tag">MENIT</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(secs)}</span><span class="countdown-tag">DETIK</span></div>
+    </div>
+  `;
+  if (startTime) {
+    const opts = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    note.textContent = `Bilik suara dibuka resmi pada ${startTime.toLocaleDateString('id-ID', opts)} WIB.`;
+  } else {
+    note.textContent = 'Menghitung mundur pembukaan bilik suara resmi Pemilwa.';
+  }
 }
 
 // Tick live countdown every second

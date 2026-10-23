@@ -51,3 +51,11 @@ test('candidate section has mobile horizontal carousel with scroll-snap and navi
   assert.match(css, /scroll-snap-align:\s*start/);
 });
 
+test('status bilik suara displays countdown grid with days, hours, minutes, seconds', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.ok(html.includes('class="countdown-grid"'));
+  for (const tag of ['HARI', 'JAM', 'MENIT', 'DETIK']) {
+    assert.ok(html.includes(`>${tag}</span>`), `Missing countdown tag ${tag}`);
+  }
+});
+
