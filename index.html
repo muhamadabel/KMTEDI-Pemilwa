@@ -50,12 +50,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 30;
+  z-index: 35;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 5vw;
-  background: rgba(36, 10, 23, 0.92);
+  padding: 14px 5vw;
+  background: rgba(36, 10, 23, 0.94);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
@@ -84,6 +84,41 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .navlinks a { opacity: 0.8; transition: 0.2s; }
 .navlinks a:hover { color: var(--yellow); opacity: 1; }
+
+/* USER GREETING PILL IN TOP RIGHT */
+.user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--maroon);
+  border: 1px solid var(--gold);
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+.user-greeting {
+  font: 700 11px var(--mono);
+  color: var(--yellow);
+  text-transform: none;
+}
+.user-badge {
+  font: 700 9px var(--mono);
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+.user-badge.ready { background: var(--yellow); color: var(--night); }
+.user-badge.voted { background: #2e7d32; color: #fff; }
+.btn-logout {
+  background: transparent;
+  border: 0;
+  color: var(--pink);
+  font: 700 10px var(--mono);
+  cursor: pointer;
+  padding: 2px 4px;
+  text-decoration: underline;
+}
+.btn-logout:hover { color: #fff; }
+
 .btn-nav-sso {
   border: 1px solid var(--yellow);
   padding: 8px 14px;
@@ -94,6 +129,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: 6px;
   background: transparent;
   cursor: pointer;
+  transition: 0.2s;
 }
 .btn-nav-sso:hover {
   background: var(--yellow);
@@ -103,7 +139,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* HERO SECTION */
 .hero {
   min-height: 94vh;
-  padding: 130px 0 60px;
+  padding: 120px 0 60px;
   background: radial-gradient(circle at 10% 30%, rgba(237,91,66,.25), transparent 32%),
               radial-gradient(circle at 90% 20%, rgba(242,138,61,.2), transparent 28%),
               var(--night);
@@ -123,7 +159,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: var(--yellow);
 }
 .hero-title {
-  font: 400 clamp(70px, 11vw, 150px) / 0.88 var(--display);
+  font: 400 clamp(68px, 11vw, 150px) / 0.88 var(--display);
   letter-spacing: 0.01em;
   margin: 18px 0 22px;
   text-transform: uppercase;
@@ -250,13 +286,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* SECTIONS COMMON */
-section { padding: 90px 0; position: relative; }
+section { padding: 85px 0; position: relative; }
 .section-kicker {
   display: flex;
   justify-content: space-between;
   gap: 20px;
   align-items: flex-start;
-  margin-bottom: 40px;
+  margin-bottom: 35px;
 }
 .section-kicker h2 {
   font: 400 clamp(48px, 7.5vw, 100px) / 0.88 var(--display);
@@ -306,10 +342,10 @@ section { padding: 90px 0; position: relative; }
 .candidates { background: var(--maroon); }
 .candidates .section-kicker h2 { color: var(--cream); }
 .candidate-intro {
-  max-width: 520px;
+  max-width: 560px;
   color: var(--muted);
   line-height: 1.55;
-  margin: -15px 0 38px;
+  margin: -15px 0 35px;
 }
 .candidate-grid {
   display: grid;
@@ -318,19 +354,21 @@ section { padding: 90px 0; position: relative; }
 }
 .candidate-card {
   background: var(--wine);
-  border: 1px solid rgba(255,240,210,.2);
-  padding: 12px;
+  border: 2px solid rgba(255,240,210,.2);
+  padding: 14px;
   transition: 0.25s;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .candidate-card:hover {
   transform: translateY(-8px);
   border-color: var(--yellow);
-  box-shadow: 8px 8px 0 rgba(242,138,61,.3);
+  box-shadow: 10px 10px 0 rgba(242,138,61,.3);
 }
 .candidate-image {
-  height: 320px;
+  height: 310px;
   overflow: hidden;
   position: relative;
   background: var(--red);
@@ -344,7 +382,7 @@ section { padding: 90px 0; position: relative; }
 .candidate-image img {
   width: 100%; height: 100%;
   object-fit: cover;
-  filter: saturate(0.8) contrast(1.1);
+  filter: saturate(0.85) contrast(1.1);
   transition: 0.35s;
 }
 .candidate-card:hover .candidate-image img {
@@ -355,33 +393,52 @@ section { padding: 90px 0; position: relative; }
   position: absolute;
   z-index: 2;
   top: 15px; left: 15px;
-  font: 400 40px var(--display);
+  font: 400 42px var(--display);
   color: var(--yellow);
 }
 .candidate-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 4px 4px;
+  padding: 14px 4px 6px;
 }
 .candidate-name {
   font: 400 32px var(--display);
   line-height: 0.95;
 }
 .candidate-tag { font: 700 9px var(--mono); color: var(--orange); }
-.candidate-open {
-  border: 0;
+
+/* TWO BUTTONS ON EACH CARD FOR INSTANT VOTING */
+.candidate-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
   border-top: 1px solid rgba(255,240,210,.22);
-  margin-top: 14px;
-  padding: 14px 4px 4px;
-  width: 100%;
-  background: none;
-  text-align: left;
-  font: 700 11px var(--mono);
-  letter-spacing: 0.06em;
-  color: var(--yellow);
 }
-.candidate-open span { float: right; font-size: 16px; }
+.btn-card-profile {
+  background: transparent;
+  border: 1px solid rgba(255,240,210,.3);
+  color: var(--cream);
+  font: 700 10px var(--mono);
+  padding: 10px 6px;
+  text-align: center;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.btn-card-profile:hover { border-color: var(--yellow); color: var(--yellow); }
+.btn-card-vote {
+  background: var(--yellow);
+  color: var(--night);
+  border: 0;
+  font: 700 11px var(--mono);
+  padding: 10px 6px;
+  text-align: center;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.btn-card-vote:hover { background: var(--cream); }
 
 /* TIMELINE SECTION */
 .timeline { background: var(--night); }
@@ -438,7 +495,7 @@ section { padding: 90px 0; position: relative; }
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 60;
   background: rgba(20,5,13,.86);
   backdrop-filter: blur(10px);
   padding: 4vh 4vw;
@@ -532,79 +589,6 @@ section { padding: 90px 0; position: relative; }
 }
 .slide-btn:hover { background: var(--maroon); color: var(--yellow); }
 
-/* BILIK SUARA (DIGITAL BALLOT) MODAL */
-.ballot-modal {
-  width: min(1000px, 95vw);
-  max-height: 92vh;
-  background: var(--night);
-  border: 2px solid var(--gold);
-  color: var(--cream);
-  padding: 34px 38px;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: 20px 20px 0 var(--maroon);
-}
-.ballot-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: 24px;
-}
-.ballot-card {
-  background: var(--maroon);
-  border: 2px solid var(--line);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  transition: 0.25s;
-}
-.ballot-card:hover {
-  border-color: var(--yellow);
-  transform: translateY(-6px);
-  box-shadow: 0 10px 24px rgba(0,0,0,.5);
-}
-.ballot-no {
-  font: 400 44px var(--display);
-  color: var(--yellow);
-  line-height: 1;
-  margin-bottom: 10px;
-}
-.ballot-img {
-  height: 230px;
-  width: 100%;
-  object-fit: cover;
-  background: var(--wine);
-  border: 1px solid var(--line);
-  margin-bottom: 12px;
-}
-.ballot-name {
-  font: 400 28px var(--display);
-  line-height: 0.95;
-  margin-bottom: 4px;
-  color: var(--cream);
-}
-.ballot-meta {
-  font: 700 10px var(--mono);
-  color: var(--pink);
-  margin-bottom: 16px;
-}
-.btn-coblos {
-  margin-top: auto;
-  width: 100%;
-  padding: 12px;
-  background: var(--yellow);
-  color: var(--night);
-  font: 700 12px var(--mono);
-  text-transform: uppercase;
-  border: 0;
-  letter-spacing: 0.05em;
-  transition: 0.2s;
-  cursor: pointer;
-}
-.btn-coblos:hover {
-  background: var(--cream);
-}
-
 /* DOUBLE CHECK CONFIRMATION MODAL */
 .confirm-box {
   width: min(520px, 94vw);
@@ -645,8 +629,6 @@ section { padding: 90px 0; position: relative; }
   .modal { grid-template-columns: 1fr; max-height: 92vh; }
   .modal-visual { height: 180px; }
   .modal-content { padding: 24px; }
-  .ballot-grid { grid-template-columns: 1fr; }
-  .ballot-img { height: 260px; }
   .footer { flex-direction: column; gap: 10px; }
 }
 </style>
@@ -660,7 +642,8 @@ section { padding: 90px 0; position: relative; }
     <a href="#calon">Calon</a>
     <a href="#timeline">Alur</a>
     <a href="/admin">Admin</a>
-    <span id="userStatusWrapper" style="display:inline-flex;align-items:center;gap:10px">
+    <!-- User Status Greeting Container -->
+    <span id="userStatusWrapper">
       <button class="btn-nav-sso" id="btnNavSso">Masuk Google UGM ↗</button>
     </span>
   </div>
@@ -676,8 +659,8 @@ section { padding: 90px 0; position: relative; }
       <h1 class="hero-title">Satu suara.<em>Satu cerita.</em></h1>
       <p class="hero-lead">Ruang resmi untuk mengenal calon ketua, membaca gagasan, dan menentukan arah langkah KMTEDI bersama.</p>
       <div class="hero-actions">
-        <button class="btn btn-primary" id="heroVoteBtn">Masuk Bilik Suara 🗳️</button>
-        <a class="btn btn-ghost" href="#calon">Kenali Calon ↓</a>
+        <a class="btn btn-primary" href="#calon" id="heroVoteBtn">Lihat Calon & Pilih 🗳️</a>
+        <a class="btn btn-ghost" href="#acara">Tentang Pemilwa</a>
       </div>
     </div>
     
@@ -728,17 +711,18 @@ section { padding: 90px 0; position: relative; }
   </div>
 </section>
 
-<!-- CANDIDATES -->
+<!-- CANDIDATES: TINGGAL PILIH LANGSUNG DARI SINI -->
 <section class="candidates" id="calon">
   <div class="wrap">
     <div class="section-kicker">
       <h2>Kenali<br>Calonmu.</h2>
       <span class="number">02 / CALON</span>
     </div>
-    <p class="candidate-intro">Klik salah satu kartu calon di bawah ini untuk membuka profil lengkap, visi misi, serta program kerja unggulan mereka.</p>
+    <p class="candidate-intro">Kenali visi, misi, dan program kerja calon ketua. Anda dapat langsung memilih calon pilihan Anda di bawah ini.</p>
     
     <div class="candidate-grid">
-      <article class="candidate-card">
+      <!-- Card 01 -->
+      <article class="candidate-card" id="candCard0">
         <div class="candidate-image">
           <img src="assets/ig-panel-3.jpg" alt="Visual calon 01">
           <b class="candidate-no">01</b>
@@ -747,10 +731,14 @@ section { padding: 90px 0; position: relative; }
           <div class="candidate-name">Calon<br>Satu</div>
           <span class="candidate-tag">KANDIDAT 01</span>
         </div>
-        <button class="candidate-open" data-candidate="0">Buka Profil <span>↗</span></button>
+        <div class="candidate-actions">
+          <button class="btn-card-profile" onclick="openProfile(0)">Profil & Visi ↗</button>
+          <button class="btn-card-vote" onclick="triggerVote(0)">PILIH 01 🗳️</button>
+        </div>
       </article>
 
-      <article class="candidate-card">
+      <!-- Card 02 -->
+      <article class="candidate-card" id="candCard1">
         <div class="candidate-image">
           <img src="assets/ig-panel-4.jpg" alt="Visual calon 02">
           <b class="candidate-no">02</b>
@@ -759,10 +747,14 @@ section { padding: 90px 0; position: relative; }
           <div class="candidate-name">Calon<br>Dua</div>
           <span class="candidate-tag">KANDIDAT 02</span>
         </div>
-        <button class="candidate-open" data-candidate="1">Buka Profil <span>↗</span></button>
+        <div class="candidate-actions">
+          <button class="btn-card-profile" onclick="openProfile(1)">Profil & Visi ↗</button>
+          <button class="btn-card-vote" onclick="triggerVote(1)">PILIH 02 🗳️</button>
+        </div>
       </article>
 
-      <article class="candidate-card">
+      <!-- Card 03 -->
+      <article class="candidate-card" id="candCard2">
         <div class="candidate-image">
           <img src="assets/ig-panel-5.jpg" alt="Visual calon 03">
           <b class="candidate-no">03</b>
@@ -771,7 +763,10 @@ section { padding: 90px 0; position: relative; }
           <div class="candidate-name">Calon<br>Tiga</div>
           <span class="candidate-tag">KANDIDAT 03</span>
         </div>
-        <button class="candidate-open" data-candidate="2">Buka Profil <span>↗</span></button>
+        <div class="candidate-actions">
+          <button class="btn-card-profile" onclick="openProfile(2)">Profil & Visi ↗</button>
+          <button class="btn-card-vote" onclick="triggerVote(2)">PILIH 03 🗳️</button>
+        </div>
       </article>
     </div>
   </div>
@@ -818,13 +813,13 @@ section { padding: 90px 0; position: relative; }
   <div class="wrap vote-grid">
     <div>
       <div class="section-kicker">
-        <h2>Waktunya<br>Memilih.</h2>
-        <span class="number">04 / BILIK</span>
+        <h2>Bilik<br>Suara.</h2>
+        <span class="number">04 / STATUS</span>
       </div>
-      <p class="vote-copy" id="voteCopyText">Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> untuk membuka bilik suara digital dan memberikan pilihan Anda.</p>
+      <p class="vote-copy" id="voteCopyText">Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
       
       <div id="voterActionContainer">
-        <button class="btn btn-primary" id="mainVoteBtn">Masuk dengan Google (@mail.ugm.ac.id) ↗</button>
+        <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">Masuk Google (@mail.ugm.ac.id) ↗</button>
       </div>
     </div>
     <div class="status-box">
@@ -889,56 +884,42 @@ section { padding: 90px 0; position: relative; }
   </div>
 </div>
 
-<!-- MODAL 2: BILIK SUARA (DIGITAL BALLOT) -->
-<div class="modal-backdrop" id="ballotModal" aria-hidden="true">
-  <div class="ballot-modal" role="dialog" aria-modal="true">
-    <button class="modal-close" id="ballotModalClose">×</button>
-    <div class="eyebrow" style="color:var(--yellow)">SURAT SUARA ELEKTRONIK · PEMILWA KMTEDI 2026</div>
-    <h2 style="font:400 clamp(36px,5vw,56px) var(--display);margin:6px 0 10px;text-transform:uppercase;color:var(--cream);line-height:0.9">Bilik Suara Digital</h2>
-    <p style="color:var(--pink);margin:0 0 20px;font-size:14px;line-height:1.5">Silakan tentukan pilihan Anda. Klik tombol "Coblos / Pilih" pada calon pilihan Anda untuk lanjut ke konfirmasi akhir.</p>
-    
-    <div class="ballot-grid" id="ballotCardsContainer">
-      <!-- Generated dynamically -->
-    </div>
-  </div>
-</div>
-
-<!-- MODAL 3: DOUBLE CHECK CONFIRMATION -->
+<!-- MODAL 2: DOUBLE CHECK CONFIRMATION -->
 <div class="modal-backdrop" id="confirmVoteModal" aria-hidden="true">
   <div class="confirm-box" role="dialog" aria-modal="true">
     <button class="modal-close" id="confirmModalClose" style="color:var(--wine)">×</button>
     <div class="eyebrow" style="color:var(--red)">KONFIRMASI AKHIR PILIHAN SUARA</div>
-    <h2 style="font:400 38px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Periksa Pilihan Anda</h2>
+    <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Periksa Pilihan Anda</h2>
     <p style="color:#77515a;margin:0;font-size:13.5px;line-height:1.5">Anda akan memberikan satu suara sah untuk calon ketua berikut:</p>
     
     <div class="confirm-candidate">
       <img id="confirmPhoto" src="assets/ig-panel-1.jpg" class="confirm-thumb" alt="Foto Calon">
       <div>
         <span id="confirmNo" style="font:700 12px var(--mono);color:var(--red);display:block;margin-bottom:2px">PASLON NOMOR URUT 01</span>
-        <strong id="confirmName" style="font:400 30px var(--display);color:var(--maroon);line-height:0.95;display:block">Nama Calon</strong>
+        <strong id="confirmName" style="font:400 28px var(--display);color:var(--maroon);line-height:0.95;display:block">Nama Calon</strong>
         <small id="confirmBatch" style="font:700 10px var(--mono);color:#77515a">Angkatan</small>
       </div>
     </div>
 
-    <div style="background:#fcedea;border-left:3px solid var(--red);padding:12px 14px;margin-bottom:22px">
-      <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">⚠️ PERINGATAN PENTING:</b>
-      <p style="margin:0;font-size:12.5px;color:#7a323a;line-height:1.45">1. Pilihan Anda bersifat <b>RAHASIA</b> dan terpisah dari identitas akun.<br>2. Setelah suara dikirim, pilihan ini <b>FINAL & TIDAK DAPAT DIUBAH</b>.</p>
+    <div style="background:#fcedea;border-left:3px solid var(--red);padding:12px 14px;margin-bottom:20px">
+      <b style="display:block;font:700 10px var(--mono);color:var(--red);margin-bottom:4px;letter-spacing:0.05em">⚠️ PERHATIAN PENTING:</b>
+      <p style="margin:0;font-size:12px;color:#7a323a;line-height:1.45">1. Pilihan Anda bersifat <b>RAHASIA</b> (Secret Ballot) dan terpisah dari identitas akun.<br>2. Setelah suara dikirim, pilihan ini <b>FINAL & TIDAK DAPAT DIUBAH</b>.</p>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button type="button" class="btn alt" id="cancelVoteBtn" style="color:var(--maroon);border-color:var(--maroon)">← Cek Ulang</button>
+      <button type="button" class="btn alt" id="cancelVoteBtn" style="color:var(--maroon);border-color:var(--maroon)">← Batal / Cek Ulang</button>
       <button type="button" class="btn" id="submitVoteFinalBtn" style="background:var(--maroon);color:var(--cream)">✅ Ya, Kirim Suara Sah</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL 4: VOTE SUCCESS RECEIPT -->
+<!-- MODAL 3: VOTE SUCCESS RECEIPT -->
 <div class="modal-backdrop" id="successModal" aria-hidden="true">
   <div class="confirm-box" style="text-align:center;box-shadow:18px 18px 0 var(--yellow)">
-    <div style="font-size:54px;line-height:1;margin-bottom:12px">🎉</div>
+    <div style="font-size:52px;line-height:1;margin-bottom:12px">🎉</div>
     <div class="eyebrow" style="color:var(--red)">SUARA SAH TERCATAT</div>
-    <h2 style="font:400 42px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Terima Kasih!</h2>
-    <p style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara Pemilwa KMTEDI 2026.</p>
+    <h2 style="font:400 40px var(--display);margin:8px 0 12px;text-transform:uppercase;color:var(--maroon);line-height:0.9">Terima Kasih!</h2>
+    <p style="color:#77515a;margin:0 0 20px;font-size:14px;line-height:1.6">Hak suara Anda telah berhasil disimpan secara sah dan rahasia ke kotak suara digital Pemilwa KMTEDI 2026.</p>
     <button type="button" class="btn" id="successCloseBtn" style="background:var(--maroon);color:var(--cream);margin:auto">Tutup & Kembali ke Beranda ↗</button>
   </div>
 </div>
@@ -993,10 +974,8 @@ let currentSession = null;
 let hasVoted = false;
 
 const profileModal = document.getElementById('profileModal');
-const ballotModal = document.getElementById('ballotModal');
 const confirmVoteModal = document.getElementById('confirmVoteModal');
 const successModal = document.getElementById('successModal');
-const candidateCards = [...document.querySelectorAll('.candidate-card')];
 
 // DIRECT GOOGLE SSO
 async function loginWithGoogle() {
@@ -1016,7 +995,7 @@ async function loginWithGoogle() {
   });
   if (error) {
     if (error.message && error.message.includes('provider is not enabled')) {
-      alert('Google Provider belum diaktifkan di dashboard Supabase (Authentication -> Providers -> Google).\n\nSilakan aktifkan toggle Google di dashboard Supabase.');
+      alert('Google Provider belum diaktifkan di dashboard Supabase (Authentication -> Providers -> Google).\n\nPastikan Client ID & Client Secret sudah diisi dan toggle Google dinyalakan.');
     } else {
       alert('Gagal login: ' + error.message);
     }
@@ -1031,6 +1010,7 @@ async function logout() {
   location.reload();
 }
 
+// CHECK AUTH STATE & UPDATE TOP RIGHT "HALO"
 async function checkAuthSession() {
   if (!db) return;
   const { data: { session } } = await db.auth.getSession();
@@ -1047,75 +1027,108 @@ async function handleSessionState() {
   const container = document.getElementById('userStatusWrapper');
   const mainBtn = document.getElementById('mainVoteBtn');
   const copyText = document.getElementById('voteCopyText');
+  const heroBtn = document.getElementById('heroVoteBtn');
 
   if (currentSession && currentSession.user) {
-    const email = currentSession.user.email || '';
-    if (!email.endsWith('@mail.ugm.ac.id')) {
+    const user = currentSession.user;
+    const email = user.email || '';
+    
+    // Check if domain is mail.ugm.ac.id
+    if (!email.toLowerCase().endsWith('@mail.ugm.ac.id')) {
       alert('Akses Ditolak: Akun ' + email + ' bukan akun resmi @mail.ugm.ac.id!');
       await logout();
       return;
     }
 
+    // Get Student Name from Google user metadata or email
+    const rawName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+    const cleanName = rawName || email.split('@')[0].replace('.', ' ');
+    // Title Case Name
+    const displayName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
+
     // Check if voter has already voted in DB
     try {
-      const { data: prof } = await db.from('profiles').select('has_voted, full_name').eq('id', currentSession.user.id).single();
+      const { data: prof } = await db.from('profiles').select('has_voted, full_name').eq('id', user.id).single();
       hasVoted = prof?.has_voted || false;
     } catch (e) {
       hasVoted = false;
     }
 
+    // UPDATE NAVBAR TOP RIGHT WITH "HALO, [NAMA]"
     container.innerHTML = `
-      <span style="font:700 10px var(--mono);color:var(--yellow);text-transform:none">👤 ${email}</span>
-      <button class="btn alt" style="padding:6px 10px;font-size:9px" onclick="logout()">Keluar</button>
+      <div class="user-pill">
+        <span class="user-greeting">👋 Halo, <b>${displayName}</b></span>
+        <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">${hasVoted ? '✓ Sudah Memilih' : '🟢 Siap Memilih'}</span>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+      </div>
     `;
 
+    // UPDATE BILIK SUARA COPY & CTA
     if (hasVoted) {
-      copyText.innerHTML = `Selamat datang, <b>${email}</b>. Anda <b style="color:var(--maroon)">SUDAH MENGGUNAKAN HAK SUARA</b> dalam pemilihan ini.`;
+      copyText.innerHTML = `Halo <b>${displayName}</b> (${email})! Hak suara Anda <b>SUDAH SAH TERCATAT</b> dalam Pemilwa KMTEDI 2026.`;
       mainBtn.innerHTML = `Sudah Memilih ✓`;
       mainBtn.disabled = true;
       mainBtn.style.opacity = '0.6';
+      if (heroBtn) {
+        heroBtn.innerHTML = `Sudah Memilih ✓`;
+        heroBtn.style.opacity = '0.7';
+      }
     } else {
-      copyText.innerHTML = `Akun terverifikasi: <b>${email}</b>. Silakan masuk ke bilik suara digital untuk memilih calon ketua.`;
-      mainBtn.innerHTML = `Masuk Bilik Suara Digital 🗳️`;
+      copyText.innerHTML = `Halo <b>${displayName}</b> (${email})! Akun resmi UGM Anda aktif. Silakan pilih salah satu calon ketua di atas untuk memberikan suara.`;
+      mainBtn.innerHTML = `Tinggal Pilih Calon di Atas 🗳️`;
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
+      if (heroBtn) {
+        heroBtn.innerHTML = `Tinggal Pilih Calon 🗳️`;
+      }
     }
+
   } else {
+    // NOT LOGGED IN
     container.innerHTML = `<button class="btn-nav-sso" id="btnNavSso">Masuk Google UGM ↗</button>`;
     document.getElementById('btnNavSso').onclick = loginWithGoogle;
-    copyText.innerHTML = `Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> untuk membuka bilik suara digital dan memberikan pilihan Anda.`;
-    mainBtn.innerHTML = `Masuk dengan Google (@mail.ugm.ac.id) ↗`;
+    copyText.innerHTML = `Masuk menggunakan akun Google resmi <b>@mail.ugm.ac.id</b> Anda untuk mengaktifkan bilik suara dan memberikan suara sah.`;
+    mainBtn.innerHTML = `Masuk Google (@mail.ugm.ac.id) ↗`;
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
+    if (heroBtn) heroBtn.innerHTML = `Masuk & Pilih Calon 🗳️`;
   }
+
+  // Update card buttons
+  renderCandidateCards();
 }
 
 function renderCandidateCards() {
-  candidateCards.forEach((card, i) => {
+  for (let i = 0; i < 3; i++) {
+    const card = document.getElementById(`candCard${i}`);
     const c = candidates[i];
-    if (!c) { card.style.display = 'none'; return; }
+    if (!card) continue;
+    if (!c) { card.style.display = 'none'; continue; }
+    
     card.style.display = '';
     card.querySelector('img').src = c[1];
     card.querySelector('img').alt = `Visual ${c[0]}`;
     card.querySelector('.candidate-no').textContent = String(c[3] || i + 1).padStart(2, '0');
     card.querySelector('.candidate-name').textContent = c[0];
     card.querySelector('.candidate-tag').textContent = c[4] || `KANDIDAT 0${i+1}`;
-    card.querySelector('.candidate-open').dataset.candidate = i;
-  });
-}
-
-function renderBallotCards() {
-  const container = document.getElementById('ballotCardsContainer');
-  if (!container) return;
-  container.innerHTML = candidates.map((c, i) => `
-    <div class="ballot-card">
-      <div class="ballot-no">0${c[3] || i + 1}</div>
-      <img src="${c[1]}" class="ballot-img" alt="${c[0]}">
-      <div class="ballot-name">${c[0]}</div>
-      <div class="ballot-meta">${c[4] || 'CALON KETUA'}</div>
-      <button class="btn-coblos" onclick="openDoubleCheck(${i})">Pilih Paslon 0${c[3] || i + 1} 🗳️</button>
-    </div>
-  `).join('');
+    
+    const voteBtn = card.querySelector('.btn-card-vote');
+    if (voteBtn) {
+      if (hasVoted) {
+        voteBtn.textContent = 'Sudah Memilih ✓';
+        voteBtn.disabled = true;
+        voteBtn.style.opacity = '0.5';
+        voteBtn.style.background = 'var(--wine)';
+        voteBtn.style.color = 'var(--pink)';
+      } else {
+        voteBtn.textContent = `PILIH 0${c[3] || i + 1} 🗳️`;
+        voteBtn.disabled = false;
+        voteBtn.style.opacity = '1';
+        voteBtn.style.background = 'var(--yellow)';
+        voteBtn.style.color = 'var(--night)';
+      }
+    }
+  }
 }
 
 function updateVotingStatus() {
@@ -1196,13 +1209,13 @@ async function loadPublicData() {
         r.organization_history || 'Riwayat organisasi belum diisi oleh panitia.'
       ]);
       renderCandidateCards();
-      renderBallotCards();
     }
   } catch (err) {
     console.error('Error loading public data:', err);
   }
 }
 
+// CANDIDATE PROFILE MODAL
 function renderModal() {
   const c = candidates[selected];
   document.getElementById('modalTitle').textContent = c[0];
@@ -1232,11 +1245,11 @@ function renderModal() {
 
   const voteBtn = document.getElementById('voteFromModalBtn');
   if (hasVoted) {
-    voteBtn.textContent = 'Sudah Memilih';
+    voteBtn.textContent = 'Sudah Memilih ✓';
     voteBtn.disabled = true;
     voteBtn.style.opacity = '0.5';
   } else {
-    voteBtn.textContent = '✓ Pilih Calon Ini';
+    voteBtn.textContent = `Pilih Paslon 0${c[3] || selected + 1} 🗳️`;
     voteBtn.disabled = false;
     voteBtn.style.opacity = '1';
   }
@@ -1256,57 +1269,32 @@ function closeProfile() {
   document.body.style.overflow = '';
 }
 
-// OPEN BILIK SUARA
-function openBallot() {
+// "TINGGAL PILIH" TRIGGER (DIRECT VOTE FROM CARD OR MODAL)
+function triggerVote(index) {
   if (!electionSettings?.voting_open) {
     alert('Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.');
     return;
   }
   if (!currentSession) {
-    loginWithGoogle();
+    if (confirm('Anda harus masuk dengan akun Google @mail.ugm.ac.id terlebih dahulu untuk memilih.\n\nMasuk sekarang?')) {
+      loginWithGoogle();
+    }
     return;
   }
   if (hasVoted) {
-    alert('Akun Anda sudah pernah menggunakan hak suara.');
-    return;
-  }
-  renderBallotCards();
-  ballotModal.classList.add('open');
-  ballotModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-function closeBallot() {
-  ballotModal.classList.remove('open');
-  ballotModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-
-// DOUBLE CHECK CONFIRMATION MODAL
-function openDoubleCheck(index) {
-  if (!electionSettings?.voting_open) {
-    alert('Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.');
-    return;
-  }
-  if (!currentSession) {
-    closeBallot();
-    closeProfile();
-    loginWithGoogle();
-    return;
-  }
-  if (hasVoted) {
-    alert('Akun Anda sudah pernah menggunakan hak suara.');
+    alert('Akun Anda sudah pernah menggunakan hak suara dalam pemilihan ini.');
     return;
   }
 
   candidateToVote = candidates[index];
   if (!candidateToVote) return;
 
+  // Open DOUBLE CHECK confirmation dialog
   document.getElementById('confirmPhoto').src = candidateToVote[1];
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
-  document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA';
+  document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
 
-  closeBallot();
   closeProfile();
   confirmVoteModal.classList.add('open');
   confirmVoteModal.setAttribute('aria-hidden', 'false');
@@ -1319,7 +1307,7 @@ function closeDoubleCheck() {
   document.body.style.overflow = '';
 }
 
-// SUBMIT VOTE ATOMIC
+// SUBMIT VOTE TO DATABASE
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
   if (!candidateToVote || !db) return;
   const btn = document.getElementById('submitVoteFinalBtn');
@@ -1327,11 +1315,9 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
   btn.disabled = true;
 
   try {
-    // Try Supabase Auth cast_vote RPC first
     const { data, error } = await db.rpc('cast_vote', { p_candidate_id: candidateToVote[2] });
     
     if (error) {
-      // If error because function expected voter by nim or session issue
       alert('Gagal mengirim suara: ' + error.message);
       btn.textContent = '✅ Ya, Kirim Suara Sah';
       btn.disabled = false;
@@ -1354,11 +1340,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
   }
 };
 
-document.getElementById('cancelVoteBtn').onclick = () => {
-  closeDoubleCheck();
-  openBallot();
-};
-
+document.getElementById('cancelVoteBtn').onclick = closeDoubleCheck;
 document.getElementById('confirmModalClose').onclick = closeDoubleCheck;
 confirmVoteModal.onclick = e => { if (e.target === confirmVoteModal) closeDoubleCheck(); };
 
@@ -1369,36 +1351,28 @@ document.getElementById('successCloseBtn').onclick = () => {
 };
 
 // MODAL LISTENERS
-document.querySelectorAll('.candidate-open').forEach(b => b.addEventListener('click', () => openProfile(+b.dataset.candidate)));
 document.getElementById('modalClose').addEventListener('click', closeProfile);
 profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
-
-document.getElementById('ballotModalClose').addEventListener('click', closeBallot);
-ballotModal.addEventListener('click', e => { if (e.target === ballotModal) closeBallot(); });
-
 document.getElementById('nextSlide').addEventListener('click', () => { slide = (slide + 1) % 3; renderModal(); });
 document.getElementById('prevSlide').addEventListener('click', () => { slide = (slide + 2) % 3; renderModal(); });
 
-// VOTE FROM CANDIDATE DETAIL MODAL
+// VOTE FROM INSIDE PROFILE MODAL
 document.getElementById('voteFromModalBtn').onclick = () => {
-  openDoubleCheck(selected);
+  triggerVote(selected);
 };
 
-// MAIN HERO / VOTE BUTTONS
-document.getElementById('heroVoteBtn').onclick = () => {
-  if (!currentSession) loginWithGoogle();
-  else openBallot();
-};
-
-document.getElementById('mainVoteBtn').onclick = () => {
-  if (!currentSession) loginWithGoogle();
-  else openBallot();
-};
+// MAIN VOTE BUTTON HANDLER
+function handleMainVoteClick() {
+  if (!currentSession) {
+    loginWithGoogle();
+  } else if (!hasVoted) {
+    document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
+  }
+}
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeProfile();
-    closeBallot();
     closeDoubleCheck();
   }
   if (profileModal.classList.contains('open') && e.key === 'ArrowRight') { slide = (slide + 1) % 3; renderModal(); }
@@ -1407,7 +1381,6 @@ document.addEventListener('keydown', e => {
 
 // INIT
 renderCandidateCards();
-renderBallotCards();
 loadPublicData();
 checkAuthSession();
 </script>

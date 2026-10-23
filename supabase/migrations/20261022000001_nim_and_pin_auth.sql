@@ -341,3 +341,67 @@ end;
 $$;
 
 grant execute on function public.admin_save_panels(text, jsonb, text, text, text, jsonb) to anon, authenticated;
+
+
+-- Enhanced bulletproof cast_vote for Google SSO users
+create or replace function public.cast_vote(p_candidate_id uuid)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  user_id uuid := auth.uid();
+  user_email text;
+  changed_rows integer;
+  candidate_exists boolean;
+begin
+  if user_id is null then
+    raise exception 'Anda harus login terlebih dahulu dengan akun @mail.ugm.ac.id.';
+  end if;
+
+  select lower(coalesce(email, '')) into user_email from auth.users where id = user_id;
+  if user_email !~ '^[^@[:space:]]+@mail[.]ugm[.]ac[.]id$' then
+    raise exception 'Hanya akun resmi @mail.ugm.ac.id yang berhak memilih!';
+  end if;
+
+  -- Check if voting is open
+  if not exists (
+    select 1 from public.election_settings
+    where id = true
+      and voting_open = true
+      and (voting_start is null or timezone('utc', now()) >= voting_start)
+      and (voting_end is null or timezone('utc', now()) <= voting_end)
+  ) then
+    raise exception 'Bilik suara saat ini sedang DITUTUP oleh panitia pemilwa.';
+  end if;
+
+  -- Check candidate
+  select exists(select 1 from public.candidates where id = p_candidate_id and is_active = true)
+  into candidate_exists;
+  if not candidate_exists then
+    raise exception 'Calon yang dipilih tidak valid atau sudah nonaktif.';
+  end if;
+
+  -- Ensure profile exists
+  insert into public.profiles (id, email, has_voted)
+  values (user_id, user_email, false)
+  on conflict (id) do update set email = excluded.email;
+
+  -- Lock voter account
+  update public.profiles
+  set has_voted = true, voted_at = timezone('utc', now())
+  where id = user_id and has_voted = false;
+  get diagnostics changed_rows = row_count;
+
+  if changed_rows <> 1 then
+    raise exception 'Akun Anda sudah pernah menggunakan hak suara dalam pemilihan ini!';
+  end if;
+
+  -- Insert anonymous ballot
+  insert into public.votes (candidate_id) values (p_candidate_id);
+
+  return jsonb_build_object('success', true, 'message', 'Suara sah Anda berhasil dicatat secara rahasia!');
+end;
+$$;
+
+grant execute on function public.cast_vote(uuid) to authenticated, anon;
