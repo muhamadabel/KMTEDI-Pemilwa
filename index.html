@@ -606,7 +606,7 @@ section { padding: 90px 0; position: relative; }
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
-        Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa. Hasil suara disimpan tertutup dan rahasia sampai dibuka oleh panitia.
+        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa dan akun email @mail.ugm.ac.id. Hasil suara disimpan tertutup dan rahasia sampai dibuka oleh panitia.</span>
         <div class="info-pills">
           <span class="pill">VERIFIKASI NIM</span>
           <span class="pill">ONE NIM ONE VOTE</span>
@@ -744,8 +744,12 @@ section { padding: 90px 0; position: relative; }
       <h2 id="modalTitle">Calon Satu</h2>
       <div class="modal-slides">
         <div class="modal-slide active" id="slide0">
-          <h3>Data Diri</h3>
-          <p id="slideBio">Profil kandidat ketua KMTEDI.</p>
+          <h3>Panel 1: Data Diri & Riwayat</h3>
+          <p id="slideBio" style="font-weight:700;color:var(--wine)">Profil kandidat ketua KMTEDI.</p>
+          <div style="margin:10px 0">
+            <b style="font-size:11px;font-family:var(--mono);color:var(--maroon);letter-spacing:0.05em">PENGALAMAN & RIWAYAT ORGANISASI:</b>
+            <p id="slideHistory" style="margin-top:4px;color:#77515a;font-size:13.5px;line-height:1.5;white-space:pre-line">Riwayat organisasi kandidat.</p>
+          </div>
           <p class="admin-note">Data diri resmi terverifikasi panitia pemilwa.</p>
         </div>
         <div class="modal-slide" id="slide1">
@@ -835,9 +839,9 @@ setInterval(() => setHero((heroIndex + 1) % 3), 5000);
 
 // CANDIDATES DATA
 let candidates = [
-  ['Calon Satu', 'assets/ig-panel-3.jpg', null, 1, 'KANDIDAT 01', 'Mewujudkan KMTEDI yang progresif, inklusif, dan berdaya saing.', ['Memperkuat kolaborasi antardepartemen', 'Optimalisasi ruang karya mahasiswa'], ['KMTEDI Berdaya', 'Ruang Temu Mahasiswa']],
-  ['Calon Dua', 'assets/ig-panel-4.jpg', null, 2, 'KANDIDAT 02', 'Menjadikan KMTEDI sebagai wadah sinergi, inovasi, dan integritas.', ['Membangun kultur riset dan teknologi', 'Meningkatkan jejaring industri'], ['Inkubasi Proyek', 'KMTEDI Connect']],
-  ['Calon Tiga', 'assets/ig-panel-5.jpg', null, 3, 'KANDIDAT 03', 'Transformasi KMTEDI yang adaptif dan solutif terhadap kebutuhan mahasiswa.', ['Kanal advokasi mahasiswa yang transparan', 'Pengembangan talenta digital'], ['Advokasi Cepat', 'KMTEDI Bootcamp']]
+  ['Calon Satu', 'assets/ig-panel-3.jpg', null, 1, 'KANDIDAT 01', 'Mewujudkan KMTEDI yang progresif, inklusif, dan berdaya saing.', ['Memperkuat kolaborasi antardepartemen', 'Optimalisasi ruang karya mahasiswa'], ['KMTEDI Berdaya', 'Ruang Temu Mahasiswa'], 'Staf Divisi Kaderisasi KMTEDI 2024\nKetua Pelaksana Open House 2024'],
+  ['Calon Dua', 'assets/ig-panel-4.jpg', null, 2, 'KANDIDAT 02', 'Menjadikan KMTEDI sebagai wadah sinergi, inovasi, dan integritas.', ['Membangun kultur riset dan teknologi', 'Meningkatkan jejaring industri'], ['Inkubasi Proyek', 'KMTEDI Connect'], 'Staf Departemen Keilmuan KMTEDI 2024\nKoordinator Workshop IoT 2024'],
+  ['Calon Tiga', 'assets/ig-panel-5.jpg', null, 3, 'KANDIDAT 03', 'Transformasi KMTEDI yang adaptif dan solutif terhadap kebutuhan mahasiswa.', ['Kanal advokasi mahasiswa yang transparan', 'Pengembangan talenta digital'], ['Advokasi Cepat', 'KMTEDI Bootcamp'], 'Staf Advokasi dan Kesejahteraan Mahasiswa 2024\nTim Media & Informasi KMTEDI']
 ];
 
 let selected = 0;
@@ -867,7 +871,7 @@ function updateVoterBadge() {
     btn.style.background = 'var(--wine)';
     btn.style.color = 'var(--cream)';
   } else if (v.nim) {
-    btn.innerHTML = 'NIM Terverifikasi (' + v.nim + ') · Pilih Calon ↓';
+    btn.innerHTML = 'Akun Terverifikasi (' + v.nim + ') · Pilih Calon ↓';
     btn.style.background = 'var(--yellow)';
     btn.style.color = 'var(--night)';
   } else {
@@ -910,10 +914,50 @@ async function loadPublicData() {
       db.from('election_settings').select('*').single(),
       db.from('candidates').select('*').eq('is_active', true).order('order_number')
     ]);
+    
     if (settings) {
       electionSettings = settings;
       updateVotingStatus();
+
+      // Dynamic Hero Slides from Admin
+      if (settings.hero_slides && settings.hero_slides.length) {
+        heroSlides.length = 0;
+        settings.hero_slides.forEach(s => heroSlides.push([s.image, s.caption]));
+        setHero(0);
+      }
+
+      // Dynamic Marquee from Admin
+      if (settings.marquee_text) {
+        const mq = document.querySelector('.marquee-track');
+        if (mq) mq.textContent = settings.marquee_text + ' ' + settings.marquee_text;
+      }
+
+      // Dynamic About Statement & Info from Admin
+      if (settings.about_statement) {
+        const stmt = document.querySelector('.about-statement');
+        if (stmt) stmt.innerHTML = settings.about_statement;
+      }
+      if (settings.about_info) {
+        const info = document.getElementById('aboutInfoText');
+        if (info) info.innerHTML = settings.about_info;
+      }
+
+      // Dynamic Timeline Alur from Admin
+      if (settings.timeline_items && settings.timeline_items.length) {
+        const tlList = document.querySelector('.timeline-list');
+        if (tlList) {
+          tlList.innerHTML = settings.timeline_items.map((t, idx) => `
+            <div class="time-row">
+              <div class="time-no">${t.no || '0' + (idx + 1)}</div>
+              <h3>${t.title || 'Tahap'}</h3>
+              <p>${t.desc || ''}</p>
+              <div class="time-date">${t.date || ''}</div>
+            </div>
+          `).join('');
+        }
+      }
     }
+
     if (rows && rows.length) {
       candidates = rows.map((r, i) => [
         r.name,
@@ -923,7 +967,8 @@ async function loadPublicData() {
         r.batch ? `ANGKATAN ${r.batch}` : `KANDIDAT 0${r.order_number}`,
         r.vision || 'Visi kandidat.',
         r.mission || [],
-        r.programs || []
+        r.programs || [],
+        r.organization_history || 'Riwayat organisasi belum diisi oleh panitia.'
       ]);
       renderCandidateCards();
     }
@@ -939,12 +984,17 @@ function renderModal() {
   document.getElementById('modalNo').textContent = String(c[3] || selected + 1).padStart(2, '0');
   document.getElementById('modalLabel').textContent = `CALON ${String(c[3] || selected + 1).padStart(2, '0')} / PROFIL`;
   
+  // Panel 1: Data Diri & Riwayat Organisasi
   document.getElementById('slideBio').textContent = c[4] ? `${c[0]} · ${c[4]}` : c[0];
-  document.getElementById('slideVision').textContent = c[5] || 'Visi kandidat.';
+  const histEl = document.getElementById('slideHistory');
+  if (histEl) histEl.textContent = c[8] || 'Riwayat organisasi belum diisi oleh panitia.';
   
+  // Panel 2: Visi & Misi
+  document.getElementById('slideVision').textContent = c[5] || 'Visi kandidat.';
   const missionList = document.getElementById('slideMission');
   missionList.innerHTML = (c[6] && c[6].length) ? c[6].map(m => `<li>${m}</li>`).join('') : '<li>Misi kandidat</li>';
   
+  // Panel 3: Program Kerja
   const progList = document.getElementById('slidePrograms');
   progList.innerHTML = (c[7] && c[7].length) ? c[7].map(p => `<li>${p}</li>`).join('') : '<li>Program kerja unggulan</li>';
 

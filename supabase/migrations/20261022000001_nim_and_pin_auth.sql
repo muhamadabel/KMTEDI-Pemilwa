@@ -1,4 +1,4 @@
--- Migration: NIM Verification + Strict @mail.ugm.ac.id domain + Admin PIN + Candidate CRUD
+-- Migration: NIM Verification + Strict @mail.ugm.ac.id domain + Admin PIN + Candidate CRUD + Homepage Panels Config
 -- Run this in Supabase SQL Editor.
 
 -- 1. Table for tracking voters by NIM & UGM Email
@@ -14,9 +14,14 @@ create table if not exists public.registered_voters (
 create index if not exists idx_registered_voters_email on public.registered_voters (lower(email));
 alter table public.registered_voters enable row level security;
 
--- 2. Add admin_pin to election_settings if not exists
+-- 2. Add columns to election_settings
 alter table public.election_settings
-add column if not exists admin_pin text not null default 'KMTEDI2026';
+add column if not exists admin_pin text not null default 'KMTEDI2026',
+add column if not exists hero_slides jsonb default '[{"image":"assets/ig-panel-1.jpg","caption":"Ruang untuk<br>gagasan baru."},{"image":"assets/ig-panel-2.jpg","caption":"Kampus yang<br>ikut bergerak."},{"image":"assets/ig-panel-6.jpg","caption":"Pilih dengan<br>kesadaran."}]'::jsonb,
+add column if not exists marquee_text text default 'KMTEDI / PEMILWA 2026 ✦ SATU SUARA SATU KETUA ✦ PILIH DENGAN SADAR ✦ BACA GAGASANNYA ✦',
+add column if not exists about_statement text default 'Satu pemilihan umum untuk menentukan Ketua KMTEDI pada periode kepengurusan berikutnya.',
+add column if not exists about_info text default 'Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi pemilih menggunakan NIM mahasiswa dan email @mail.ugm.ac.id. Hasil suara disimpan tertutup dan rahasia sampai dibuka oleh panitia.',
+add column if not exists timeline_items jsonb default '[{"no":"01","title":"Pendaftaran","desc":"Calon ketua menyiapkan berkas pencalonan dan verifikasi panitia.","date":"SELESAI"},{"no":"02","title":"Masa Kampanye","desc":"Penyampaian visi misi, debat kandidat, dan publikasi program kerja.","date":"SEDANG BERJALAN"},{"no":"03","title":"Pemungutan Suara","desc":"Bilik suara dibuka. Mahasiswa memasukkan NIM dan memilih calon.","date":"SEGERA"},{"no":"04","title":"Pengumuman","desc":"Rekapitulasi resmi selesai dan hasil dibuka untuk seluruh mahasiswa.","date":"AKHIR"}]'::jsonb;
 
 -- 3. Verifikasi PIN Admin
 create or replace function public.admin_verify_pin(p_pin text)
@@ -33,7 +38,7 @@ $$;
 
 grant execute on function public.admin_verify_pin(text) to anon, authenticated;
 
--- 4. Function to cast vote using NIM + Strict @mail.ugm.ac.id (One Vote per Student, Anonymous Ballot)
+-- 4. Function to cast vote using NIM + Strict @mail.ugm.ac.id
 create or replace function public.cast_vote_by_nim(
   p_candidate_id uuid,
   p_nim text,
@@ -126,7 +131,12 @@ returns table (
   total_voters bigint,
   voted_count bigint,
   voting_open boolean,
-  results_published boolean
+  results_published boolean,
+  hero_slides jsonb,
+  marquee_text text,
+  about_statement text,
+  about_info text,
+  timeline_items jsonb
 )
 language plpgsql
 security definer set search_path = public
@@ -141,7 +151,12 @@ begin
     count(*)::bigint as total_voters,
     count(*) filter (where has_voted)::bigint as voted_count,
     (select s.voting_open from public.election_settings s where s.id = true limit 1),
-    (select s.results_published from public.election_settings s where s.id = true limit 1)
+    (select s.results_published from public.election_settings s where s.id = true limit 1),
+    (select s.hero_slides from public.election_settings s where s.id = true limit 1),
+    (select s.marquee_text from public.election_settings s where s.id = true limit 1),
+    (select s.about_statement from public.election_settings s where s.id = true limit 1),
+    (select s.about_info from public.election_settings s where s.id = true limit 1),
+    (select s.timeline_items from public.election_settings s where s.id = true limit 1)
   from public.registered_voters;
 end;
 $$;
@@ -204,7 +219,7 @@ $$;
 
 grant execute on function public.admin_toggle_switch(text, text) to anon, authenticated;
 
--- 8. Admin Save Candidate (Insert or Update biodata paslon)
+-- 8. Admin Save Candidate (Insert or Update biodata paslon & riwayat)
 create or replace function public.admin_save_candidate(
   p_pin text,
   p_id uuid,
@@ -216,6 +231,7 @@ create or replace function public.admin_save_candidate(
   p_vision text default '',
   p_mission text[] default '{}',
   p_programs text[] default '{}',
+  p_organization_history text default '',
   p_is_active boolean default true
 )
 returns jsonb
@@ -248,6 +264,7 @@ begin
       vision = coalesce(trim(p_vision), ''),
       mission = coalesce(p_mission, '{}'),
       programs = coalesce(p_programs, '{}'),
+      organization_history = coalesce(trim(p_organization_history), ''),
       is_active = coalesce(p_is_active, true),
       updated_at = timezone('utc', now())
     where id = p_id
@@ -258,11 +275,11 @@ begin
     end if;
   else
     insert into public.candidates (
-      order_number, name, batch, nim, photo_url, vision, mission, programs, is_active
+      order_number, name, batch, nim, photo_url, vision, mission, programs, organization_history, is_active
     ) values (
       p_order_number, trim(p_name), nullif(trim(p_batch), ''), nullif(trim(p_nim), ''),
       nullif(trim(p_photo_url), ''), coalesce(trim(p_vision), ''), coalesce(p_mission, '{}'),
-      coalesce(p_programs, '{}'), coalesce(p_is_active, true)
+      coalesce(p_programs, '{}'), coalesce(trim(p_organization_history), ''), coalesce(p_is_active, true)
     )
     returning id into saved_id;
   end if;
@@ -271,7 +288,7 @@ begin
 end;
 $$;
 
-grant execute on function public.admin_save_candidate(text, uuid, integer, text, text, text, text, text, text[], text[], boolean) to anon, authenticated;
+grant execute on function public.admin_save_candidate(text, uuid, integer, text, text, text, text, text, text[], text[], text, boolean) to anon, authenticated;
 
 -- 9. Admin Delete Candidate
 create or replace function public.admin_delete_candidate(p_pin text, p_id uuid)
@@ -290,3 +307,37 @@ end;
 $$;
 
 grant execute on function public.admin_delete_candidate(text, uuid) to anon, authenticated;
+
+-- 10. Admin Save Homepage Panels (Hero Carousel, Marquee, About, Timeline)
+create or replace function public.admin_save_panels(
+  p_pin text,
+  p_hero_slides jsonb default null,
+  p_marquee_text text default null,
+  p_about_statement text default null,
+  p_about_info text default null,
+  p_timeline_items jsonb default null
+)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if not public.admin_verify_pin(p_pin) then
+    raise exception 'PIN Admin salah atau tidak valid!';
+  end if;
+
+  update public.election_settings
+  set
+    hero_slides = coalesce(p_hero_slides, hero_slides),
+    marquee_text = coalesce(nullif(trim(p_marquee_text), ''), marquee_text),
+    about_statement = coalesce(nullif(trim(p_about_statement), ''), about_statement),
+    about_info = coalesce(nullif(trim(p_about_info), ''), about_info),
+    timeline_items = coalesce(p_timeline_items, timeline_items),
+    updated_at = timezone('utc', now())
+  where id = true;
+
+  return jsonb_build_object('success', true, 'message', 'Semua panel beranda berhasil diperbarui!');
+end;
+$$;
+
+grant execute on function public.admin_save_panels(text, jsonb, text, text, text, jsonb) to anon, authenticated;

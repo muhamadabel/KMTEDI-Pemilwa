@@ -9,23 +9,23 @@
 :root{--bg:#240a17;--panel:#4a1021;--wine:#68152b;--red:#ed5b42;--gold:#ffc857;--cream:#fff0d2;--muted:#d8a99c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif}
-.shell{width:min(1180px,92vw);margin:auto;padding:40px 0 70px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px}
+.shell{width:min(1200px,94vw);margin:auto;padding:36px 0 80px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px}
 .brand{font:700 15px 'Space Mono';letter-spacing:-.05em;display:flex;align-items:center;gap:10px}
 .brand i{width:16px;height:16px;background:var(--red);display:inline-block;border-radius:3px}
 .eyebrow{font:700 11px 'Space Mono';letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
-h1{font:400 clamp(54px,8vw,100px)/.88 Anton;margin:12px 0 32px;text-transform:uppercase}
+h1{font:400 clamp(50px,7.5vw,96px)/.88 Anton;margin:10px 0 28px;text-transform:uppercase}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
 .metric,.panel{background:var(--panel);border:1px solid rgba(255,240,210,.2);padding:22px}
-.metric b{display:block;font:400 50px Anton;color:var(--gold);line-height:1}
+.metric b{display:block;font:400 48px Anton;color:var(--gold);line-height:1}
 .metric span{display:block;margin-top:8px;color:var(--muted);font:700 10px 'Space Mono';text-transform:uppercase}
-.panel{margin-top:18px}
-.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.panel h2{font:400 32px Anton;margin:0;text-transform:uppercase}
+.panel{margin-top:20px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+.panel h2{font:400 30px Anton;margin:0;text-transform:uppercase}
 .row{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,240,210,.18);padding:16px 0;gap:15px}
 .row:first-of-type{border-top:0}
 .row small{color:var(--muted);font:700 10px 'Space Mono'}
-.btn{border:0;padding:12px 18px;background:var(--gold);color:var(--bg);font:700 11px 'Space Mono';cursor:pointer;text-transform:uppercase;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn{border:0;padding:11px 16px;background:var(--gold);color:var(--bg);font:700 11px 'Space Mono';cursor:pointer;text-transform:uppercase;transition:.2s;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{background:var(--cream);transform:translateY(-2px)}
 .btn.alt{background:transparent;border:1px solid var(--gold);color:var(--gold)}
 .btn.alt:hover{background:var(--gold);color:var(--bg)}
@@ -37,21 +37,26 @@ h1{font:400 clamp(54px,8vw,100px)/.88 Anton;margin:12px 0 32px;text-transform:up
 .login-box{max-width:460px;background:var(--panel);border:1px solid rgba(255,240,210,.2);padding:32px;box-shadow:12px 12px 0 rgba(237,91,66,.25)}
 .field{margin-bottom:16px}
 .field label{display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
-.input{width:100%;padding:12px 14px;background:var(--bg);border:1px solid rgba(255,240,210,.3);color:var(--cream);font:500 13px 'DM Sans'}
+.input{width:100%;padding:11px 13px;background:var(--bg);border:1px solid rgba(255,240,210,.3);color:var(--cream);font:500 13px 'DM Sans'}
 .input:focus{outline:0;border-color:var(--gold)}
 textarea.input{resize:vertical;min-height:75px;font-family:inherit}
 
-/* CANDIDATE CARD IN ADMIN */
-.candidate-item{display:grid;grid-template-columns:60px 1fr auto;gap:16px;align-items:center;border-top:1px solid rgba(255,240,210,.18);padding:18px 0}
+/* CANDIDATE CARD */
+.candidate-item{display:grid;grid-template-columns:70px 1fr auto;gap:16px;align-items:center;border-top:1px solid rgba(255,240,210,.18);padding:16px 0}
 .candidate-item:first-of-type{border-top:0}
-.candidate-thumb{width:60px;height:70px;background:var(--wine);object-fit:cover;border:1px solid rgba(255,240,210,.2)}
+.candidate-thumb{width:70px;height:84px;background:var(--wine);object-fit:cover;border:1px solid rgba(255,240,210,.25)}
+
+/* TABS / SECTIONS IN ADMIN */
+.admin-nav{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid rgba(255,240,210,.2);padding-bottom:12px}
+.admin-tab{padding:9px 16px;font:700 11px 'Space Mono';border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;text-transform:uppercase}
+.admin-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(255,200,87,.08)}
 
 /* MODAL */
-.modal-backdrop{display:none;position:fixed;inset:0;z-index:60;background:rgba(20,5,13,.85);backdrop-filter:blur(8px);padding:4vh 4vw;place-items:center}
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:60;background:rgba(20,5,13,.85);backdrop-filter:blur(8px);padding:3vh 3vw;place-items:center}
 .modal-backdrop.open{display:grid}
-.modal-box{width:min(680px,94vw);max-height:92vh;background:var(--cream);color:var(--bg);padding:34px;position:relative;overflow-y:auto;box-shadow:16px 16px 0 var(--red)}
+.modal-box{width:min(720px,95vw);max-height:92vh;background:var(--cream);color:var(--bg);padding:32px 36px;position:relative;overflow-y:auto;box-shadow:16px 16px 0 var(--red)}
 .modal-close{position:absolute;right:16px;top:14px;border:0;background:none;font-size:26px;color:var(--wine);cursor:pointer}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.top{align-items:start;gap:20px;flex-direction:column}.candidate-item{grid-template-columns:1fr;align-items:start}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.top{align-items:start;gap:18px;flex-direction:column}.candidate-item{grid-template-columns:1fr;align-items:start}}
 </style>
 </head>
 <body>
@@ -68,7 +73,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
   <div class="eyebrow">AUTENTIKASI PANITIA</div>
   <h1>Panel<br>Kontrol.</h1>
   <div class="login-box">
-    <div class="notice">Masukkan PIN Admin panitia untuk mengontrol bilik suara, edit paslon & biodata, melihat rekap, dan publikasi hasil.</div>
+    <div class="notice">Masukkan PIN Admin panitia untuk mengontrol bilik suara, upload foto, edit biodata paslon, dan atur isi panel web.</div>
     <form id="loginForm">
       <div class="field">
         <label>PIN Admin</label>
@@ -90,40 +95,159 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
     <div class="metric"><b id="votingStatusBadge">-</b><span>Status Bilik Suara</span></div>
   </div>
 
-  <!-- SAKLAR CONTROL -->
-  <section class="panel">
-    <div class="panel-head">
-      <h2>Saklar Kontrol Bilik</h2>
-    </div>
-    <div class="row">
-      <div>
-        <b id="votingStateText" style="font-size:17px">-</b><br>
-        <small id="votingStateDesc">Memuat status bilik suara...</small>
-      </div>
-      <div class="actions">
-        <button class="btn" id="toggleVotingBtn">Buka / Tutup Voting</button>
-        <button class="btn alt" id="toggleResultsBtn">Publikasikan Hasil</button>
-      </div>
-    </div>
-  </section>
+  <div class="admin-nav">
+    <button class="admin-tab active" data-tab="tab-voting">1. Bilik & Hasil</button>
+    <button class="admin-tab" data-tab="tab-candidates">2. Paslon & Biodata</button>
+    <button class="admin-tab" data-tab="tab-panels">3. Isi Panel Beranda</button>
+  </div>
 
-  <!-- REKAPITULASI -->
-  <section class="panel">
-    <div class="panel-head">
-      <h2>Rekapitulasi Suara (Real-time)</h2>
-    </div>
-    <div id="resultsList"><div class="notice">Memuat rekap suara...</div></div>
-  </section>
+  <!-- TAB 1: SAKLAR & REKAPITULASI -->
+  <div id="tab-voting" class="tab-content">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Saklar Kontrol Bilik</h2>
+      </div>
+      <div class="row">
+        <div>
+          <b id="votingStateText" style="font-size:17px">-</b><br>
+          <small id="votingStateDesc">Memuat status bilik suara...</small>
+        </div>
+        <div class="actions">
+          <button class="btn" id="toggleVotingBtn">Buka / Tutup Voting</button>
+          <button class="btn alt" id="toggleResultsBtn">Publikasikan Hasil</button>
+        </div>
+      </div>
+    </section>
 
-  <!-- PASLON CRUD -->
-  <section class="panel">
-    <div class="panel-head">
-      <h2>Manajemen Paslon & Biodata</h2>
-      <button class="btn" id="addCandidateBtn">+ Tambah Calon Baru</button>
-    </div>
-    <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Admin dapat mengubah nomor urut, foto, nama, angkatan, visi, misi, dan program kerja calon yang tampil di beranda.</p>
-    <div id="candidatesList"><div class="notice">Memuat daftar calon...</div></div>
-  </section>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Rekapitulasi Suara (Real-time)</h2>
+      </div>
+      <div id="resultsList"><div class="notice">Memuat rekap suara...</div></div>
+    </section>
+  </div>
+
+  <!-- TAB 2: MANAJEMEN PASLON & UPLOAD FOTO -->
+  <div id="tab-candidates" class="tab-content hidden">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Manajemen Paslon & Biodata</h2>
+        <button class="btn" id="addCandidateBtn">+ Tambah Calon Baru</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Upload foto calon langsung dari laptop/HP, dan edit seluruh isi panel (Data Diri, Visi Misi, dan Program Kerja) yang tampil di bilik suara.</p>
+      <div id="candidatesList"><div class="notice">Memuat daftar calon...</div></div>
+    </section>
+  </div>
+
+  <!-- TAB 3: PENGATURAN PANEL-PANEL BERANDA -->
+  <div id="tab-panels" class="tab-content hidden">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Pengaturan Panel Beranda Web</h2>
+        <button class="btn" id="savePanelsBtn">Simpan Semua Panel 💾</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 20px">Semua teks, foto slide hero, teks berjalan, dan tahapan alur pemilwa di beranda web publik dapat kamu sesuaikan langsung dari sini.</p>
+
+      <div style="background:var(--wine);padding:20px;margin-bottom:20px;border:1px solid rgba(255,240,210,.2)">
+        <h3 style="font:400 22px Anton;margin:0 0 14px;color:var(--gold);text-transform:uppercase">Panel 1: Foto & Teks Hero Slideshow (3 Slide)</h3>
+        
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+          <!-- Slide 1 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">SLIDE 1</label>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <img id="heroPreview0" src="assets/ig-panel-1.jpg" style="width:50px;height:60px;object-fit:cover;border:1px solid var(--gold)">
+              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" onclick="$('heroFile0').click()">Upload 📁</button>
+              <input type="file" id="heroFile0" accept="image/*" style="display:none" onchange="handleHeroUpload(0, this)">
+            </div>
+            <input type="text" id="heroImage0" class="input" placeholder="URL Foto 1" style="margin-bottom:6px;font-size:11px">
+            <textarea id="heroCaption0" class="input" rows="2" placeholder="Caption Slide 1 (HTML diperbolehkan)" style="font-size:11px"></textarea>
+          </div>
+
+          <!-- Slide 2 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">SLIDE 2</label>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <img id="heroPreview1" src="assets/ig-panel-2.jpg" style="width:50px;height:60px;object-fit:cover;border:1px solid var(--gold)">
+              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" onclick="$('heroFile1').click()">Upload 📁</button>
+              <input type="file" id="heroFile1" accept="image/*" style="display:none" onchange="handleHeroUpload(1, this)">
+            </div>
+            <input type="text" id="heroImage1" class="input" placeholder="URL Foto 2" style="margin-bottom:6px;font-size:11px">
+            <textarea id="heroCaption1" class="input" rows="2" placeholder="Caption Slide 2" style="font-size:11px"></textarea>
+          </div>
+
+          <!-- Slide 3 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">SLIDE 3</label>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <img id="heroPreview2" src="assets/ig-panel-6.jpg" style="width:50px;height:60px;object-fit:cover;border:1px solid var(--gold)">
+              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" onclick="$('heroFile2').click()">Upload 📁</button>
+              <input type="file" id="heroFile2" accept="image/*" style="display:none" onchange="handleHeroUpload(2, this)">
+            </div>
+            <input type="text" id="heroImage2" class="input" placeholder="URL Foto 3" style="margin-bottom:6px;font-size:11px">
+            <textarea id="heroCaption2" class="input" rows="2" placeholder="Caption Slide 3" style="font-size:11px"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marquee & About Section -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="field">
+          <label>Teks Pengumuman Marquee (Berjalan)</label>
+          <textarea id="panelMarquee" class="input" rows="3" placeholder="Teks strip berjalan di bawah hero"></textarea>
+        </div>
+        <div class="field">
+          <label>Statement Utama Acara (Halaman Kenali Acara)</label>
+          <textarea id="panelAboutStatement" class="input" rows="3" placeholder="Satu pemilihan umum untuk menentukan..."></textarea>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:20px">
+        <label>Deskripsi & Regulasi Acara (Yang Perlu Kamu Tahu)</label>
+        <textarea id="panelAboutInfo" class="input" rows="2" placeholder="Informasi umum seputar voting dan regulasi..."></textarea>
+      </div>
+
+      <!-- Timeline Items -->
+      <div style="background:var(--wine);padding:20px;border:1px solid rgba(255,240,210,.2)">
+        <h3 style="font:400 22px Anton;margin:0 0 14px;color:var(--gold);text-transform:uppercase">Panel 2: Tahapan Alur Pemilwa (Timeline)</h3>
+        
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <!-- Step 1 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">TAHAP 01</label>
+            <input type="text" id="timeTitle0" class="input" placeholder="Judul Tahap 1" style="margin-bottom:6px">
+            <textarea id="timeDesc0" class="input" rows="2" placeholder="Keterangan singkat" style="margin-bottom:6px;font-size:11px"></textarea>
+            <input type="text" id="timeDate0" class="input" placeholder="Status: misal SELESAI" style="font-size:11px">
+          </div>
+          <!-- Step 2 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">TAHAP 02</label>
+            <input type="text" id="timeTitle1" class="input" placeholder="Judul Tahap 2" style="margin-bottom:6px">
+            <textarea id="timeDesc1" class="input" rows="2" placeholder="Keterangan singkat" style="margin-bottom:6px;font-size:11px"></textarea>
+            <input type="text" id="timeDate1" class="input" placeholder="Status: misal BERJALAN" style="font-size:11px">
+          </div>
+          <!-- Step 3 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">TAHAP 03</label>
+            <input type="text" id="timeTitle2" class="input" placeholder="Judul Tahap 3" style="margin-bottom:6px">
+            <textarea id="timeDesc2" class="input" rows="2" placeholder="Keterangan singkat" style="margin-bottom:6px;font-size:11px"></textarea>
+            <input type="text" id="timeDate2" class="input" placeholder="Status: misal SEGERA" style="font-size:11px">
+          </div>
+          <!-- Step 4 -->
+          <div>
+            <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">TAHAP 04</label>
+            <input type="text" id="timeTitle3" class="input" placeholder="Judul Tahap 4" style="margin-bottom:6px">
+            <textarea id="timeDesc3" class="input" rows="2" placeholder="Keterangan singkat" style="margin-bottom:6px;font-size:11px"></textarea>
+            <input type="text" id="timeDate3" class="input" placeholder="Status: misal AKHIR" style="font-size:11px">
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px;text-align:right">
+        <button class="btn" id="savePanelsBtn2">Simpan Semua Panel 💾</button>
+      </div>
+    </section>
+  </div>
 </div>
 </main>
 
@@ -132,11 +256,26 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
   <div class="modal-box">
     <button class="modal-close" id="candidateModalClose">×</button>
     <div class="eyebrow" style="color:var(--red)" id="modalModeLabel">EDIT CALON KETUA</div>
-    <h2 style="font:400 36px Anton;margin:8px 0 16px;text-transform:uppercase;color:var(--wine)" id="modalCandidateTitle">Biodata Paslon</h2>
+    <h2 style="font:400 36px Anton;margin:6px 0 16px;text-transform:uppercase;color:var(--wine)" id="modalCandidateTitle">Biodata Paslon</h2>
     
     <form id="candidateForm">
       <input type="hidden" id="candId">
       
+      <!-- FOTO UPLOAD BOX -->
+      <div style="background:#fff;padding:16px;border:1px solid rgba(74,16,33,.2);margin-bottom:16px;display:flex;gap:18px;align-items:center">
+        <img id="candPhotoPreview" src="assets/ig-panel-1.jpg" style="width:90px;height:110px;object-fit:cover;border:2px solid var(--wine);border-radius:4px">
+        <div style="flex:1">
+          <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--wine)">FOTO RESMI KANDIDAT *</label>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+            <button type="button" class="btn" style="background:var(--wine);color:var(--cream);padding:9px 14px;font-size:10px" onclick="$('candPhotoFileInput').click()">📁 Upload Foto dari Komputer / HP</button>
+            <input type="file" id="candPhotoFileInput" accept="image/*" style="display:none">
+            <span id="photoFileName" style="font-size:11px;color:#77515a"></span>
+          </div>
+          <input type="text" id="candPhoto" class="input" style="background:#f7f3ee;color:#000;font-size:11px;padding:8px" placeholder="Atau paste URL foto (https://...)">
+        </div>
+      </div>
+
+      <!-- NOMOR & NAMA -->
       <div style="display:grid;grid-template-columns:120px 1fr;gap:12px">
         <div class="field">
           <label style="color:var(--wine)">No. Urut *</label>
@@ -148,6 +287,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         </div>
       </div>
 
+      <!-- ANGKATAN & NIM -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="field">
           <label style="color:var(--wine)">Angkatan (Tahun)</label>
@@ -159,24 +299,27 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         </div>
       </div>
 
+      <!-- PANEL 1: RIWAYAT / BIO -->
       <div class="field">
-        <label style="color:var(--wine)">URL Foto Calon</label>
-        <input type="text" id="candPhoto" class="input" style="background:#fff;color:#000" placeholder="https://... atau assets/ig-panel-1.jpg">
+        <label style="color:var(--wine)">Panel 1: Riwayat Organisasi & Pengalaman Mahasiswa</label>
+        <textarea id="candHistory" class="input" style="background:#fff;color:#000" rows="2" placeholder="Contoh: Staf Departemen Kaderisasi KMTEDI 2024, Ketua Pelaksana Open House..."></textarea>
+      </div>
+
+      <!-- PANEL 2: VISI & MISI -->
+      <div class="field">
+        <label style="color:var(--wine)">Panel 2: Visi Utama Calon</label>
+        <textarea id="candVision" class="input" style="background:#fff;color:#000" rows="2" placeholder="Tulis visi utama calon di sini..."></textarea>
       </div>
 
       <div class="field">
-        <label style="color:var(--wine)">Visi Calon</label>
-        <textarea id="candVision" class="input" style="background:#fff;color:#000" placeholder="Tulis visi utama calon di sini..."></textarea>
+        <label style="color:var(--wine)">Panel 2: Misi Calon (1 baris per poin misi)</label>
+        <textarea id="candMission" class="input" style="background:#fff;color:#000" rows="3" placeholder="Contoh:&#10;Meningkatkan advokasi mahasiswa yang inklusif&#10;Membangun kolaborasi riset industri"></textarea>
       </div>
 
+      <!-- PANEL 3: PROGRAM KERJA -->
       <div class="field">
-        <label style="color:var(--wine)">Misi Calon (1 baris per poin)</label>
-        <textarea id="candMission" class="input" style="background:#fff;color:#000" rows="3" placeholder="Contoh:&#10;Meningkatkan advokasi mahasiswa&#10;Memperkuat relasi industri"></textarea>
-      </div>
-
-      <div class="field">
-        <label style="color:var(--wine)">Program Kerja Unggulan (1 baris per program)</label>
-        <textarea id="candPrograms" class="input" style="background:#fff;color:#000" rows="3" placeholder="Contoh:&#10;KMTEDI Berdaya&#10;Bootcamp Talenta Digital"></textarea>
+        <label style="color:var(--wine)">Panel 3: Program Kerja Unggulan (1 baris per program)</label>
+        <textarea id="candPrograms" class="input" style="background:#fff;color:#000" rows="3" placeholder="Contoh:&#10;KMTEDI Berdaya (Inkubasi Karya)&#10;Bootcamp Talenta Digital"></textarea>
       </div>
 
       <div class="field" style="display:flex;align-items:center;gap:10px">
@@ -184,7 +327,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         <label for="candActive" style="color:var(--wine);margin:0;cursor:pointer">Tampilkan calon ini di bilik suara & web publik</label>
       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px">
         <button type="button" class="btn danger hidden" id="deleteCandBtn">Hapus Calon</button>
         <div style="display:flex;gap:10px;margin-left:auto">
           <button type="button" class="btn alt" id="cancelCandBtn" style="color:var(--wine);border-color:var(--wine)">Batal</button>
@@ -204,8 +347,75 @@ const db = (cfg.url && cfg.anonKey) ? supabase.createClient(cfg.url, cfg.anonKey
 const $ = id => document.getElementById(id);
 let currentPin = sessionStorage.getItem('kmtedi_admin_pin') || '';
 let loadedCandidates = [];
+let loadedSettings = null;
 
 function show(id, visible) { $(id).classList.toggle('hidden', !visible); }
+
+// TABS
+document.querySelectorAll('.admin-tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    tab.classList.add('active');
+    show(tab.dataset.tab, true);
+  };
+});
+
+// CLIENT-SIDE IMAGE COMPRESSION (Resizes to max 800x1000px, quality 0.85, base64 data-url ~50KB)
+function compressImage(file, callback) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxW = 800, maxH = 1000;
+      if (w > maxW || h > maxH) {
+        if (w / h > maxW / maxH) {
+          h = Math.round(h * maxW / w);
+          w = maxW;
+        } else {
+          w = Math.round(w * maxH / h);
+          h = maxH;
+        }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      callback(dataUrl);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// CANDIDATE PHOTO HANDLER
+$('candPhotoFileInput').onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  $('photoFileName').textContent = file.name;
+  compressImage(file, dataUrl => {
+    $('candPhotoPreview').src = dataUrl;
+    $('candPhoto').value = dataUrl;
+  });
+};
+
+$('candPhoto').oninput = () => {
+  const val = $('candPhoto').value.trim();
+  if (val) $('candPhotoPreview').src = val;
+};
+
+// HERO PHOTO UPLOAD
+function handleHeroUpload(index, input) {
+  const file = input.files[0];
+  if (!file) return;
+  compressImage(file, dataUrl => {
+    $(`heroPreview${index}`).src = dataUrl;
+    $(`heroImage${index}`).value = dataUrl;
+  });
+}
 
 async function verifyAndLoad(pin) {
   if (!db) {
@@ -242,6 +452,7 @@ async function refreshDashboard() {
 
     const stats = statsRes.data?.[0];
     if (stats) {
+      loadedSettings = stats;
       $('voterCount').textContent = stats.voted_count ?? 0;
       $('votingStatusBadge').textContent = stats.voting_open ? 'TERBUKA' : 'DITUTUP';
       $('votingStatusBadge').style.color = stats.voting_open ? 'var(--gold)' : 'var(--red)';
@@ -249,6 +460,27 @@ async function refreshDashboard() {
       $('votingStateDesc').textContent = stats.voting_open ? 'Mahasiswa dapat memberikan suara saat ini.' : 'Voting dikunci, mahasiswa belum bisa memilih.';
       $('toggleVotingBtn').textContent = stats.voting_open ? 'Kunci / Tutup Voting' : 'Buka Bilik Suara';
       $('toggleResultsBtn').textContent = stats.results_published ? 'Sembunyikan Hasil dari Publik' : 'Buka Hasil ke Publik';
+
+      // Populate Panels Tab
+      const slides = stats.hero_slides || [];
+      for (let i = 0; i < 3; i++) {
+        const item = slides[i] || {};
+        $(`heroImage${i}`).value = item.image || `assets/ig-panel-${i+1}.jpg`;
+        $(`heroCaption${i}`).value = item.caption || '';
+        $(`heroPreview${i}`).src = item.image || `assets/ig-panel-${i+1}.jpg`;
+      }
+
+      $('panelMarquee').value = stats.marquee_text || '';
+      $('panelAboutStatement').value = stats.about_statement || '';
+      $('panelAboutInfo').value = stats.about_info || '';
+
+      const timeline = stats.timeline_items || [];
+      for (let i = 0; i < 4; i++) {
+        const t = timeline[i] || {};
+        $(`timeTitle${i}`).value = t.title || '';
+        $(`timeDesc${i}`).value = t.desc || '';
+        $(`timeDate${i}`).value = t.date || '';
+      }
     }
 
     const results = resultsRes.data || [];
@@ -302,10 +534,56 @@ async function refreshDashboard() {
   }
 }
 
+// SAVE HOMEPAGE PANELS
+async function saveAllPanels() {
+  if (!currentPin || !db) return;
+  const heroSlides = [];
+  for (let i = 0; i < 3; i++) {
+    heroSlides.push({
+      image: $(`heroImage${i}`).value.trim() || `assets/ig-panel-${i+1}.jpg`,
+      caption: $(`heroCaption${i}`).value.trim()
+    });
+  }
+
+  const marqueeText = $('panelMarquee').value.trim();
+  const aboutStatement = $('panelAboutStatement').value.trim();
+  const aboutInfo = $('panelAboutInfo').value.trim();
+
+  const timelineItems = [];
+  for (let i = 0; i < 4; i++) {
+    timelineItems.push({
+      no: `0${i+1}`,
+      title: $(`timeTitle${i}`).value.trim(),
+      desc: $(`timeDesc${i}`).value.trim(),
+      date: $(`timeDate${i}`).value.trim()
+    });
+  }
+
+  const { data, error } = await db.rpc('admin_save_panels', {
+    p_pin: currentPin,
+    p_hero_slides: heroSlides,
+    p_marquee_text: marqueeText,
+    p_about_statement: aboutStatement,
+    p_about_info: aboutInfo,
+    p_timeline_items: timelineItems
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert('Pengaturan panel beranda berhasil disimpan dan langsung aktif di web publik!');
+    await refreshDashboard();
+  }
+}
+
+$('savePanelsBtn').onclick = saveAllPanels;
+$('savePanelsBtn2').onclick = saveAllPanels;
+
 // MODAL CANDIDATE EDITOR
 const candModal = $('candidateModal');
 function openCandidateModal(id) {
   $('candidateFormErr').textContent = '';
+  $('photoFileName').textContent = '';
   if (id) {
     const c = loadedCandidates.find(item => item.id === id);
     if (!c) return;
@@ -317,6 +595,8 @@ function openCandidateModal(id) {
     $('candBatch').value = c.batch || '';
     $('candNim').value = c.nim || '';
     $('candPhoto').value = c.photo_url || '';
+    $('candPhotoPreview').src = c.photo_url || 'assets/ig-panel-1.jpg';
+    $('candHistory').value = c.organization_history || '';
     $('candVision').value = c.vision || '';
     $('candMission').value = (c.mission || []).join('\n');
     $('candPrograms').value = (c.programs || []).join('\n');
@@ -331,6 +611,8 @@ function openCandidateModal(id) {
     $('candBatch').value = '2023';
     $('candNim').value = '';
     $('candPhoto').value = `assets/ig-panel-${(loadedCandidates.length % 6) + 1}.jpg`;
+    $('candPhotoPreview').src = `assets/ig-panel-${(loadedCandidates.length % 6) + 1}.jpg`;
+    $('candHistory').value = '';
     $('candVision').value = '';
     $('candMission').value = '';
     $('candPrograms').value = '';
@@ -349,7 +631,7 @@ candModal.onclick = e => { if (e.target === candModal) closeCandidateModal(); };
 
 $('candidateForm').onsubmit = async e => {
   e.preventDefault();
-  $('candidateFormErr').textContent = 'Menyimpan ke database...';
+  $('candidateFormErr').textContent = 'Menyimpan data paslon ke database...';
   
   const id = $('candId').value || null;
   const orderNumber = parseInt($('candOrder').value, 10);
@@ -357,6 +639,7 @@ $('candidateForm').onsubmit = async e => {
   const batch = $('candBatch').value.trim() || null;
   const nim = $('candNim').value.trim() || null;
   const photoUrl = $('candPhoto').value.trim() || null;
+  const history = $('candHistory').value.trim() || '';
   const vision = $('candVision').value.trim();
   const mission = $('candMission').value.split('\n').map(s => s.trim()).filter(Boolean);
   const programs = $('candPrograms').value.split('\n').map(s => s.trim()).filter(Boolean);
@@ -373,6 +656,7 @@ $('candidateForm').onsubmit = async e => {
     p_vision: vision,
     p_mission: mission,
     p_programs: programs,
+    p_organization_history: history,
     p_is_active: isActive
   });
 
