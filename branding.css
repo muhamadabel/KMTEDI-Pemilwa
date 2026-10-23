@@ -96,8 +96,15 @@ body::before { display: none; }
 
 /* 04 / STATUS BILIK SUARA: BIRU GELAP (Dark Navy Background) */
 .vote { background: var(--brand-navy); color: var(--cream); }
+.vote .section-kicker {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  margin-bottom: 24px !important;
+}
 .vote .section-kicker h2 { color: var(--cream); }
-.vote .section-kicker .number { color: var(--brand-amber); font-weight: 700; font-size: 12px; }
+.vote .section-kicker .number { color: var(--brand-amber); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; }
 .vote-copy { color: var(--cream); opacity: 1; font-size: 20px; font-weight: 500; }
 .vote .btn-primary { background: var(--brand-amber); color: var(--brand-navy); font-weight: 700; }
 .vote .btn-primary:hover { background: var(--cream); color: var(--brand-navy); }
