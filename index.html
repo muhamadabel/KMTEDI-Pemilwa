@@ -1001,7 +1001,7 @@ const confirmVoteModal = document.getElementById('confirmVoteModal');
 const wrongDomainModal = document.getElementById('wrongDomainModal');
 const successModal = document.getElementById('successModal');
 
-// CHECK URL FOR OAUTH ERRORS
+// CHECK URL FOR OAUTH ERRORS WITH VISUAL MODAL/ALERT
 (function checkUrlErrors() {
   const hash = window.location.hash;
   const search = window.location.search;
@@ -1011,13 +1011,22 @@ const successModal = document.getElementById('successModal');
   
   if (authError) {
     let msg = decodeURIComponent(authError.replace(/\+/g, ' '));
+    console.error('OAuth redirect error:', authError, msg);
+    
+    let userMsg = '';
     if (msg.includes('Database error') || msg.includes('Only @mail.ugm.ac.id')) {
-      alert('Gagal Masuk: Akun yang dipilih bukan email resmi @mail.ugm.ac.id. Harap pilih akun Google UGM Anda.');
+      userMsg = 'Gagal Masuk: Akun yang dipilih bukan email resmi @mail.ugm.ac.id. Harap pilih akun Google UGM Anda.';
     } else if (msg.includes('access_denied') || msg.includes('403')) {
-      alert('Akses Ditolak Google: Email Anda belum didaftarkan sebagai Test User di Google Cloud Platform, atau aplikasi Google belum di-publish.');
+      userMsg = 'Akses Ditolak Google: Akun email Anda belum didaftarkan sebagai "Test User" di Google Cloud Console (menu Audience -> Test Users -> Add users).';
+    } else if (msg.includes('Error getting user profile') || msg.includes('server_error')) {
+      userMsg = 'Gagal Masuk (Server Error): Client Secret di Supabase tidak cocok atau trigger database menolak login. Hubungi admin untuk update Client Secret.';
     } else {
-      console.warn('OAuth redirect notice:', msg);
+      userMsg = 'Gagal Masuk Google: ' + msg;
     }
+    
+    setTimeout(() => {
+      alert(userMsg);
+    }, 300);
     history.replaceState(null, '', window.location.pathname);
   }
 })();
