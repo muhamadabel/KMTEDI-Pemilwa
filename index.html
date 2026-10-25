@@ -703,6 +703,8 @@ section { padding: 85px 0; position: relative; }
 }
 </style>
 <link rel="stylesheet" href="branding.css">
+<link rel="stylesheet" href="motifs.css">
+<script src="boot.js"></script>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <meta name="theme-color" content="#000113">
 </head>
@@ -716,7 +718,7 @@ section { padding: 85px 0; position: relative; }
     <a href="#timeline">Alur</a>
     <!-- Top Right User Status Greeting or Verification Button -->
     <span id="userStatusWrapper">
-      <button class="btn-nav-verify" onclick="openVoterModal()">
+      <button type="button" class="btn-nav-verify" data-action="open-voter">
         Verifikasi Pemilih (NIM)
       </button>
     </span>
@@ -727,6 +729,7 @@ section { padding: 85px 0; position: relative; }
 
 <!-- HERO -->
 <section class="hero">
+  <div class="bg-glow glow-hero" aria-hidden="true"><div class="rays"></div><div class="glow-orb"></div></div>
   <img class="media-art hero-petals" src="assets/media-petals.webp" width="507" height="720" alt="" aria-hidden="true">
   <div class="wrap hero-grid">
     <div class="hero-copy">
@@ -741,7 +744,9 @@ section { padding: 85px 0; position: relative; }
     
     <div class="hero-visual">
       <img class="media-art hero-spark" src="assets/media-spark.webp" width="529" height="561" alt="" aria-hidden="true">
+      <div class="lanyard" aria-hidden="true"><span></span><span></span></div>
       <div class="hero-card" id="heroCard">
+        <div class="badge-slot" aria-hidden="true"></div>
         <img id="heroImg" src="assets/ig-panel-1.jpg" alt="Visual KMTEDI">
         <div class="hero-art-label">
           <strong id="heroCaption">Ruang untuk<br>gagasan baru.</strong>
@@ -765,22 +770,35 @@ section { padding: 85px 0; position: relative; }
 <!-- ABOUT -->
 <section class="about" id="acara">
   <div class="wrap">
-    <div class="section-kicker">
+    <div class="section-kicker reveal">
       <h2>Kenali<br>Acaranya.</h2>
       <span class="number">01 / INFO</span>
     </div>
     <div class="about-grid">
-      <div class="about-statement">
-        Satu pemilihan umum untuk menentukan <span>Ketua KMTEDI</span> pada periode kepengurusan berikutnya.
-      </div>
-      <div class="about-info">
-        <strong>Yang Perlu Kamu Tahu</strong>
-        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan NIM dan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id) untuk mencegah kecurangan identitas. Setiap pemilih hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
-        <div class="info-pills">
-          <span class="pill">VERIFIKASI EMAIL UGM (OTP)</span>
-          <span class="pill">ONE STUDENT ONE VOTE</span>
-          <span class="pill">SECRET BALLOT</span>
+      <div class="about-main">
+        <div class="about-statement reveal">
+          Satu pemilihan umum untuk menentukan <span>Ketua KMTEDI</span> pada periode kepengurusan berikutnya.
         </div>
+        <div class="about-info reveal">
+          <strong>Yang Perlu Kamu Tahu</strong>
+          <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan NIM dan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id) untuk mencegah kecurangan identitas. Setiap pemilih hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
+          <div class="info-pills">
+            <span class="pill">VERIFIKASI EMAIL UGM (OTP)</span>
+            <span class="pill">ONE STUDENT ONE VOTE</span>
+            <span class="pill">SECRET BALLOT</span>
+          </div>
+        </div>
+      </div>
+      <div class="ticket-stage reveal">
+        <div class="envelope" aria-hidden="true"></div>
+        <article class="ticket" aria-label="Jadwal pemungutan suara">
+          <dl>
+            <div><dt>Hari, Tanggal</dt><dd id="ticketDate">Diumumkan panitia</dd></div>
+            <div><dt>Waktu</dt><dd id="ticketTime">Menyusul</dd></div>
+            <div><dt>Tempat</dt><dd>Online, lewat situs ini</dd></div>
+          </dl>
+        </article>
+        <span class="ticket-tape">Siapkan NIM dan email UGM</span>
       </div>
     </div>
   </div>
@@ -788,18 +806,21 @@ section { padding: 85px 0; position: relative; }
 
 <!-- CANDIDATES: KLIK KARTU LANGSUNG BUKA DETAIL -->
 <section class="candidates" id="calon">
+  <div class="bg-glow glow-candidates" aria-hidden="true"><div class="rays"></div><div class="glow-orb"></div></div>
   <div class="wrap">
-    <div class="section-kicker">
+    <div class="section-kicker reveal">
       <h2>Kenali<br>Calonmu.</h2>
       <span class="number">02 / CALON</span>
     </div>
-    <p class="candidate-intro">Para calon kandidat dengan visi misi, dan program kerja masing masing</p>
+    <p class="candidate-intro reveal">Para calon kandidat dengan visi misi, dan program kerja masing masing</p>
     
     <div class="candidate-grid">
       <!-- Card 01 -->
-      <article class="candidate-card" id="candCard0" onclick="openProfile(0)">
+      <article class="candidate-card" id="candCard0" data-index="0" tabindex="0">
+        <div class="card-strap" aria-hidden="true"></div>
         <div class="candidate-image">
-          <img src="assets/ig-panel-3.jpg" alt="Visual calon 01">
+          <div class="badge-slot" aria-hidden="true"></div>
+          <img src="assets/candidate-placeholder.svg" alt="Visual calon 01">
           <b class="candidate-no">01</b>
         </div>
         <div class="candidate-meta">
@@ -808,15 +829,17 @@ section { padding: 85px 0; position: relative; }
         </div>
         <div class="candidate-click-hint">Klik kartu untuk detail profil</div>
         <div class="candidate-actions">
-          <button type="button" class="btn-card-profile" onclick="event.stopPropagation(); openProfile(0)">Profil Lengkap</button>
-          <button type="button" class="btn-card-vote" id="voteBtn0" onclick="event.stopPropagation(); triggerVote(0)">Pilih 01</button>
+          <button type="button" class="btn-card-profile" data-action="profile" data-index="0">Profil Lengkap</button>
+          <button type="button" class="btn-card-vote" id="voteBtn0" data-action="vote" data-index="0">Pilih 01</button>
         </div>
       </article>
 
       <!-- Card 02 -->
-      <article class="candidate-card" id="candCard1" onclick="openProfile(1)">
+      <article class="candidate-card" id="candCard1" data-index="1" tabindex="0">
+        <div class="card-strap" aria-hidden="true"></div>
         <div class="candidate-image">
-          <img src="assets/ig-panel-4.jpg" alt="Visual calon 02">
+          <div class="badge-slot" aria-hidden="true"></div>
+          <img src="assets/candidate-placeholder.svg" alt="Visual calon 02">
           <b class="candidate-no">02</b>
         </div>
         <div class="candidate-meta">
@@ -825,15 +848,17 @@ section { padding: 85px 0; position: relative; }
         </div>
         <div class="candidate-click-hint">Klik kartu untuk detail profil</div>
         <div class="candidate-actions">
-          <button type="button" class="btn-card-profile" onclick="event.stopPropagation(); openProfile(1)">Profil Lengkap</button>
-          <button type="button" class="btn-card-vote" id="voteBtn1" onclick="event.stopPropagation(); triggerVote(1)">Pilih 02</button>
+          <button type="button" class="btn-card-profile" data-action="profile" data-index="1">Profil Lengkap</button>
+          <button type="button" class="btn-card-vote" id="voteBtn1" data-action="vote" data-index="1">Pilih 02</button>
         </div>
       </article>
 
       <!-- Card 03 -->
-      <article class="candidate-card" id="candCard2" onclick="openProfile(2)">
+      <article class="candidate-card" id="candCard2" data-index="2" tabindex="0">
+        <div class="card-strap" aria-hidden="true"></div>
         <div class="candidate-image">
-          <img src="assets/ig-panel-5.jpg" alt="Visual calon 03">
+          <div class="badge-slot" aria-hidden="true"></div>
+          <img src="assets/candidate-placeholder.svg" alt="Visual calon 03">
           <b class="candidate-no">03</b>
         </div>
         <div class="candidate-meta">
@@ -842,8 +867,8 @@ section { padding: 85px 0; position: relative; }
         </div>
         <div class="candidate-click-hint">Klik kartu untuk detail profil</div>
         <div class="candidate-actions">
-          <button type="button" class="btn-card-profile" onclick="event.stopPropagation(); openProfile(2)">Profil Lengkap</button>
-          <button type="button" class="btn-card-vote" id="voteBtn2" onclick="event.stopPropagation(); triggerVote(2)">Pilih 03</button>
+          <button type="button" class="btn-card-profile" data-action="profile" data-index="2">Profil Lengkap</button>
+          <button type="button" class="btn-card-vote" id="voteBtn2" data-action="vote" data-index="2">Pilih 03</button>
         </div>
       </article>
     </div>
@@ -857,12 +882,13 @@ section { padding: 85px 0; position: relative; }
 
 <!-- TIMELINE -->
 <section class="timeline" id="timeline">
+  <div class="bg-glow glow-timeline" aria-hidden="true"><div class="rays"></div><div class="glow-orb"></div></div>
   <div class="wrap">
-    <div class="section-kicker">
+    <div class="section-kicker reveal">
       <h2>Alur<br>Pemilwa.</h2>
       <span class="number">03 / TIMELINE</span>
     </div>
-    <div class="timeline-list">
+    <div class="timeline-list reveal">
       <div class="time-row">
         <div class="time-no">01</div>
         <h3>Pendaftaran</h3>
@@ -893,21 +919,22 @@ section { padding: 85px 0; position: relative; }
 
 <!-- VOTE / BILIK -->
 <section class="vote" id="pilih">
+  <div class="bg-glow glow-vote" aria-hidden="true"><div class="rays"></div><div class="glow-orb"></div></div>
   <div class="wrap vote-grid">
     <div>
-      <div class="section-kicker">
+      <div class="section-kicker reveal">
         <span class="number">04 / STATUS</span>
         <h2>Bilik<br>Suara.</h2>
       </div>
       <p class="vote-copy" id="voteCopyText">Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
       
       <div id="voterActionContainer">
-        <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
+        <button type="button" class="btn btn-primary" id="mainVoteBtn">
           Verifikasi Pemilih (NIM & Email UGM)
         </button>
       </div>
     </div>
-    <div class="status-box" id="statusBoxContainer">
+    <div class="status-box reveal" id="statusBoxContainer">
       <small id="votingStatusLabel">MENUJU BILIK SUARA DIBUKA</small>
       <div id="votingStatusMain">
         <div class="countdown-grid">
@@ -1102,926 +1129,6 @@ section { padding: 85px 0; position: relative; }
 
 <!-- SCRIPTS -->
 <script src="supabase-config.js"></script>
-<script>
-// SAFE RENDERING HELPERS: semua data dari database wajib lewat sini sebelum masuk innerHTML
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
-}
-// Escape lalu izinkan hanya patah baris (<br> atau newline)
-function richText(value) {
-  return escapeHtml(value).replace(/&lt;br\s*\/?&gt;/gi, '<br>').replace(/\n/g, '<br>');
-}
-function safeImage(url, fallback) {
-  const u = String(url || '');
-  return /^(data:image\/(png|jpeg|webp);base64,|https:\/\/|assets\/)/.test(u) ? u : fallback;
-}
-
-// HERO CAROUSEL
-const heroSlides = [
-  ['assets/ig-panel-1.jpg', 'Ruang untuk<br>gagasan baru.'],
-  ['assets/ig-panel-2.jpg', 'Kampus yang<br>ikut bergerak.'],
-  ['assets/ig-panel-6.jpg', 'Pilih dengan<br>kesadaran.']
-];
-let heroIndex = 0;
-const heroCard = document.getElementById('heroCard');
-const heroImg = document.getElementById('heroImg');
-const heroCaption = document.getElementById('heroCaption');
-const heroNumber = document.getElementById('heroIndex');
-const heroDots = [...document.querySelectorAll('.hero-dot')];
-
-function setHero(i) {
-  heroIndex = (i + heroSlides.length) % heroSlides.length;
-  if (!heroCard) return;
-  heroCard.classList.add('changing');
-  setTimeout(() => {
-    heroImg.src = safeImage(heroSlides[heroIndex][0], 'assets/ig-panel-1.jpg');
-    heroCaption.innerHTML = richText(heroSlides[heroIndex][1]);
-    heroNumber.textContent = `0${heroIndex+1} / 03`;
-    heroDots.forEach((d, n) => d.classList.toggle('active', n === heroIndex));
-    heroCard.classList.remove('changing');
-  }, 160);
-}
-
-let heroTimer = setInterval(() => setHero(heroIndex + 1), 5000);
-function resetHeroTimer() {
-  if (heroTimer) clearInterval(heroTimer);
-  heroTimer = setInterval(() => setHero(heroIndex + 1), 5000);
-}
-
-heroDots.forEach((d, i) => d.addEventListener('click', () => {
-  setHero(i);
-  resetHeroTimer();
-}));
-
-// HERO CARD SWIPE DIRECTLY FROM IMAGE (TOUCH & MOUSE DRAG)
-if (heroCard) {
-  let touchStartX = 0;
-  let touchStartY = 0;
-
-  heroCard.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-
-  heroCard.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 25) {
-      if (dx < 0) {
-        setHero(heroIndex + 1);
-      } else {
-        setHero(heroIndex - 1);
-      }
-      resetHeroTimer();
-    }
-  }, { passive: true });
-
-  let isHeroDragging = false;
-  let mouseStartX = 0;
-  let mouseStartY = 0;
-
-  heroCard.addEventListener('mousedown', e => {
-    isHeroDragging = true;
-    mouseStartX = e.clientX;
-    mouseStartY = e.clientY;
-  });
-
-  window.addEventListener('mouseup', e => {
-    if (!isHeroDragging) return;
-    isHeroDragging = false;
-    const dx = e.clientX - mouseStartX;
-    const dy = e.clientY - mouseStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 25) {
-      if (dx < 0) {
-        setHero(heroIndex + 1);
-      } else {
-        setHero(heroIndex - 1);
-      }
-      resetHeroTimer();
-    }
-  });
-}
-
-// CANDIDATES DATA
-let candidates = [
-  ['Calon Satu', 'assets/ig-panel-3.jpg', null, 1, 'KANDIDAT 01', 'Mewujudkan KMTEDI yang progresif, inklusif, dan berdaya saing.', ['Memperkuat kolaborasi antardepartemen', 'Optimalisasi ruang karya mahasiswa'], ['KMTEDI Berdaya', 'Ruang Temu Mahasiswa'], 'Staf Divisi Kaderisasi KMTEDI 2024\nKetua Pelaksana Open House 2024'],
-  ['Calon Dua', 'assets/ig-panel-4.jpg', null, 2, 'KANDIDAT 02', 'Menjadikan KMTEDI sebagai wadah sinergi, inovasi, dan integritas.', ['Membangun kultur riset dan teknologi', 'Meningkatkan jejaring industri'], ['Inkubasi Proyek', 'KMTEDI Connect'], 'Staf Departemen Keilmuan KMTEDI 2024\nKoordinator Workshop IoT 2024'],
-  ['Calon Tiga', 'assets/ig-panel-5.jpg', null, 3, 'KANDIDAT 03', 'Transformasi KMTEDI yang adaptif dan solutif terhadap kebutuhan mahasiswa.', ['Kanal advokasi mahasiswa yang transparan', 'Pengembangan talenta digital'], ['Advokasi Cepat', 'KMTEDI Bootcamp'], 'Staf Advokasi dan Kesejahteraan Mahasiswa 2024\nTim Media & Informasi KMTEDI']
-];
-
-let selected = 0;
-let slide = 0;
-let candidateToVote = null;
-let pendingVoteIndex = null;
-
-const cfg = window.KMTEDI_SUPABASE_CONFIG || {};
-
-// Baca data publik (read-only) langsung dari Supabase REST dengan publishable key.
-async function restSelect(path) {
-  const res = await fetch(`${cfg.url}/rest/v1/${path}`, { headers: { apikey: cfg.anonKey } });
-  if (!res.ok) throw new Error(`Gagal memuat ${path.split('?')[0]}`);
-  return res.json();
-}
-let electionSettings = null;
-let hasVoted = false;
-
-// Pending OTP Request State
-let pendingVoterData = {
-  nim: '',
-  email: ''
-};
-
-const voterModal = document.getElementById('voterModal');
-const profileModal = document.getElementById('profileModal');
-const confirmVoteModal = document.getElementById('confirmVoteModal');
-const successModal = document.getElementById('successModal');
-
-// Token surat suara sekali pakai dari /api/verify-otp. NIM dan email hanya
-// untuk tampilan; server tidak mempercayai nilai ini.
-function getVoter() {
-  const nim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
-  const email = (sessionStorage.getItem('kmtedi_voter_email') || '').trim().toLowerCase();
-  const token = sessionStorage.getItem('kmtedi_ballot_token') || '';
-  const voted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
-  return {
-    nim: nim,
-    email: email,
-    token: token,
-    hasVoted: voted
-  };
-}
-
-function updateVoterUI() {
-  const v = getVoter();
-  const container = document.getElementById('userStatusWrapper');
-  const mainBtn = document.getElementById('mainVoteBtn');
-  const copyText = document.getElementById('voteCopyText');
-  const heroBtn = document.getElementById('heroVoteBtn');
-
-  if (v.nim && v.email && (v.token || v.hasVoted)) {
-    hasVoted = v.hasVoted;
-
-    // TOP RIGHT NAVBAR: Sapaan NIM + badge hijau bersih
-    container.innerHTML = `
-      <div class="user-pill">
-        <span class="user-greeting">NIM: <b>${escapeHtml(v.nim)}</b></span>
-        <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">
-          ${hasVoted ? 'Sudah Memilih' : 'Siap Memilih'}
-        </span>
-        <button class="btn-change-voter" onclick="clearVoterSession()" title="Ganti identitas pemilih">Ganti</button>
-      </div>
-    `;
-
-    if (hasVoted) {
-      copyText.innerHTML = `NIM <b>${escapeHtml(v.nim)}</b> (${escapeHtml(v.email)}): Hak suara Anda <b>sudah sah tercatat</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
-      mainBtn.innerHTML = `Sudah Memilih`;
-      mainBtn.disabled = true;
-      mainBtn.style.opacity = '0.6';
-      if (heroBtn) {
-        heroBtn.innerHTML = `Sudah Memilih`;
-        heroBtn.style.opacity = '0.7';
-      }
-    } else {
-      copyText.innerHTML = `Terverifikasi: NIM <b>${escapeHtml(v.nim)}</b> (${escapeHtml(v.email)}). Silakan tentukan calon ketua pilihan Anda di atas.`;
-      mainBtn.innerHTML = `Pilih Calon di Atas`;
-      mainBtn.disabled = false;
-      mainBtn.style.opacity = '1';
-      if (heroBtn) {
-        heroBtn.innerHTML = `Lihat Calon & Pilih`;
-      }
-    }
-  } else {
-    hasVoted = false;
-    container.innerHTML = `
-      <button class="btn-nav-verify" onclick="openVoterModal()">
-        Verifikasi Pemilih (NIM)
-      </button>
-    `;
-    copyText.innerHTML = `Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `Verifikasi Pemilih (NIM & Email UGM)`;
-    mainBtn.disabled = false;
-    mainBtn.style.opacity = '1';
-    if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih`;
-  }
-
-  renderCandidateCards();
-}
-
-function clearVoterSession() {
-  sessionStorage.removeItem('kmtedi_voter_nim');
-  sessionStorage.removeItem('kmtedi_voter_email');
-  sessionStorage.removeItem('kmtedi_has_voted');
-  sessionStorage.removeItem('kmtedi_ballot_token');
-  hasVoted = false;
-  updateVoterUI();
-}
-
-// RENDER CANDIDATES: HANYA BISA MEMILIH SEKALI, BEBAS KLIK KARTU UNTUK BUKA MODAL
-function renderCandidateCards() {
-  for (let i = 0; i < 3; i++) {
-    const card = document.getElementById(`candCard${i}`);
-    const c = candidates[i];
-    if (!card) continue;
-    if (!c) { card.style.display = 'none'; continue; }
-    
-    card.style.display = '';
-    card.querySelector('img').src = safeImage(c[1], `assets/ig-panel-${i + 3}.jpg`);
-    card.querySelector('img').alt = `Visual ${c[0]}`;
-    card.querySelector('.candidate-no').textContent = String(c[3] || i + 1).padStart(2, '0');
-    card.querySelector('.candidate-name').textContent = c[0];
-    card.querySelector('.candidate-tag').textContent = c[4] || `KANDIDAT 0${i+1}`;
-    
-    const voteBtn = document.getElementById(`voteBtn${i}`);
-    if (voteBtn) {
-      if (hasVoted) {
-        voteBtn.textContent = 'Sudah Memilih';
-        voteBtn.disabled = true;
-      } else {
-        voteBtn.textContent = `Pilih 0${c[3] || i + 1}`;
-        voteBtn.disabled = false;
-      }
-    }
-  }
-}
-
-function isVotingActive() {
-  if (!electionSettings) return false;
-  const now = new Date();
-  const startTime = electionSettings.voting_start ? new Date(electionSettings.voting_start) : null;
-  const endTime = electionSettings.voting_end ? new Date(electionSettings.voting_end) : null;
-  if (!electionSettings.voting_open) return false;
-  if (startTime && now < startTime) return false;
-  if (endTime && now > endTime) return false;
-  return true;
-}
-
-function formatCountdownNumber(n) {
-  return String(Math.max(0, Math.floor(n))).padStart(2, '0');
-}
-
-function updateVotingStatus() {
-  const label = document.getElementById('votingStatusLabel');
-  const main = document.getElementById('votingStatusMain');
-  const note = document.getElementById('votingStatusNote');
-  if (!label || !main || !note) return;
-
-  const now = new Date();
-  const startTime = electionSettings?.voting_start ? new Date(electionSettings.voting_start) : null;
-  const endTime = electionSettings?.voting_end ? new Date(electionSettings.voting_end) : null;
-
-  // 1. SUDAH MELEWATI WAKTU PENUTUPAN
-  if (endTime && now > endTime) {
-    label.textContent = 'STATUS BILIK SUARA';
-    main.innerHTML = `<strong id="votingStatusBigText">Voting<br>Selesai</strong>`;
-    note.textContent = 'Waktu pemilihan telah berakhir. Menunggu pengumuman rekapitulasi resmi panitia.';
-    return;
-  }
-
-  // 2. SEDANG AKTIF TERBUKA
-  if (isVotingActive()) {
-    label.textContent = 'STATUS BILIK SUARA';
-    main.innerHTML = `<strong id="votingStatusBigText" style="color:var(--night)">Voting<br>Terbuka</strong>`;
-    if (endTime && now < endTime) {
-      const diffClose = endTime.getTime() - now.getTime();
-      const h = Math.floor(diffClose / (1000 * 60 * 60));
-      const m = Math.floor((diffClose / 1000 / 60) % 60);
-      const s = Math.floor((diffClose / 1000) % 60);
-      note.textContent = `Bilik suara sedang DIBUKA. Ditutup dalam: ${h}j ${m}m ${s}d.`;
-    } else {
-      note.textContent = 'Bilik suara sedang DIBUKA. Mahasiswa dapat memberikan suara.';
-    }
-    return;
-  }
-
-  // 3. COUNTDOWN MENUJU PEMBUKAAN (HARI, JAM, MENIT, DETIK)
-  // Default target: startTime yang disetel admin, atau besok pagi jika belum disetel
-  const targetTime = (startTime && now < startTime) 
-    ? startTime 
-    : (startTime || new Date(Date.now() + 24 * 3600 * 1000));
-
-  const diff = Math.max(0, targetTime.getTime() - now.getTime());
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const mins = Math.floor((diff / 1000 / 60) % 60);
-  const secs = Math.floor((diff / 1000) % 60);
-
-  label.textContent = 'MENUJU BILIK SUARA DIBUKA';
-  main.innerHTML = `
-    <div class="countdown-grid">
-      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(days)}</span><span class="countdown-tag">HARI</span></div>
-      <span class="countdown-sep">:</span>
-      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(hours)}</span><span class="countdown-tag">JAM</span></div>
-      <span class="countdown-sep">:</span>
-      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(mins)}</span><span class="countdown-tag">MENIT</span></div>
-      <span class="countdown-sep">:</span>
-      <div class="countdown-item"><span class="countdown-num">${formatCountdownNumber(secs)}</span><span class="countdown-tag">DETIK</span></div>
-    </div>
-  `;
-  if (startTime) {
-    const opts = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-    note.textContent = `Bilik suara dibuka resmi pada ${startTime.toLocaleDateString('id-ID', opts)} WIB.`;
-  } else {
-    note.textContent = 'Menghitung mundur pembukaan bilik suara resmi Pemilwa.';
-  }
-}
-
-// Tick live countdown every second
-setInterval(updateVotingStatus, 1000);
-
-async function loadPublicData() {
-  if (!cfg.url || !cfg.anonKey) return;
-  try {
-    const [settingsRows, rows] = await Promise.all([
-      restSelect('election_settings?select=voting_open,voting_start,voting_end,results_published,hero_slides,marquee_text,about_statement,about_info,timeline_items&limit=1'),
-      restSelect('candidates?select=id,order_number,name,batch,photo_url,vision,mission,programs,organization_history&is_active=eq.true&order=order_number')
-    ]);
-    const settings = settingsRows && settingsRows[0];
-    
-    if (settings) {
-      electionSettings = settings;
-      updateVotingStatus();
-
-      if (settings.hero_slides && settings.hero_slides.length) {
-        heroSlides.length = 0;
-        settings.hero_slides.forEach(s => heroSlides.push([s.image, s.caption]));
-        setHero(0);
-      }
-
-      const mq = document.querySelector('.marquee-track');
-      if (mq) {
-        const textToUse = settings.marquee_text || 'PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 - PEMILWA 2026 -';
-        mq.textContent = textToUse + ' ' + textToUse;
-      }
-
-      if (settings.about_statement) {
-        const stmt = document.querySelector('.about-statement');
-        if (stmt) stmt.innerHTML = richText(settings.about_statement);
-      }
-      if (settings.about_info) {
-        const info = document.getElementById('aboutInfoText');
-        if (info) info.innerHTML = richText(settings.about_info);
-      }
-
-      if (settings.timeline_items && settings.timeline_items.length) {
-        const tlList = document.querySelector('.timeline-list');
-        if (tlList) {
-          tlList.innerHTML = settings.timeline_items.map((t, idx) => `
-            <div class="time-row">
-              <div class="time-no">${escapeHtml(t.no || '0' + (idx + 1))}</div>
-              <h3>${escapeHtml(t.title || 'Tahap')}</h3>
-              <p>${escapeHtml(t.desc || '')}</p>
-              <div class="time-date">${escapeHtml(t.date || '')}</div>
-            </div>
-          `).join('');
-        }
-      }
-    }
-
-    if (rows && rows.length) {
-      candidates = rows.map((r, i) => [
-        r.name,
-        r.photo_url || `assets/ig-panel-${(i % 6) + 1}.jpg`,
-        r.id,
-        r.order_number,
-        r.batch ? `ANGKATAN ${r.batch}` : `KANDIDAT 0${r.order_number}`,
-        r.vision || 'Visi kandidat.',
-        r.mission || [],
-        r.programs || [],
-        r.organization_history || 'Riwayat organisasi belum diisi oleh panitia.'
-      ]);
-      renderCandidateCards();
-      updateVoterUI();
-    }
-  } catch (err) {
-    console.error('Error loading public data:', err);
-  }
-}
-
-// VOTER MODAL (2-STEP OTP)
-function openVoterModal(withCandidateIndex = null) {
-  pendingVoteIndex = withCandidateIndex;
-  document.getElementById('voterModalErr').textContent = '';
-  document.getElementById('voterStep1').style.display = 'block';
-  document.getElementById('voterStep2').style.display = 'none';
-  voterModal.classList.add('open');
-  voterModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-function closeVoterModal() {
-  voterModal.classList.remove('open');
-  voterModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-document.getElementById('voterModalClose').onclick = closeVoterModal;
-voterModal.onclick = e => { if (e.target === voterModal) closeVoterModal(); };
-
-// STEP 1: REQUEST OTP TO @MAIL.UGM.AC.ID (NIM & EMAIL ONLY)
-document.getElementById('voterFormStep1').onsubmit = async e => {
-  e.preventDefault();
-  const rawNim = document.getElementById('inputNim').value.trim();
-  const prefix = document.getElementById('inputEmailPrefix').value.trim().toLowerCase().replace(/@.*$/, '');
-  const errBox = document.getElementById('voterModalErr');
-  const btn = document.getElementById('btnRequestOtp');
-
-  if (!rawNim || !prefix) {
-    errBox.textContent = 'NIM dan Email UGM wajib diisi!';
-    return;
-  }
-
-  errBox.textContent = '';
-  btn.textContent = 'Mengirim Kode OTP...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nim: rawNim,
-        email_prefix: prefix
-      })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-      errBox.textContent = data.error || 'Gagal mengirim kode OTP.';
-      btn.textContent = 'Kirim Kode OTP ke Email UGM';
-      btn.disabled = false;
-      return;
-    }
-
-    pendingVoterData = {
-      nim: rawNim,
-      email: data.email
-    };
-
-    document.getElementById('displayTargetEmail').textContent = data.email;
-    document.getElementById('voterStep1').style.display = 'none';
-    document.getElementById('voterStep2').style.display = 'block';
-    document.getElementById('inputOtp').value = '';
-    document.getElementById('inputOtp').focus();
-    btn.textContent = 'Kirim Kode OTP ke Email UGM';
-    btn.disabled = false;
-
-  } catch (err) {
-    errBox.textContent = 'Terjadi gangguan jaringan: ' + err.message;
-    btn.textContent = 'Kirim Kode OTP ke Email UGM';
-    btn.disabled = false;
-  }
-};
-
-// STEP 2: VERIFY 6-DIGIT OTP
-document.getElementById('voterFormStep2').onsubmit = async e => {
-  e.preventDefault();
-  const otp = document.getElementById('inputOtp').value.trim();
-  const errBox = document.getElementById('voterModalErr');
-  const btn = document.getElementById('btnVerifyOtp');
-
-  if (otp.length < 6) {
-    errBox.textContent = 'Masukkan 6 digit angka kode OTP!';
-    return;
-  }
-
-  errBox.textContent = '';
-  btn.textContent = 'Memverifikasi OTP...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: pendingVoterData.email,
-        otp: otp
-      })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-      errBox.textContent = data.error || 'Kode OTP salah atau kedaluwarsa.';
-      btn.textContent = 'Verifikasi & Masuk Bilik Suara';
-      btn.disabled = false;
-      return;
-    }
-
-    const voter = data.voter;
-    sessionStorage.setItem('kmtedi_voter_nim', voter.nim);
-    sessionStorage.setItem('kmtedi_voter_email', voter.email);
-    sessionStorage.setItem('kmtedi_ballot_token', data.ballot_token);
-    sessionStorage.setItem('kmtedi_has_voted', 'false');
-
-    closeVoterModal();
-    updateVoterUI();
-
-    if (pendingVoteIndex !== null) {
-      triggerVote(pendingVoteIndex);
-      pendingVoteIndex = null;
-    } else {
-      document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
-    }
-
-  } catch (err) {
-    errBox.textContent = 'Terjadi kesalahan verifikasi: ' + err.message;
-    btn.textContent = 'Verifikasi & Masuk Bilik Suara';
-    btn.disabled = false;
-  }
-};
-
-// BACK TO STEP 1 / RESEND BUTTONS
-document.getElementById('btnBackToStep1').onclick = () => {
-  document.getElementById('voterModalErr').textContent = '';
-  document.getElementById('voterStep1').style.display = 'block';
-  document.getElementById('voterStep2').style.display = 'none';
-};
-
-document.getElementById('btnResendOtp').onclick = () => {
-  document.getElementById('voterFormStep1').requestSubmit();
-};
-
-// CANDIDATE PROFILE MODAL
-function renderModal() {
-  const c = candidates[selected];
-  document.getElementById('modalTitle').textContent = c[0];
-  document.getElementById('modalImage').src = safeImage(c[1], 'assets/ig-panel-3.jpg');
-  document.getElementById('modalNo').textContent = String(c[3] || selected + 1).padStart(2, '0');
-  document.getElementById('modalLabel').textContent = `CALON ${String(c[3] || selected + 1).padStart(2, '0')} / PROFIL`;
-  
-  // Panel 1: Data Diri & Riwayat Organisasi
-  document.getElementById('slideBio').textContent = c[4] ? `${c[0]} · ${c[4]}` : c[0];
-  const histEl = document.getElementById('slideHistory');
-  if (histEl) histEl.textContent = c[8] || 'Riwayat organisasi belum diisi oleh panitia.';
-  
-  // Panel 2: Visi & Misi
-  document.getElementById('slideVision').textContent = c[5] || 'Visi kandidat.';
-  const missionList = document.getElementById('slideMission');
-  missionList.innerHTML = (c[6] && c[6].length) ? c[6].map(m => `<li>${escapeHtml(m)}</li>`).join('') : '<li>Misi kandidat</li>';
-  
-  // Panel 3: Program Kerja
-  const progList = document.getElementById('slidePrograms');
-  progList.innerHTML = (c[7] && c[7].length) ? c[7].map(p => `<li>${escapeHtml(p)}</li>`).join('') : '<li>Program kerja unggulan</li>';
-
-  for (let i = 0; i < 3; i++) {
-    const s = document.getElementById(`slide${i}`);
-    if (s) s.classList.toggle('active', i === slide);
-  }
-  document.getElementById('slideCount').textContent = `0${slide + 1} / 03`;
-
-  const voteBtn = document.getElementById('voteFromModalBtn');
-  if (hasVoted) {
-    voteBtn.textContent = 'Sudah Memilih';
-    voteBtn.disabled = true;
-    voteBtn.style.opacity = '0.5';
-  } else {
-    voteBtn.textContent = `Pilih Paslon 0${c[3] || selected + 1}`;
-    voteBtn.disabled = false;
-    voteBtn.style.opacity = '1';
-    voteBtn.style.background = 'var(--maroon)';
-  }
-}
-
-// PREVENT CARD CLICK WHEN SWIPING CANDIDATE CAROUSEL
-let candTouchStartX = 0;
-let candTouchStartY = 0;
-let candTouchMoved = false;
-
-document.addEventListener('touchstart', e => {
-  if (e.target.closest('.candidate-card')) {
-    candTouchStartX = e.touches[0].clientX;
-    candTouchStartY = e.touches[0].clientY;
-    candTouchMoved = false;
-  }
-}, { passive: true });
-
-document.addEventListener('touchmove', e => {
-  if (e.target.closest('.candidate-card')) {
-    const dx = Math.abs(e.touches[0].clientX - candTouchStartX);
-    const dy = Math.abs(e.touches[0].clientY - candTouchStartY);
-    if (dx > 10 || dy > 10) {
-      candTouchMoved = true;
-    }
-  }
-}, { passive: true });
-
-function openProfile(i) {
-  if (candTouchMoved) return;
-  selected = i;
-  slide = 0;
-  renderModal();
-  profileModal.classList.add('open');
-  profileModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-function closeProfile() {
-  profileModal.classList.remove('open');
-  profileModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-
-// PROFILE MODAL TOUCH SWIPE BETWEEN SLIDES
-const profileModalEl = document.getElementById('profileModal');
-if (profileModalEl) {
-  let pStartX = 0;
-  let pStartY = 0;
-  profileModalEl.addEventListener('touchstart', e => {
-    pStartX = e.touches[0].clientX;
-    pStartY = e.touches[0].clientY;
-  }, { passive: true });
-  profileModalEl.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - pStartX;
-    const dy = e.changedTouches[0].clientY - pStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 35) {
-      if (dx < 0) {
-        slide = (slide + 1) % 3;
-      } else {
-        slide = (slide + 2) % 3;
-      }
-      renderModal();
-    }
-  }, { passive: true });
-}
-
-// "TINGGAL PILIH" TRIGGER (HANYA BISA SEKALI)
-function triggerVote(index) {
-  if (!isVotingActive()) {
-    const now = new Date();
-    const startTime = electionSettings?.voting_start ? new Date(electionSettings.voting_start) : null;
-    if (startTime && now < startTime) {
-      const opts = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-      showNotice({
-        eyebrow: 'STATUS BILIK SUARA',
-        title: 'Bilik Suara Belum Dibuka',
-        html: true,
-        message: `Bilik suara dijadwalkan dibuka resmi pada <b>${startTime.toLocaleDateString('id-ID', opts)} WIB</b>.<br><br>Sambil menunggu, Anda dapat mempelajari profil lengkap, visi misi, dan program kerja calon ketua terlebih dahulu.`,
-        primaryText: 'Mengerti',
-        secondaryText: 'Lihat Visi Misi',
-        onSecondary: () => openProfile(index)
-      });
-    } else {
-      showNotice({
-        eyebrow: 'STATUS BILIK SUARA',
-        title: 'Bilik Suara Ditutup',
-        html: true,
-        message: 'Bilik suara saat ini sedang ditutup sementara oleh panitia pemilwa.<br><br>Silakan pantau jadwal dan pengumuman resmi dari panitia.',
-        primaryText: 'Mengerti'
-      });
-    }
-    return;
-  }
-  
-  const v = getVoter();
-  if (!v.hasVoted && (!v.nim || !v.email || !v.token)) {
-    openVoterModal(index);
-    return;
-  }
-
-  if (v.hasVoted) {
-    showNotice({
-      eyebrow: 'VERIFIKASI SUARA',
-      title: 'Hak Suara Telah Digunakan',
-      html: true,
-      message: `NIM <b>${escapeHtml(v.nim)}</b> sudah tercatat pernah memberikan hak suara.<br><br>Sesuai asas Pemilwa KMTEDI (Satu Mahasiswa, Satu Suara), pemilihan hanya dapat dilakukan 1 kali dan tidak dapat diubah kembali.`,
-      primaryText: 'Mengerti'
-    });
-    return;
-  }
-
-  candidateToVote = candidates[index];
-  if (!candidateToVote) return;
-
-  document.getElementById('confirmPhoto').src = safeImage(candidateToVote[1], 'assets/ig-panel-3.jpg');
-  document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
-  document.getElementById('confirmName').textContent = candidateToVote[0];
-  document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
-  document.getElementById('confirmVoterDetails').textContent = `NIM: ${v.nim} · ${v.email}`;
-
-  closeProfile();
-  confirmVoteModal.classList.add('open');
-  confirmVoteModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeDoubleCheck() {
-  confirmVoteModal.classList.remove('open');
-  confirmVoteModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-
-// SUBMIT VOTE FINAL KE DATABASE
-document.getElementById('submitVoteFinalBtn').onclick = async () => {
-  if (!candidateToVote) return;
-  const v = getVoter();
-  if (!v.nim || !v.email || !v.token) {
-    closeDoubleCheck();
-    openVoterModal();
-    return;
-  }
-
-  const btn = document.getElementById('submitVoteFinalBtn');
-  btn.textContent = 'Memproses Suara...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/cast-vote', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ballot_token: v.token, candidate_id: candidateToVote[2] })
-    });
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok || !data.success) {
-      const msg = data.error || 'Gagal mengirim suara.';
-      btn.textContent = 'Kirim Suara Sah';
-      btn.disabled = false;
-      if (/sudah menggunakan hak suara/i.test(msg)) {
-        sessionStorage.setItem('kmtedi_has_voted', 'true');
-        sessionStorage.removeItem('kmtedi_ballot_token');
-        closeDoubleCheck();
-        updateVoterUI();
-      } else if (res.status === 401 || /sesi pemilih/i.test(msg)) {
-        sessionStorage.removeItem('kmtedi_ballot_token');
-        closeDoubleCheck();
-        updateVoterUI();
-        openVoterModal();
-      }
-      alert('Gagal Mengirim Suara:\n\n' + msg);
-      return;
-    }
-
-    sessionStorage.setItem('kmtedi_has_voted', 'true');
-    sessionStorage.removeItem('kmtedi_ballot_token');
-    hasVoted = true;
-
-    closeDoubleCheck();
-    
-    document.getElementById('successReceiptText').innerHTML = `
-      NIM: <b>${escapeHtml(v.nim)}</b> (${escapeHtml(v.email)}).<br>
-      Hak suara Anda telah berhasil dicatat secara sah dan rahasia ke kotak suara Pemilwa KMTEDI 2026.
-    `;
-    successModal.classList.add('open');
-    successModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    updateVoterUI();
-
-  } catch (err) {
-    alert('Terjadi kesalahan: ' + err.message);
-    btn.textContent = 'Kirim Suara Sah';
-    btn.disabled = false;
-  }
-};
-
-document.getElementById('cancelVoteBtn').onclick = closeDoubleCheck;
-document.getElementById('confirmModalClose').onclick = closeDoubleCheck;
-confirmVoteModal.onclick = e => { if (e.target === confirmVoteModal) closeDoubleCheck(); };
-
-document.getElementById('successCloseBtn').onclick = () => {
-  successModal.classList.remove('open');
-  successModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-};
-
-// CUSTOM ON-BRAND NOTICE POPUP (MENGGANTIKAN BROWSER ALERT)
-function showNotice({
-  title = 'Pemberitahuan',
-  message = '',
-  eyebrow = 'INFORMASI PEMILWA',
-  primaryText = 'Mengerti',
-  onPrimary = null,
-  secondaryText = '',
-  onSecondary = null,
-  html = false
-} = {}) {
-  const modal = document.getElementById('noticeModal');
-  if (!modal) return;
-  
-  document.getElementById('noticeEyebrow').textContent = eyebrow;
-  document.getElementById('noticeTitle').textContent = title;
-  
-  const msgEl = document.getElementById('noticeMessage');
-  msgEl.innerHTML = html ? String(message) : richText(message);
-  
-  const pBtn = document.getElementById('noticePrimaryBtn');
-  pBtn.textContent = primaryText;
-  pBtn.onclick = () => {
-    closeNotice();
-    if (onPrimary) onPrimary();
-  };
-
-  const sBtn = document.getElementById('noticeSecondaryBtn');
-  if (secondaryText) {
-    sBtn.textContent = secondaryText;
-    sBtn.style.display = 'inline-flex';
-    sBtn.onclick = () => {
-      closeNotice();
-      if (onSecondary) onSecondary();
-    };
-  } else {
-    sBtn.style.display = 'none';
-  }
-
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeNotice() {
-  const modal = document.getElementById('noticeModal');
-  if (!modal) return;
-  modal.classList.remove('open');
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-
-document.getElementById('noticeModalClose')?.addEventListener('click', closeNotice);
-document.getElementById('noticeModal')?.addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeNotice();
-});
-
-// Override window.alert globally across the page
-window.originalAlert = window.alert;
-window.alert = function(msg) {
-  let title = 'Pemberitahuan';
-  let eyebrow = 'INFORMASI PEMILWA';
-  const text = String(msg || '');
-  const lower = text.toLowerCase();
-  
-  if (lower.includes('gagal') || lower.includes('kesalahan') || lower.includes('error')) {
-    title = 'Perhatian';
-    eyebrow = 'STATUS SISTEM';
-  } else if (lower.includes('belum dibuka') || lower.includes('ditutup')) {
-    title = 'Bilik Suara Belum Dibuka';
-    eyebrow = 'STATUS BILIK SUARA';
-  } else if (lower.includes('sudah pernah')) {
-    title = 'Hak Suara Telah Digunakan';
-    eyebrow = 'VERIFIKASI SUARA';
-  }
-  
-  showNotice({
-    eyebrow,
-    title,
-    message: text,
-    primaryText: 'Mengerti'
-  });
-};
-
-// MODAL LISTENERS
-document.getElementById('modalClose').addEventListener('click', closeProfile);
-profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
-document.getElementById('nextSlide').addEventListener('click', () => { slide = (slide + 1) % 3; renderModal(); });
-document.getElementById('prevSlide').addEventListener('click', () => { slide = (slide + 2) % 3; renderModal(); });
-
-// VOTE FROM INSIDE PROFILE MODAL
-document.getElementById('voteFromModalBtn').onclick = () => {
-  triggerVote(selected);
-};
-
-// MAIN VOTE BUTTON HANDLER
-function handleMainVoteClick() {
-  const v = getVoter();
-  if (!v.nim || !v.email) {
-    openVoterModal();
-  } else if (!hasVoted) {
-    document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeNotice();
-    closeProfile();
-    closeDoubleCheck();
-    closeVoterModal();
-  }
-  if (profileModal.classList.contains('open') && e.key === 'ArrowRight') { slide = (slide + 1) % 3; renderModal(); }
-  if (profileModal.classList.contains('open') && e.key === 'ArrowLeft') { slide = (slide + 2) % 3; renderModal(); }
-});
-
-// CANDIDATE MOBILE CAROUSEL SYNC
-const candGrid = document.querySelector('.candidate-grid');
-const candDots = [...document.querySelectorAll('.cand-dot')];
-if (candGrid && candDots.length) {
-  candGrid.addEventListener('scroll', () => {
-    const card = candGrid.querySelector('.candidate-card');
-    const step = card ? (card.offsetWidth + 16) : 1;
-    const activeIdx = Math.min(candDots.length - 1, Math.max(0, Math.round(candGrid.scrollLeft / step)));
-    candDots.forEach((dot, idx) => dot.classList.toggle('active', idx === activeIdx));
-  }, { passive: true });
-
-  candDots.forEach((dot, idx) => {
-    dot.addEventListener('click', () => {
-      const card = document.getElementById(`candCard${idx}`);
-      if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-      }
-    });
-  });
-}
-
-// INIT
-renderCandidateCards();
-loadPublicData();
-updateVoterUI();
-</script>
+<script src="app.js"></script>
 </body>
 </html>

@@ -10,7 +10,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 test('no secrets or hardcoded fallbacks in server code, docs, or pages', () => {
   const files = ['api/send-otp.js', 'api/verify-otp.js', 'api/cast-vote.js', 'api/admin.js', 'lib/server.js',
-    'AGENT_BRIEF.md', 'README.md', 'index.html', 'admin.html', 'build.js'];
+    'AGENT_BRIEF.md', 'README.md', 'index.html', 'admin.html', 'app.js', 'admin.js', 'build.js'];
   for (const file of files) {
     const src = read(file);
     assert.doesNotMatch(src, /process\.env\.\w+\s*\|\|\s*['"`][^'"`]/, `${file} has an env fallback literal`);
@@ -20,7 +20,7 @@ test('no secrets or hardcoded fallbacks in server code, docs, or pages', () => {
 });
 
 test('browser never calls Supabase RPCs directly', () => {
-  for (const page of ['index.html', 'admin.html']) {
+  for (const page of ['index.html', 'admin.html', 'app.js', 'admin.js']) {
     const html = read(page);
     assert.doesNotMatch(html, /\.rpc\(/, `${page} calls an RPC from the browser`);
     assert.doesNotMatch(html, /supabase-js/, `${page} still loads supabase-js`);
@@ -43,12 +43,21 @@ test('deploy publishes only whitelisted files with security headers', () => {
   assert.match(headers['Content-Security-Policy'], /object-src 'none'/);
   assert.equal(headers['X-Frame-Options'], 'DENY');
   const build = read('build.js');
-  assert.match(build, /PUBLIC_FILES = \['index\.html', 'admin\.html', 'branding\.css'\]/);
+  assert.match(build, /PUBLIC_FILES = \['index\.html', 'admin\.html', 'branding\.css', 'motifs\.css', 'boot\.js', 'app\.js', 'admin\.js'\]/);
+  assert.match(headers['Content-Security-Policy'], /script-src 'self';/);
   assert.match(build, /PUBLIC_DIRS = \['assets'\]/);
 });
 
+test('pages have no inline scripts or inline event handlers (strict CSP)', () => {
+  for (const page of ['index.html', 'admin.html']) {
+    const html = read(page);
+    assert.doesNotMatch(html, /<script(?![^>]*\bsrc=)[^>]*>/, `${page} has an inline <script>`);
+    assert.doesNotMatch(html, /\son[a-z]+="/i, `${page} has an inline event handler`);
+  }
+});
+
 test('database values are escaped before innerHTML on the public page', () => {
-  const html = read('index.html');
+  const html = read('app.js');
   assert.ok(html.includes('function escapeHtml'));
   assert.ok(html.includes('function safeImage'));
   assert.doesNotMatch(html, /innerHTML = settings\.about_/);

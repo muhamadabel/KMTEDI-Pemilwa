@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" role="img" aria-label="Foto calon belum tersedia">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7B27A"/>
+      <stop offset="1" stop-color="#E46527"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".42" r=".5">
+      <stop offset="0" stop-color="#FFE3C4" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#FFE3C4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fig" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFD7B0"/>
+      <stop offset="1" stop-color="#F39A5E"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect width="400" height="480" fill="url(#bg)"/>
+  <rect width="400" height="480" fill="url(#glow)"/>
+  <g filter="url(#soft)" opacity=".95">
+    <circle cx="200" cy="190" r="78" fill="url(#fig)"/>
+    <path d="M60 480c0-96 63-170 140-170s140 74 140 170z" fill="url(#fig)"/>
+  </g>
+</svg>

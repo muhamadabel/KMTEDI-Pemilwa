@@ -76,9 +76,18 @@ Palet warna resmi media KMTEDI:
 7. **Section 04 / STATUS (Bilik Suara):** Background Biru Navy (`#000113`) dengan label `04 / STATUS` rata kiri di atas judul, dan kotak countdown real-time (Hari, Jam, Menit, Detik) berwarna amber (`#FFB42B`).
 8. **Footer:** Background Biru Navy (`#000113`).
 
+### Motif Media KMTEDI (`motifs.css`)
+Lapisan di atas desain utama, mengikuti feed Instagram @kmtedi.sv.ugm. Font dan warna section tetap seperti di atas.
+- **Sambungan antar section:** setiap section memudar ke warna section berikutnya (krem > oranye > burgundy > navy) agar halaman terasa satu alur, tidak patah per blok.
+- **Cahaya latar (`.bg-glow`):** sinar radial berputar pelan + orb cahaya bernapas di hero, calon, timeline, dan bilik suara. Dimasking memudar di tepi atas/bawah agar tidak terpotong.
+- **Lanyard:** kartu hero dan kartu calon tergantung di tali lanyard, berayun halus; kartu calon berayun saat hover.
+- **Kotak surat:** tiket jadwal (tanggal/waktu dari `voting_start`/`voting_end`) keluar dari amplop oranye di section Info.
+- **Animasi masuk:** elemen `.reveal` muncul saat digulir. Semua animasi mati otomatis saat `prefers-reduced-motion`.
+
 ### Anti-Slop & Quality Rules (Wajib Dipatuhi):
 - **DILARANG menggunakan emoji apapun** pada tombol, badge, modal, teks, atau navbar.
 - **DILARANG menggunakan em-dash ('—')** pada copy/tulisan UI. Gunakan tanda minus biasa ('-') atau koma.
+- **Tanpa inline script / `onclick`:** CSP produksi `script-src 'self'`. Tambahkan logika di `app.js`/`admin.js` dan pakai atribut `data-action`.
 - **Gunakan popup modal internal (`showNotice`):** Jangan pernah memakai `window.alert()` browser native yang terlihat kaku. Semua alert sistem sudah di-override ke modal bertema KMTEDI.
 - **Responsif Mobile:** Modal pop-up harus memiliki padding aman dari border layar HP (`max-width: 84vw`) agar tidak menempel ke tepi layar.
 - **Teks Latar Gelap Harus Terang:** Setiap teks atau badge di atas background burgundy/navy wajib memakai warna terang (`#FFF9EF`, `#FFB42B`) dengan rasio kontras tinggi.
@@ -91,6 +100,10 @@ Palet warna resmi media KMTEDI:
 ├── index.html              # Halaman publik beranda, modal paslon 3 slide, countdown timer, alur OTP
 ├── admin.html              # Dashboard admin ber-PIN
 ├── branding.css            # Stylesheet tema resmi KMTEDI, responsivitas mobile & modal
+├── motifs.css              # Cahaya latar, lanyard, kotak surat, animasi masuk
+├── boot.js                 # Menandai html.js sedini mungkin (anti kedip animasi)
+├── app.js                  # Seluruh logika halaman publik (tanpa inline script, CSP ketat)
+├── admin.js                # Seluruh logika panel admin
 ├── package.json            # Scripts build dan test runner
 ├── vercel.json             # Konfigurasi Vercel deployment
 ├── build.js                # Injeksi env var Supabase ke supabase-config.js

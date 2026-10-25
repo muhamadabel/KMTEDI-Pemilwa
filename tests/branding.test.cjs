@@ -3,6 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
+const readCss = () => ['branding.css', 'motifs.css', 'index.html'].map(f => fs.readFileSync(path.join(root, f), 'utf8')).join('\n');
+const readPublicPage = () => ['index.html', 'app.js'].map(f => fs.readFileSync(path.join(root, f), 'utf8')).join('\n');
 
 for (const page of ['index.html', 'admin.html']) {
   test(`${page} uses the supplied logo and shared branding`, () => {
@@ -44,7 +46,7 @@ test('existing voter flow and scheduling controls remain present', () => {
 
 test('candidate section has mobile horizontal carousel with scroll-snap and navigation dots', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const css = fs.readFileSync(path.join(root, 'branding.css'), 'utf8');
+  const css = readCss();
   assert.ok(html.includes('class="candidate-carousel-nav"'));
   assert.ok(html.includes('class="cand-dot'));
   assert.ok(html.includes('Para calon kandidat dengan visi misi, dan program kerja masing masing'));
@@ -61,7 +63,7 @@ test('status bilik suara displays countdown grid with days, hours, minutes, seco
 });
 
 test('custom on-brand notice popup replaces browser alerts', () => {
-  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const html = readPublicPage();
   assert.ok(html.includes('id="noticeModal"'));
   assert.ok(html.includes('id="noticeTitle"'));
   assert.ok(html.includes('id="noticeMessage"'));
@@ -70,10 +72,22 @@ test('custom on-brand notice popup replaces browser alerts', () => {
 });
 
 test('hero carousel supports direct swipe gestures and modals maintain edge padding', () => {
-  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const css = fs.readFileSync(path.join(root, 'branding.css'), 'utf8');
+  const html = readPublicPage();
+  const css = readCss();
   assert.ok(html.includes('heroCard.addEventListener(\'touchstart\''), 'Missing hero touchstart');
   assert.ok(html.includes('heroCard.addEventListener(\'touchend\''), 'Missing hero touchend');
   assert.match(css, /84vw/, 'Missing modal screen-edge clearance');
 });
 
+
+test('copy follows anti-slop rules: no emoji and no em-dash in UI files', () => {
+  for (const file of ['index.html', 'admin.html', 'app.js', 'admin.js', 'motifs.css']) {
+    const src = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.doesNotMatch(src, /\u2014/, `${file} contains an em-dash`);
+    assert.doesNotMatch(src, /[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u, `${file} contains emoji`);
+  }
+});
+
+test('animations respect prefers-reduced-motion', () => {
+  assert.match(readCss(), /prefers-reduced-motion:\s*reduce/);
+});
