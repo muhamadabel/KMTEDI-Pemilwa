@@ -91,52 +91,78 @@
 .tape-back .tape-track { animation-duration: 60s; animation-direction: reverse; }
 @keyframes tape-roll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-/* ---------- Lanyard di kartu hero ---------- */
-.hero-visual { padding-top: 10px; }
-.lanyard { position: absolute; top: -200px; left: 50%; width: 0; height: 216px; z-index: 2; pointer-events: none; }
-.lanyard span {
-  position: absolute; bottom: 0; left: -17px; width: 34px; height: 250px;
-  background: linear-gradient(180deg, #A9351A 0%, #F58A3C 60%, var(--brand-orange) 100%);
-  border-radius: 4px; transform-origin: 50% 100%;
-  box-shadow: inset -5px 0 8px rgba(0, 0, 0, .18);
+/* ---------- Lanyard ----------
+   Satu rakitan yang menyatu dengan kartu: dua tali bertemu di cincin besi,
+   pengait turun dari cincin masuk ke lubang di atas kartu. Titik (0,0) dari
+   .lanyard adalah tengah lubang kartu, jadi tali, cincin, dan pengait selalu
+   tersambung dan ikut berayun bersama kartu. */
+.lanyard { position: absolute; left: 50%; width: 0; height: 0; z-index: 4; pointer-events: none; }
+.lanyard .hook {
+  position: absolute; left: -6px; bottom: -4px; width: 12px; height: 32px; border-radius: 4px 4px 5px 5px;
+  background: linear-gradient(90deg, #8E857D 0%, #F4EEE8 45%, #B9B0A8 100%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .45);
 }
-.lanyard span:first-child { transform: rotate(22deg); }
-.lanyard span:last-child { transform: rotate(-22deg); background: linear-gradient(180deg, #8F2C12 0%, var(--brand-orange) 65%, #F07A3A 100%); }
-.hero-card {
-  transform-origin: 50% -60px;
-  animation: lanyard-sway 7s ease-in-out infinite;
+.lanyard .hook::after {
+  content: ""; position: absolute; left: 50%; top: 8px; bottom: 7px; width: 2px; translate: -50% 0;
+  background: rgba(60, 50, 45, .45); border-radius: 2px;
 }
+.lanyard .ring {
+  position: absolute; left: -13px; bottom: 22px; width: 26px; height: 26px; border-radius: 50%;
+  border: 4px solid #D9D1C9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 2px 5px rgba(0, 0, 0, .45);
+}
+.lanyard .strap {
+  position: absolute; left: -12px; bottom: 40px; width: 24px; height: 130px;
+  transform-origin: 50% 100%;
+  background: linear-gradient(90deg, #4A0A26 0, var(--brand-burgundy) 18%, var(--brand-burgundy) 82%, #4A0A26 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 180, 43, .18);
+  -webkit-mask-image: linear-gradient(0deg, #000 55%, transparent 100%);
+  mask-image: linear-gradient(0deg, #000 55%, transparent 100%);
+  overflow: hidden;
+}
+.lanyard .strap::after {
+  content: "KMTEDI  KMTEDI  KMTEDI";
+  position: absolute; left: 50%; bottom: 10px; translate: -50% 0;
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font: 700 8px/1 var(--mono); letter-spacing: .32em; white-space: pre;
+  color: rgba(255, 180, 43, .7);
+}
+.lanyard .strap-l { transform: rotate(14deg); }
+.lanyard .strap-r { transform: rotate(-14deg); }
+
+/* Hero: tali panjang oranye naik keluar dari atas layar */
+.hero-hang { position: relative; transform-origin: 50% -320px; animation: lanyard-sway 8s ease-in-out infinite; }
+.hero-hang .lanyard { top: 20px; }
+.lanyard-long .strap {
+  height: 420px; width: 30px; left: -15px;
+  background: linear-gradient(90deg, #B23E19 0, var(--brand-orange) 20%, #F07A3A 50%, var(--brand-orange) 80%, #B23E19 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 249, 239, .15);
+  -webkit-mask-image: none; mask-image: none;
+}
+.lanyard-long .strap::after { color: rgba(37, 0, 20, .55); font-size: 9px; content: "KMTEDI  KMTEDI  KMTEDI  KMTEDI  KMTEDI"; }
+.lanyard-long .strap-l { transform: rotate(19deg); }
+.lanyard-long .strap-r { transform: rotate(-19deg); }
 .badge-slot {
   position: absolute; z-index: 3; top: 14px; left: 50%; translate: -50% 0;
-  width: 78px; height: 13px; border-radius: 999px;
-  background: rgba(0, 1, 19, .82);
+  width: 64px; height: 12px; border-radius: 999px;
+  background: rgba(0, 1, 19, .85);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, .7), 0 1px 0 rgba(255, 249, 239, .3);
 }
 
-/* ---------- Lanyard di kartu calon ---------- */
+/* Kartu calon: tergantung, lubang di bingkai atas kartu */
 .candidate-grid { padding-top: 8px; }
 .candidate-card {
   overflow: visible;
-  margin-top: 82px;
-  transform-origin: 50% -82px;
+  margin-top: 118px;
+  padding-top: 28px;
+  transform-origin: 50% -30px;
   animation: lanyard-sway 9s ease-in-out infinite;
 }
 .candidate-card:nth-child(2) { animation-delay: -3s; }
 .candidate-card:nth-child(3) { animation-delay: -6s; }
 .candidate-card:hover, .candidate-card:focus-visible { animation: lanyard-swing 1.4s cubic-bezier(.16, 1, .3, 1); outline: none; }
-.card-strap {
-  position: absolute; z-index: 0; left: 50%; top: -84px; translate: -50% 0;
-  width: 26px; height: 86px; border-radius: 0 0 4px 4px;
-  background: linear-gradient(180deg, var(--brand-burgundy), #4A0A26);
-  box-shadow: inset -4px 0 6px rgba(0, 0, 0, .25);
-}
-.card-strap::after {
-  content: ""; position: absolute; left: 50%; bottom: -8px; translate: -50% 0;
-  width: 38px; height: 18px; border-radius: 6px;
-  background: linear-gradient(180deg, #F3ECE4, #A49A92);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, .35);
-}
-.candidate-image .badge-slot { top: 12px; }
+.candidate-card > .badge-slot { top: 9px; width: 54px; height: 10px; background: rgba(255, 249, 239, .14); box-shadow: inset 0 2px 3px rgba(0, 0, 0, .8); }
+.candidate-card > .lanyard { top: 14px; }
 
 /* ---------- Kotak surat jadwal (section Info) ---------- */
 .about { overflow: hidden; }
@@ -251,10 +277,11 @@ html { scroll-padding-top: 84px; }
 
 /* ---------- Responsif ---------- */
 @media (max-width: 820px) {
-  .lanyard { display: none; }
-  .hero-card { transform-origin: 50% 0; }
-  .candidate-card { margin-top: 70px; transform-origin: 50% -70px; }
-  .card-strap { top: -72px; height: 74px; }
+  .hero-hang { transform-origin: 50% -40px; }
+  .lanyard-long .strap { height: 120px; width: 24px; left: -12px; -webkit-mask-image: linear-gradient(0deg, #000 50%, transparent 100%); mask-image: linear-gradient(0deg, #000 50%, transparent 100%); }
+  .hero-visual { padding-top: 120px; }
+  .candidate-card { margin-top: 116px; padding-top: 26px !important; }
+  .candidate-card > .lanyard .strap { height: 92px; }
   .ticket-stage { min-height: 0; padding: 22px 0 44px; margin-top: 4px; }
   .envelope { width: min(250px, 74%); bottom: 16%; translate: -46% 0; }
   .ticket { width: min(200px, 60%); padding: 12px 14px 18px; transform: rotate(-4deg) translateY(-14px); }
