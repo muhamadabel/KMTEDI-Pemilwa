@@ -9,7 +9,7 @@ module.exports = handler(async (body, req) => {
   if (!UUID_RE.test(candidateId)) throw new HttpError(400, 'Calon tidak valid.');
 
   const db = serviceDb();
-  await rateLimit(db, 'vote-ip', clientIp(req), 20, 15 * 60);
+  await rateLimit(db, 'vote-ip', clientIp(req), 150, 15 * 60);
 
   const { error } = await db.rpc('voter_cast_ballot', { p_token: token, p_candidate_id: candidateId });
   if (error) throw dbFailure(error);

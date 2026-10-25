@@ -31,10 +31,11 @@ Dokumen operasional resmi untuk AI coding agent yang melanjutkan pengembangan si
 - **Tidak Memerlukan Input Nama:** Input nama ditiadakan agar alur cepat dan menghindari typo pencocokan nama.
 - **OTP Verification:**
   1. Mahasiswa input NIM dan email UGM.
-  2. `/api/send-otp` (rate limit per IP dan per email) memanggil RPC `voter_request_otp`: OTP 6 digit dari `gen_random_bytes`, disimpan sebagai hash SHA-256 di `private.voter_otps`, berlaku 10 menit, jeda kirim ulang 60 detik.
-  3. `/api/verify-otp` memanggil `voter_verify_otp` (maks. 5 percobaan). Jika benar, server menerbitkan **token surat suara sekali pakai** (berlaku 30 menit, disimpan sebagai hash di `private.ballot_tokens`).
+  2. `/api/send-otp` memanggil RPC `voter_request_otp`: OTP 6 digit dari `gen_random_bytes`, disimpan sebagai hash SHA-256 di `private.voter_otps`, berlaku 10 menit. Jeda kirim ulang 60 detik dan maksimal 6 email per jam per alamat dihitung di database (hanya OTP yang benar-benar terbit).
+  3. `/api/verify-otp` mengirim email + **NIM yang sama** + kode ke `voter_verify_otp` (maks. 5 percobaan per kode; tebakan dengan NIM berbeda tidak dihitung, jadi orang yang hanya tahu email korban tidak bisa membakar kodenya). Jika benar, server menerbitkan **token surat suara sekali pakai** (berlaku 30 menit, disimpan sebagai hash di `private.ballot_tokens`).
   4. Browser menyimpan token di `sessionStorage` (`kmtedi_ballot_token`). NIM/email di sessionStorage hanya untuk tampilan.
   5. `/api/cast-vote` mengirim token + `candidate_id` ke `voter_cast_ballot`, yang secara atomik menghapus token, mencatat pemilih di `registered_voters`, dan menambah `vote_tallies`.
+- **Rate limit per IP sengaja longgar** (OTP 60, verifikasi 150, vote 150 per 15 menit) karena ratusan mahasiswa bisa berbagi satu IP wifi kampus. Pengaman utama ada di batas per email/per kode di database. Login admin: 5 per 15 menit per IP (tanpa batas global agar panitia tidak bisa dikunci orang lain).
 - **DPT opsional:** jika tabel `public.eligible_voters (nim, email)` berisi data, hanya pasangan NIM + email terdaftar yang bisa meminta OTP. Isi lewat Supabase Table Editor (import CSV).
 - **Aturan Satu Suara (Anti-Duplikasi):**
   - Satu NIM dan satu email hanya dapat memilih 1 kali.
@@ -131,7 +132,13 @@ Lapisan di atas desain utama, mengikuti feed Instagram @kmtedi.sv.ugm. Font dan 
   ```bash
   npm test
   ```
-  Seluruh 9 subtest harus berstatus `ok` sebelum melakukan commit.
+  Seluruh subtest harus berstatus `ok` sebelum melakukan commit.
+- **Uji keamanan database (wajib jika mengubah migrasi):**
+  ```bash
+  npm run test:db
+  ```
+  Menjalankan semua migrasi di Postgres lokal (PGlite) dengan peran ala Supabase lalu mencoba serangan yang pernah ditemukan.
+- **Urutan migrasi di Supabase SQL Editor:** jalankan file di `supabase/migrations/` berurutan nama. `20261025000000_security_hardening.sql` lalu `20261026000000_security_hardening_2.sql` (jika menjalankan ulang, jalankan keduanya berurutan).
 - **Deploy ke Production Vercel:**
   ```bash
   npm test && git add -A && git commit -m "deskripsi perbaikan" && git push origin main && npx vercel --prod --yes

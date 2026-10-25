@@ -168,6 +168,48 @@
 .time-row.is-active { background: rgba(255, 180, 43, .1); }
 .time-row.is-active .time-date { animation: badge-glow 2.2s ease-in-out infinite; }
 
+/* ---------- Navigasi: offset anchor, section aktif, progres gulir ---------- */
+html { scroll-padding-top: 84px; }
+:focus-visible { outline: 2px solid var(--brand-amber); outline-offset: 3px; }
+.navlinks a { position: relative; }
+.navlinks a.active { color: var(--brand-amber); opacity: 1; }
+.navlinks a[href^="#"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px;
+  background: var(--brand-amber); transform: scaleX(0); transform-origin: left;
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1);
+}
+.navlinks a.active::after, .navlinks a[href^="#"]:hover::after { transform: scaleX(1); }
+.scroll-progress {
+  position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%;
+  background: linear-gradient(90deg, var(--brand-orange), var(--brand-amber));
+  transform: scaleX(var(--progress, 0)); transform-origin: left; pointer-events: none;
+}
+
+/* ---------- Dekorasi hero ikut bergerak pelan ---------- */
+.hero-spark { animation: deco-float 7s ease-in-out infinite; }
+.hero-petals { animation: deco-float 14s ease-in-out -4s infinite, petals-turn 60s linear infinite; }
+
+/* ---------- Kotak status: jarak baris judul besar ---------- */
+.status-box .status-big { line-height: .92; margin: 14px 0 16px; }
+
+/* ---------- Footer gaya poster ---------- */
+.footer.footer-rich { display: block; padding: 48px 5vw 22px; }
+.footer-top { display: grid; grid-template-columns: 1.1fr 1fr 1.2fr; gap: 28px; align-items: center; }
+.footer-brand-text b { display: block; font: 700 14px var(--mono); letter-spacing: -.02em; color: var(--cream); }
+.footer-brand-text span { display: block; margin-top: 4px; font: 400 12px var(--mono); color: var(--muted); }
+.footer-contact { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.footer-contact li { display: flex; align-items: center; gap: 10px; font: 700 12px var(--mono); }
+.footer-contact svg { width: 17px; height: 17px; fill: none; stroke: var(--brand-amber); stroke-width: 1.8; flex-shrink: 0; }
+.footer-contact a { color: var(--cream); transition: color .2s; }
+.footer-contact a:hover { color: var(--brand-amber); }
+.footer-org { margin: 0; text-align: right; font: 700 12px/1.6 var(--mono); color: var(--cream); }
+.footer-org small { font-size: 11px; color: var(--brand-amber); }
+.footer-bottom {
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line);
+}
+.footer.footer-rich .footer-bottom span { font: 700 10px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
 /* ---------- Keyframes ---------- */
 @keyframes glow-spin { to { transform: rotate(360deg); } }
 @keyframes glow-breathe { 0%, 100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
@@ -178,6 +220,8 @@
 }
 @keyframes live-ping { 0% { box-shadow: 0 0 0 0 rgba(0, 1, 19, .5); } 100% { box-shadow: 0 0 0 14px rgba(0, 1, 19, 0); } }
 @keyframes badge-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 180, 43, .55); } 50% { box-shadow: 0 0 0 6px rgba(255, 180, 43, 0); } }
+@keyframes deco-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
+@keyframes petals-turn { to { rotate: 360deg; } }
 @keyframes count-tick { from { transform: translateY(-35%); opacity: 0; } to { transform: none; opacity: 1; } }
 
 /* ---------- Responsif ---------- */
@@ -189,6 +233,8 @@
   .ticket-stage { min-height: 360px; margin-top: 10px; }
   .bg-glow .rays { width: 1100px; }
   .glow-hero .rays, .glow-hero .glow-orb { left: 50%; top: 72%; }
+  .footer-top { grid-template-columns: 1fr; gap: 20px; }
+  .footer-org { text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {

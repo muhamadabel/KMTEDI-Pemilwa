@@ -24,9 +24,31 @@ const pad2 = n => String(Math.max(0, Math.floor(n))).padStart(2, '0');
 
 // TOPBAR: latar blur setelah halaman digulir
 const topbar = $('topbar');
-const onScroll = () => topbar.classList.toggle('scrolled', window.scrollY > 24);
+const progressBar = $('scrollProgress');
+const onScroll = () => {
+  topbar.classList.toggle('scrolled', window.scrollY > 24);
+  if (progressBar) {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.setProperty('--progress', max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : 0);
+  }
+};
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
+
+// NAVIGASI: tandai section yang sedang dibaca
+const navLinks = [...document.querySelectorAll('.navlinks a[href^="#"]')];
+if ('IntersectionObserver' in window && navLinks.length) {
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${entry.target.id}`));
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  navLinks.forEach(a => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) spy.observe(target);
+  });
+}
 
 // REVEAL ON SCROLL + GARIS MELIUK
 const revealTargets = document.querySelectorAll('.reveal, .ticket-stage, .squiggle');
@@ -535,7 +557,7 @@ $('voterFormStep2').addEventListener('submit', async e => {
   btn.disabled = true;
 
   try {
-    const { res, data } = await postJson('/api/verify-otp', { email: pendingVoterData.email, otp });
+    const { res, data } = await postJson('/api/verify-otp', { email: pendingVoterData.email, nim: pendingVoterData.nim, otp });
     if (!res.ok || !data.success) {
       errBox.textContent = data.error || 'Kode OTP salah atau kedaluwarsa.';
       return;

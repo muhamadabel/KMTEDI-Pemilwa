@@ -4,10 +4,14 @@
   "description": "Website Pemilwa KMTEDI",
   "scripts": {
     "build": "node build.js",
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "test:db": "node tests/db/security.db.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
     "nodemailer": "^10.2.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.16"
   }
 }

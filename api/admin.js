@@ -104,8 +104,9 @@ module.exports = handler(async (body, req) => {
 
   if (action === 'login') {
     const ip = clientIp(req);
+    // Hanya per IP: batas global justru bisa dipakai orang lain untuk mengunci
+    // panitia. PIN minimal 12 karakter + bcrypt membuat tebakan terdistribusi tidak praktis.
     await rateLimit(db, 'admin-login-ip', ip, 5, 15 * 60);
-    await rateLimit(db, 'admin-login-all', 'global', 60, 60 * 60);
     const ok = await call(db, 'admin_check_pin', { p_pin: str(body.pin, 200) });
     if (!ok) throw new HttpError(401, 'PIN admin salah.');
     const version = await call(db, 'admin_credentials_version');

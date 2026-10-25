@@ -35,6 +35,14 @@ test('hardening migration grants nothing new to anon except public results', () 
   assert.match(sql, /drop policy if exists voters_anon_read/);
 });
 
+test('follow-up hardening migration grants no function to anon and narrows public columns', () => {
+  const sql = read('supabase/migrations/20261026000000_security_hardening_2.sql');
+  assert.doesNotMatch(sql, /grant execute on function [^;]+ to [^;]*anon/i);
+  assert.match(sql, /revoke all on public\.profiles from anon, authenticated/);
+  assert.match(sql, /grant select \(id, order_number, name, batch/);
+  assert.match(sql, /voter_verify_otp\(p_email text, p_nim text, p_otp text\)/);
+});
+
 test('deploy publishes only whitelisted files with security headers', () => {
   const vercel = JSON.parse(read('vercel.json'));
   assert.equal(vercel.outputDirectory, 'dist');
@@ -169,6 +177,17 @@ test('rate limit returns 429 and internal DB errors are hidden', async () => {
   console.error = origError;
   assert.equal(res.statusCode, 500);
   assert.ok(!res.payload.error.includes('secret_stuff'));
+});
+
+test('verify-otp requires the NIM used to request the code', async () => {
+  const handler = loadApi('api/verify-otp.js');
+  reset();
+  assert.equal((await invoke(handler, { body: { email: 'budi', otp: '123456' } })).statusCode, 400);
+  assert.equal(rpcCalls.length, 0);
+  reset((fn) => fn === 'api_rate_hit' ? { data: true, error: null } : { data: { ok: true, nim: '22/1/TK/1', email: 'budi@mail.ugm.ac.id', ballot_token: 'a'.repeat(64) }, error: null });
+  const res = await invoke(handler, { body: { email: 'budi', nim: '22/1/tk/1', otp: '123456' } });
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(rpcCalls.find(c => c.fn === 'voter_verify_otp').args, { p_email: 'budi@mail.ugm.ac.id', p_nim: '22/1/TK/1', p_otp: '123456' });
 });
 
 test('cast-vote requires a well-formed ballot token and candidate id', async () => {

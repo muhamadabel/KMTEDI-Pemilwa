@@ -21,8 +21,9 @@ module.exports = handler(async (body, req) => {
   const email = normalizeEmail(body.email_prefix);
   const db = serviceDb();
 
-  await rateLimit(db, 'otp-ip', clientIp(req), 8, 15 * 60);
-  await rateLimit(db, 'otp-email', email, 5, 60 * 60);
+  // Banyak mahasiswa bisa berbagi satu IP publik (wifi kampus), jadi batas per IP
+  // longgar. Batas ketat per email (jeda 60 detik, maks 6/jam) ada di database.
+  await rateLimit(db, 'otp-ip', clientIp(req), 60, 15 * 60);
 
   const { data, error } = await db.rpc('voter_request_otp', { p_nim: nim, p_email: email });
   if (error) throw dbFailure(error);
