@@ -61,6 +61,23 @@ if ('IntersectionObserver' in window && !reduceMotion) {
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   revealTargets.forEach(el => io.observe(el));
+
+  // Cadangan jika browser menunda IntersectionObserver: cek posisi saat digulir
+  // agar konten tidak pernah tertahan dalam keadaan tersembunyi.
+  let revealQueued = false;
+  const revealInView = () => {
+    revealQueued = false;
+    revealTargets.forEach(el => {
+      const cls = el.classList.contains('squiggle') ? 'drawn' : 'in';
+      if (el.classList.contains(cls)) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.92 && r.bottom > 0) el.classList.add(cls);
+    });
+  };
+  window.addEventListener('scroll', () => {
+    if (!revealQueued) { revealQueued = true; setTimeout(revealInView, 180); }
+  }, { passive: true });
+  window.addEventListener('load', () => setTimeout(revealInView, 300));
 } else {
   revealTargets.forEach(el => el.classList.add(el.classList.contains('squiggle') ? 'drawn' : 'in'));
 }
