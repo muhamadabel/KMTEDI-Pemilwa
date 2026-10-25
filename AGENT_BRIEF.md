@@ -18,9 +18,11 @@ Dokumen operasional resmi untuk AI coding agent yang melanjutkan pengembangan si
 ## 2. Tech Stack & Architecture
 - **Frontend:** Pure HTML5, CSS3, Vanilla JavaScript (ES6+). Cepat, ringan, tanpa kompilasi bundler React/Next.js.
 - **Supabase Integration:** Menggunakan `@supabase/supabase-js@2` via CDN.
-- **Backend APIs:** Vercel Serverless Functions (`/api/send-otp.js`, `/api/verify-otp.js`).
-- **Email Gateway:** Gmail SMTP via `nodemailer` (port 465 SSL) menggunakan akun panitia `muhamadabelugm@gmail.com` dan Google App Password.
-- **Configuration:** `build.js` membuat `supabase-config.js` dari environment variable saat deployment Vercel.
+- **Backend APIs:** Vercel Serverless Functions (`/api/send-otp`, `/api/verify-otp`, `/api/cast-vote`, `/api/admin`). Helper bersama di `lib/server.js`.
+- **Akses Database:** Browser hanya membaca data publik (`candidates`, `election_settings`) lewat REST dengan publishable key. Semua operasi tulis dan semua RPC pemilih/admin hanya bisa dipanggil `service_role` dari `/api/*`.
+- **Email Gateway:** Gmail SMTP via `nodemailer` (port 465 SSL). Kredensial hanya dari env `SMTP_USER` / `SMTP_PASS`.
+- **Configuration:** `build.js` menyalin file publik saja ke `dist/` dan membuat `dist/supabase-config.js` dari env. Hanya file di `PUBLIC_FILES` / `PUBLIC_DIRS` yang ter-deploy.
+- **Environment Variables (Vercel):** `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SMTP_USER`, `SMTP_PASS`, `ADMIN_SESSION_SECRET`, opsional `ALLOWED_ORIGINS`. Lihat `.env.example`.
 
 ---
 
@@ -29,26 +31,29 @@ Dokumen operasional resmi untuk AI coding agent yang melanjutkan pengembangan si
 - **Tidak Memerlukan Input Nama:** Input nama ditiadakan agar alur cepat dan menghindari typo pencocokan nama.
 - **OTP Verification:**
   1. Mahasiswa input NIM dan email UGM.
-  2. Endpoint `/api/send-otp` memanggil RPC `public.generate_voter_otp`, membuat 6-digit OTP acak (berlaku 10 menit), lalu mengirimkannya ke email UGM mahasiswa via Gmail SMTP.
-  3. Mahasiswa memasukkan 6 digit OTP. Endpoint `/api/verify-otp` memvalidasi kecocokan kode.
-  4. Setelah lolos, status pemilih aktif disimpan di `sessionStorage` (`kmtedi_voter`).
+  2. `/api/send-otp` (rate limit per IP dan per email) memanggil RPC `voter_request_otp`: OTP 6 digit dari `gen_random_bytes`, disimpan sebagai hash SHA-256 di `private.voter_otps`, berlaku 10 menit, jeda kirim ulang 60 detik.
+  3. `/api/verify-otp` memanggil `voter_verify_otp` (maks. 5 percobaan). Jika benar, server menerbitkan **token surat suara sekali pakai** (berlaku 30 menit, disimpan sebagai hash di `private.ballot_tokens`).
+  4. Browser menyimpan token di `sessionStorage` (`kmtedi_ballot_token`). NIM/email di sessionStorage hanya untuk tampilan.
+  5. `/api/cast-vote` mengirim token + `candidate_id` ke `voter_cast_ballot`, yang secara atomik menghapus token, mencatat pemilih di `registered_voters`, dan menambah `vote_tallies`.
+- **DPT opsional:** jika tabel `public.eligible_voters (nim, email)` berisi data, hanya pasangan NIM + email terdaftar yang bisa meminta OTP. Isi lewat Supabase Table Editor (import CSV).
 - **Aturan Satu Suara (Anti-Duplikasi):**
   - Satu NIM dan satu email hanya dapat memilih 1 kali.
-  - Percobaan vote ulang langsung ditolak oleh RPC database `public.cast_vote_by_nim_and_email`.
-  - Pilihan suara bersifat rahasia dan anonim (suara tersimpan tanpa relasi identitas pemilih).
+  - Dijamin oleh constraint unik `registered_voters.nim` dan `registered_voters.email` di dalam transaksi `voter_cast_ballot`.
+  - Kerahasiaan suara: tidak ada baris suara per pemilih. Suara hanya menambah penghitung `vote_tallies`, dan setiap suara meng-update semua baris penghitung sekaligus agar metadata baris tidak membocorkan pilihan. Rekap per calon di dashboard admin disembunyikan selama bilik suara terbuka.
 
 ---
 
 ## 4. Admin Panel & Master PIN
 - **Route:** `/admin`
-- **Master PIN Aktif:** `abelganteng` (PIN lama `KMTEDI2026` sudah tidak berlaku).
+- **PIN Admin:** disimpan sebagai hash bcrypt di `private.admin_credentials`, tidak pernah ditulis di repo atau dokumen. Ganti lewat SQL Editor: `select private.set_admin_pin('PIN-BARU-MIN-12-KARAKTER');` (otomatis mengakhiri semua sesi admin lama).
+- **Login Admin:** `/api/admin` action `login` (rate limit 5x / 15 menit per IP) mengembalikan token sesi HMAC berlaku 2 jam, disimpan di `sessionStorage` (`kmtedi_admin_session`) dan dikirim sebagai `Authorization: Bearer`.
 - **Fitur Admin:**
   1. Saklar Bilik Suara (`voting_open` true/false).
   2. Kontrol Countdown Jadwal (`voting_start` dan `voting_end`).
   3. CRUD Paslon (Foto, Nomor Urut, Nama, Angkatan, Biodata, Visi Misi, Proker).
   4. Pengaturan Teks Beranda (Hero slides, Marquee, Info).
   5. Monitoring Presensi Pemilih (Daftar NIM, Email UGM, Waktu Memilih).
-  6. Rekapitulasi Suara & Reset Kotak Suara.
+  6. Rekapitulasi Suara (hanya saat bilik suara tertutup) & Reset Kotak Suara (wajib ketik RESET, hanya saat bilik suara tertutup).
 
 ---
 
@@ -90,8 +95,12 @@ Palet warna resmi media KMTEDI:
 ├── vercel.json             # Konfigurasi Vercel deployment
 ├── build.js                # Injeksi env var Supabase ke supabase-config.js
 ├── api/
-│   ├── send-otp.js         # API Vercel pengiriman OTP email UGM via Gmail SMTP
-│   └── verify-otp.js       # API Vercel verifikasi OTP 6 digit
+│   ├── send-otp.js         # Kirim OTP email UGM via Gmail SMTP
+│   ├── verify-otp.js       # Verifikasi OTP, terbitkan token surat suara
+│   ├── cast-vote.js        # Kirim suara dengan token sekali pakai
+│   └── admin.js            # Semua aksi admin (login PIN + sesi HMAC)
+├── lib/
+│   └── server.js           # Helper API: service client, rate limit, validasi, sesi
 ├── assets/
 │   ├── kmtedi-logo.png     # Logo resmi KMTEDI transparan
 │   ├── favicon.png         # Favicon resmi berlatar navy
@@ -114,5 +123,8 @@ Palet warna resmi media KMTEDI:
   ```bash
   npm test && git add -A && git commit -m "deskripsi perbaikan" && git push origin main && npx vercel --prod --yes
   ```
-- **Aturan Keamanan Kredensial:**
-  Jangan pernah melakukan hardcode token Supabase service role, app password Gmail, atau session tokens ke dalam repositori git.
+- **Aturan Keamanan (Wajib):**
+  - Jangan pernah hardcode service role key, app password Gmail, PIN admin, atau session secret di repo atau dokumen. Repo GitHub ini publik.
+  - Jangan pernah `grant execute ... to anon` untuk RPC baru. Semua RPC baru wajib `service_role` saja dan dipanggil dari `/api/*`.
+  - Semua data dari database wajib lewat `escapeHtml()` / `richText()` / `safeImage()` sebelum masuk `innerHTML` atau atribut.
+  - File baru yang perlu dipublikasikan wajib ditambahkan ke `PUBLIC_FILES` / `PUBLIC_DIRS` di `build.js`.

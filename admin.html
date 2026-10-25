@@ -145,7 +145,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
 
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button type="button" class="btn alt" id="clearScheduleBtn">Hapus Jadwal (Mode Manual)</button>
-        <button type="button" class="btn" id="saveScheduleBtn">Simpan Jadwal Countdown ⏱️</button>
+        <button type="button" class="btn" id="saveScheduleBtn">Simpan Jadwal Countdown</button>
       </div>
       <div id="scheduleStatusText" style="margin-top:12px;font:700 11px 'Space Mono';color:var(--gold)"></div>
     </section>
@@ -183,7 +183,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
     <section class="panel">
       <div class="panel-head">
         <h2>Pengaturan Panel Beranda Web</h2>
-        <button class="btn" id="savePanelsBtn">Simpan Semua Panel 💾</button>
+        <button class="btn" id="savePanelsBtn">Simpan Semua Panel</button>
       </div>
       <p style="color:var(--muted);font-size:13px;margin:0 0 20px">Semua teks, foto slide hero, teks berjalan, dan tahapan alur pemilwa di beranda web publik dapat kamu sesuaikan langsung dari sini.</p>
 
@@ -196,11 +196,11 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
             <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">SLIDE 1</label>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <img id="heroPreview0" src="assets/ig-panel-1.jpg" style="width:50px;height:60px;object-fit:cover;border:1px solid var(--gold)">
-              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" onclick="$('heroFile0').click()">Upload 📁</button>
-              <input type="file" id="heroFile0" accept="image/*" style="display:none" onchange="handleHeroUpload(0, this)">
+              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" id="heroUploadBtn0">Upload</button>
+              <input type="file" id="heroFile0" accept="image/png,image/jpeg,image/webp" style="display:none">
             </div>
             <input type="text" id="heroImage0" class="input" placeholder="URL Foto 1" style="margin-bottom:6px;font-size:11px">
-            <textarea id="heroCaption0" class="input" rows="2" placeholder="Caption Slide 1 (HTML diperbolehkan)" style="font-size:11px"></textarea>
+            <textarea id="heroCaption0" class="input" rows="2" placeholder="Caption Slide 1 (Enter untuk baris baru)" style="font-size:11px"></textarea>
           </div>
 
           <!-- Slide 2 -->
@@ -208,8 +208,8 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
             <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">SLIDE 2</label>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <img id="heroPreview1" src="assets/ig-panel-2.jpg" style="width:50px;height:60px;object-fit:cover;border:1px solid var(--gold)">
-              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" onclick="$('heroFile1').click()">Upload 📁</button>
-              <input type="file" id="heroFile1" accept="image/*" style="display:none" onchange="handleHeroUpload(1, this)">
+              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" id="heroUploadBtn1">Upload</button>
+              <input type="file" id="heroFile1" accept="image/png,image/jpeg,image/webp" style="display:none">
             </div>
             <input type="text" id="heroImage1" class="input" placeholder="URL Foto 2" style="margin-bottom:6px;font-size:11px">
             <textarea id="heroCaption1" class="input" rows="2" placeholder="Caption Slide 2" style="font-size:11px"></textarea>
@@ -220,8 +220,8 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
             <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--cream)">SLIDE 3</label>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <img id="heroPreview2" src="assets/ig-panel-6.jpg" style="width:50px;height:60px;object-fit:cover;border:1px solid var(--gold)">
-              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" onclick="$('heroFile2').click()">Upload 📁</button>
-              <input type="file" id="heroFile2" accept="image/*" style="display:none" onchange="handleHeroUpload(2, this)">
+              <button type="button" class="btn alt" style="padding:6px 10px;font-size:9px" id="heroUploadBtn2">Upload</button>
+              <input type="file" id="heroFile2" accept="image/png,image/jpeg,image/webp" style="display:none">
             </div>
             <input type="text" id="heroImage2" class="input" placeholder="URL Foto 3" style="margin-bottom:6px;font-size:11px">
             <textarea id="heroCaption2" class="input" rows="2" placeholder="Caption Slide 3" style="font-size:11px"></textarea>
@@ -283,7 +283,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
       </div>
       
       <div style="margin-top:20px;text-align:right">
-        <button class="btn" id="savePanelsBtn2">Simpan Semua Panel 💾</button>
+        <button class="btn" id="savePanelsBtn2">Simpan Semua Panel</button>
       </div>
     </section>
   </div>
@@ -306,8 +306,8 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         <div style="flex:1">
           <label style="display:block;font:700 10px 'Space Mono';margin-bottom:6px;color:var(--wine)">FOTO RESMI KANDIDAT *</label>
           <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
-            <button type="button" class="btn" style="background:var(--wine);color:var(--cream);padding:9px 14px;font-size:10px" onclick="$('candPhotoFileInput').click()">📁 Upload Foto dari Komputer / HP</button>
-            <input type="file" id="candPhotoFileInput" accept="image/*" style="display:none">
+            <button type="button" class="btn" style="background:var(--wine);color:var(--cream);padding:9px 14px;font-size:10px" id="candPhotoUploadBtn">Upload Foto dari Komputer / HP</button>
+            <input type="file" id="candPhotoFileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
             <span id="photoFileName" style="font-size:11px;color:#77515a"></span>
           </div>
           <input type="text" id="candPhoto" class="input" style="background:#f7f3ee;color:#000;font-size:11px;padding:8px" placeholder="Atau paste URL foto (https://...)">
@@ -370,7 +370,7 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
         <button type="button" class="btn danger hidden" id="deleteCandBtn">Hapus Calon</button>
         <div style="display:flex;gap:10px;margin-left:auto">
           <button type="button" class="btn alt" id="cancelCandBtn" style="color:var(--wine);border-color:var(--wine)">Batal</button>
-          <button type="submit" class="btn" style="background:var(--wine);color:var(--cream)">Simpan Biodata Paslon 💾</button>
+          <button type="submit" class="btn" style="background:var(--wine);color:var(--cream)">Simpan Biodata Paslon</button>
         </div>
       </div>
     </form>
@@ -378,17 +378,41 @@ textarea.input{resize:vertical;min-height:75px;font-family:inherit}
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
 <script>
-const cfg = window.KMTEDI_SUPABASE_CONFIG || {};
-const db = (cfg.url && cfg.anonKey) ? supabase.createClient(cfg.url, cfg.anonKey) : null;
 const $ = id => document.getElementById(id);
-let currentPin = sessionStorage.getItem('kmtedi_admin_pin') || '';
+const SESSION_KEY = 'kmtedi_admin_session';
+let sessionToken = sessionStorage.getItem(SESSION_KEY) || '';
 let loadedCandidates = [];
-let loadedSettings = null;
 
 function show(id, visible) { $(id).classList.toggle('hidden', !visible); }
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+}
+
+function safeImage(url, fallback) {
+  const u = String(url || '');
+  return /^(data:image\/(png|jpeg|webp);base64,|https:\/\/|assets\/)/.test(u) ? u : fallback;
+}
+
+async function api(action, payload = {}) {
+  const res = await fetch('/api/admin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {})
+    },
+    body: JSON.stringify({ action, ...payload })
+  });
+  let data = {};
+  try { data = await res.json(); } catch { data = {}; }
+  if (res.status === 401 && action !== 'login') {
+    logout();
+    throw new Error(data.error || 'Sesi admin berakhir. Silakan login ulang.');
+  }
+  if (!res.ok || !data.success) throw new Error(data.error || 'Permintaan gagal.');
+  return data;
+}
 
 // TABS
 document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -400,8 +424,12 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
   };
 });
 
-// CLIENT-SIDE IMAGE COMPRESSION (Resizes to max 800x1000px, quality 0.85, base64 data-url ~50KB)
+// CLIENT-SIDE IMAGE COMPRESSION (max 800x1000px, JPEG quality 0.85)
 function compressImage(file, callback) {
+  if (!/^image\/(png|jpeg|webp)$/.test(file.type)) {
+    alert('Format gambar harus PNG, JPG, atau WEBP.');
+    return;
+  }
   const reader = new FileReader();
   reader.onload = e => {
     const img = new Image();
@@ -420,17 +448,14 @@ function compressImage(file, callback) {
       }
       canvas.width = w;
       canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      callback(dataUrl);
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.85));
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-// CANDIDATE PHOTO HANDLER
 $('candPhotoFileInput').onchange = e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -443,224 +468,201 @@ $('candPhotoFileInput').onchange = e => {
 
 $('candPhoto').oninput = () => {
   const val = $('candPhoto').value.trim();
-  if (val) $('candPhotoPreview').src = val;
+  if (val) $('candPhotoPreview').src = safeImage(val, 'assets/ig-panel-1.jpg');
 };
 
-// HERO PHOTO UPLOAD
-function handleHeroUpload(index, input) {
-  const file = input.files[0];
-  if (!file) return;
-  compressImage(file, dataUrl => {
-    $(`heroPreview${index}`).src = dataUrl;
-    $(`heroImage${index}`).value = dataUrl;
-  });
+for (let i = 0; i < 3; i++) {
+  $(`heroUploadBtn${i}`).onclick = () => $(`heroFile${i}`).click();
+  $(`heroFile${i}`).onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    compressImage(file, dataUrl => {
+      $(`heroPreview${i}`).src = dataUrl;
+      $(`heroImage${i}`).value = dataUrl;
+    });
+  };
+}
+$('candPhotoUploadBtn').onclick = () => $('candPhotoFileInput').click();
+
+// LOGIN
+async function enterDashboard() {
+  show('loginSection', false);
+  show('dashboardSection', true);
+  show('logout', true);
+  await refreshDashboard();
 }
 
-async function verifyAndLoad(pin) {
-  if (!db) {
-    $('loginErr').textContent = 'Konfigurasi Supabase belum terpasang di supabase-config.js';
-    return false;
-  }
+function logout() {
+  sessionToken = '';
+  sessionStorage.removeItem(SESSION_KEY);
+  show('dashboardSection', false);
+  show('logout', false);
+  show('loginSection', true);
+}
+
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  $('loginErr').textContent = 'Memverifikasi PIN...';
   try {
-    const { data: ok, error } = await db.rpc('admin_verify_pin', { p_pin: pin });
-    if (error || !ok) {
-      $('loginErr').textContent = error ? error.message : 'PIN Admin salah! Silakan coba lagi.';
-      return false;
-    }
-    currentPin = pin;
-    sessionStorage.setItem('kmtedi_admin_pin', pin);
-    show('loginSection', false);
-    show('dashboardSection', true);
-    show('logout', true);
-    await refreshDashboard();
-    return true;
+    const { token } = await api('login', { pin: $('pinInput').value });
+    sessionToken = token;
+    sessionStorage.setItem(SESSION_KEY, token);
+    $('pinInput').value = '';
+    $('loginErr').textContent = '';
+    await enterDashboard();
   } catch (err) {
     $('loginErr').textContent = err.message;
-    return false;
   }
+};
+
+$('logout').onclick = logout;
+
+function toLocalDatetimeInput(isoStr) {
+  if (!isoStr) return '';
+  const d = new Date(isoStr);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 async function refreshDashboard() {
-  if (!currentPin || !db) return;
+  let dash;
   try {
-    const [statsRes, resultsRes, candidatesRes, votersRes] = await Promise.all([
-      db.rpc('admin_get_stats_by_pin', { p_pin: currentPin }),
-      db.rpc('admin_get_results_by_pin', { p_pin: currentPin }),
-      db.from('candidates').select('*').order('order_number'),
-      db.rpc('admin_get_voters_by_pin', { p_pin: currentPin })
-    ]);
-
-    const stats = statsRes.data?.[0];
-    if (stats) {
-      loadedSettings = stats;
-      $('voterCount').textContent = stats.voted_count ?? 0;
-      $('votingStatusBadge').textContent = stats.voting_open ? 'TERBUKA' : 'DITUTUP';
-      $('votingStatusBadge').style.color = stats.voting_open ? 'var(--gold)' : 'var(--red)';
-      $('votingStateText').textContent = stats.voting_open ? 'Bilik Suara: SEDANG DIBUKA' : 'Bilik Suara: SEDANG DITUTUP';
-      $('votingStateDesc').textContent = stats.voting_open ? 'Mahasiswa dapat memberikan suara saat ini.' : 'Voting dikunci, mahasiswa belum bisa memilih.';
-
-    // Populate schedule & countdown
-    function toLocalDatetimeInput(isoStr) {
-      if (!isoStr) return '';
-      const d = new Date(isoStr);
-      const pad = n => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    if (stats.voting_start) {
-      $('inputVotingStart').value = toLocalDatetimeInput(stats.voting_start);
-      const d = new Date(stats.voting_start);
-      const now = new Date();
-      if (now < d) {
-        $('scheduleStatusText').innerHTML = `⏱️ Countdown Aktif: Menuju pembukaan pada <b>${d.toLocaleString('id-ID')} WIB</b>`;
-      } else {
-        $('scheduleStatusText').innerHTML = `✓ Waktu pembukaan telah tercapai (${d.toLocaleString('id-ID')} WIB).`;
-      }
-    } else {
-      $('inputVotingStart').value = '';
-      $('scheduleStatusText').textContent = 'Mode Manual: Bilik suara dikontrol langsung via tombol Buka/Tutup di atas.';
-    }
-
-    if (stats.voting_end) {
-      $('inputVotingEnd').value = toLocalDatetimeInput(stats.voting_end);
-    } else {
-      $('inputVotingEnd').value = '';
-    }
-      $('toggleVotingBtn').textContent = stats.voting_open ? 'Kunci / Tutup Voting' : 'Buka Bilik Suara';
-      $('toggleResultsBtn').textContent = stats.results_published ? 'Sembunyikan Hasil dari Publik' : 'Buka Hasil ke Publik';
-
-      // Populate Panels Tab
-      const slides = stats.hero_slides || [];
-      for (let i = 0; i < 3; i++) {
-        const item = slides[i] || {};
-        $(`heroImage${i}`).value = item.image || `assets/ig-panel-${i+1}.jpg`;
-        $(`heroCaption${i}`).value = item.caption || '';
-        $(`heroPreview${i}`).src = item.image || `assets/ig-panel-${i+1}.jpg`;
-      }
-
-      $('panelMarquee').value = stats.marquee_text || '';
-      $('panelAboutStatement').value = stats.about_statement || '';
-      $('panelAboutInfo').value = stats.about_info || '';
-
-      const timeline = stats.timeline_items || [];
-      for (let i = 0; i < 4; i++) {
-        const t = timeline[i] || {};
-        $(`timeTitle${i}`).value = t.title || '';
-        $(`timeDesc${i}`).value = t.desc || '';
-        $(`timeDate${i}`).value = t.date || '';
-      }
-    }
-
-    const results = resultsRes.data || [];
-    const totalVotes = results.reduce((acc, r) => acc + Number(r.vote_count), 0);
-    $('voteCount').textContent = totalVotes;
-
-    if (results.length) {
-      $('resultsList').innerHTML = results.map(r => {
-        const pct = totalVotes > 0 ? Math.round((Number(r.vote_count) / totalVotes) * 100) : 0;
-        return `
-          <div class="row">
-            <div>
-              <b style="font-size:16px">${r.order_number}. ${r.candidate_name}</b><br>
-              <small>${pct}% dari total suara masuk</small>
-            </div>
-            <div style="text-align:right">
-              <strong style="font-size:24px;font-family:Anton;color:var(--gold)">${r.vote_count}</strong>
-              <small style="display:block">suara</small>
-            </div>
-          </div>
-        `;
-      }).join('');
-    } else {
-      $('resultsList').innerHTML = '<div class="notice">Belum ada data calon atau suara masuk.</div>';
-    }
-
-    const voters = votersRes.data || [];
-    if (voters.length) {
-      $('votersList').innerHTML = `
-        <div style="max-height:260px;overflow-y:auto">
-          ${voters.map((v, i) => `
-            <div class="row" style="padding:10px 0">
-              <div>
-                <b style="font-size:14px;color:var(--cream)">${i+1}. NIM: ${v.nim}</b><br>
-                <small style="color:var(--gold)">Email UGM: ${v.email || '-'}</small>
-              </div>
-              <small style="color:var(--muted)">${new Date(v.voted_at).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'})} WIB</small>
-            </div>
-          `).join('')}
-        </div>
-      `;
-    } else {
-      $('votersList').innerHTML = '<div class="notice">Belum ada mahasiswa yang memilih.</div>';
-    }
-
-
-    loadedCandidates = candidatesRes.data || [];
-    if (loadedCandidates.length) {
-      $('candidatesList').innerHTML = loadedCandidates.map(c => `
-        <div class="candidate-item">
-          <img src="${c.photo_url || 'assets/ig-panel-1.jpg'}" class="candidate-thumb" alt="${c.name}">
-          <div>
-            <b style="font-size:16px;color:var(--gold)">${c.order_number}. ${c.name}</b>
-            <span style="font-size:11px;font-family:'Space Mono';color:var(--muted);margin-left:8px">(${c.batch ? 'Angkatan ' + c.batch : 'Angkatan belum diisi'} · NIM: ${c.nim || '-'})</span>
-            <p style="margin:4px 0 0;font-size:13px;color:var(--cream);opacity:.85">${c.vision || 'Visi belum diisi.'}</p>
-            <small style="color:${c.is_active ? 'var(--gold)' : 'var(--red)'}">${c.is_active ? '● AKTIF DI BILIK' : '○ NONAKTIF'}</small>
-          </div>
-          <button class="btn alt edit-cand-btn" data-id="${c.id}" style="padding:8px 14px;font-size:10px">Edit Biodata ✏️</button>
-        </div>
-      `).join('');
-
-      document.querySelectorAll('.edit-cand-btn').forEach(btn => {
-        btn.addEventListener('click', () => openCandidateModal(btn.dataset.id));
-      });
-    } else {
-      $('candidatesList').innerHTML = '<div class="notice">Belum ada calon terdaftar. Klik "+ Tambah Calon Baru" di atas.</div>';
-    }
-
+    ({ dashboard: dash } = await api('dashboard'));
   } catch (err) {
     console.error('Error loading dashboard:', err);
+    return;
+  }
+  const s = dash.settings || {};
+
+  $('voterCount').textContent = dash.voted_count ?? 0;
+  $('votingStatusBadge').textContent = dash.voting_open_now ? 'TERBUKA' : 'DITUTUP';
+  $('votingStatusBadge').style.color = dash.voting_open_now ? 'var(--gold)' : 'var(--red)';
+  $('votingStateText').textContent = s.voting_open ? 'Bilik Suara: SAKLAR DIBUKA' : 'Bilik Suara: SAKLAR DITUTUP';
+  $('votingStateDesc').textContent = dash.voting_open_now
+    ? 'Mahasiswa dapat memberikan suara saat ini.'
+    : (s.voting_open ? 'Saklar dibuka, tetapi di luar jadwal yang disetel.' : 'Voting dikunci, mahasiswa belum bisa memilih.');
+  $('toggleVotingBtn').textContent = s.voting_open ? 'Kunci / Tutup Voting' : 'Buka Bilik Suara';
+  $('toggleResultsBtn').textContent = s.results_published ? 'Sembunyikan Hasil dari Publik' : 'Buka Hasil ke Publik';
+
+  if (s.voting_start) {
+    $('inputVotingStart').value = toLocalDatetimeInput(s.voting_start);
+    const d = new Date(s.voting_start);
+    $('scheduleStatusText').textContent = new Date() < d
+      ? `Countdown aktif: menuju pembukaan pada ${d.toLocaleString('id-ID')} WIB`
+      : `Waktu pembukaan telah tercapai (${d.toLocaleString('id-ID')} WIB).`;
+  } else {
+    $('inputVotingStart').value = '';
+    $('scheduleStatusText').textContent = 'Mode manual: bilik suara dikontrol langsung lewat tombol Buka/Tutup di atas.';
+  }
+  $('inputVotingEnd').value = toLocalDatetimeInput(s.voting_end);
+
+  // Panels
+  const slides = s.hero_slides || [];
+  for (let i = 0; i < 3; i++) {
+    const item = slides[i] || {};
+    const fallback = `assets/ig-panel-${i + 1}.jpg`;
+    $(`heroImage${i}`).value = item.image || fallback;
+    $(`heroCaption${i}`).value = String(item.caption || '').replace(/<br\s*\/?>/gi, '\n');
+    $(`heroPreview${i}`).src = safeImage(item.image, fallback);
+  }
+  $('panelMarquee').value = s.marquee_text || '';
+  $('panelAboutStatement').value = s.about_statement || '';
+  $('panelAboutInfo').value = s.about_info || '';
+  const timeline = s.timeline_items || [];
+  for (let i = 0; i < 4; i++) {
+    const t = timeline[i] || {};
+    $(`timeTitle${i}`).value = t.title || '';
+    $(`timeDesc${i}`).value = t.desc || '';
+    $(`timeDate${i}`).value = t.date || '';
+  }
+
+  // Results (hidden by the server while voting is open)
+  if (dash.results === null) {
+    $('voteCount').textContent = dash.voted_count ?? 0;
+    $('resultsList').innerHTML = '<div class="notice">Rekap per calon disembunyikan selama bilik suara terbuka untuk menjaga kerahasiaan suara. Tutup bilik suara untuk melihat hasil.</div>';
+  } else {
+    const results = dash.results || [];
+    const totalVotes = results.reduce((acc, r) => acc + Number(r.vote_count), 0);
+    $('voteCount').textContent = totalVotes;
+    $('resultsList').innerHTML = results.length ? results.map(r => {
+      const pct = totalVotes > 0 ? Math.round((Number(r.vote_count) / totalVotes) * 100) : 0;
+      return `
+        <div class="row">
+          <div>
+            <b style="font-size:16px">${Number(r.order_number)}. ${escapeHtml(r.candidate_name)}</b><br>
+            <small>${pct}% dari total suara masuk</small>
+          </div>
+          <div style="text-align:right">
+            <strong style="font-size:24px;font-family:Anton;color:var(--gold)">${Number(r.vote_count)}</strong>
+            <small style="display:block">suara</small>
+          </div>
+        </div>`;
+    }).join('') : '<div class="notice">Belum ada data calon atau suara masuk.</div>';
+  }
+
+  const voters = dash.voters || [];
+  $('votersList').innerHTML = voters.length ? `
+    <div style="max-height:260px;overflow-y:auto">
+      ${voters.map((v, i) => `
+        <div class="row" style="padding:10px 0">
+          <div>
+            <b style="font-size:14px;color:var(--cream)">${i + 1}. NIM: ${escapeHtml(v.nim)}</b><br>
+            <small style="color:var(--gold)">Email UGM: ${escapeHtml(v.email || '-')}</small>
+          </div>
+          <small style="color:var(--muted)">${escapeHtml(new Date(v.voted_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))} WIB</small>
+        </div>`).join('')}
+    </div>` : '<div class="notice">Belum ada mahasiswa yang memilih.</div>';
+
+  loadedCandidates = dash.candidates || [];
+  if (loadedCandidates.length) {
+    $('candidatesList').innerHTML = loadedCandidates.map(c => `
+      <div class="candidate-item">
+        <img src="${escapeHtml(safeImage(c.photo_url, 'assets/ig-panel-1.jpg'))}" class="candidate-thumb" alt="${escapeHtml(c.name)}">
+        <div>
+          <b style="font-size:16px;color:var(--gold)">${Number(c.order_number)}. ${escapeHtml(c.name)}</b>
+          <span style="font-size:11px;font-family:'Space Mono';color:var(--muted);margin-left:8px">(${c.batch ? 'Angkatan ' + escapeHtml(c.batch) : 'Angkatan belum diisi'} / NIM: ${escapeHtml(c.nim || '-')})</span>
+          <p style="margin:4px 0 0;font-size:13px;color:var(--cream);opacity:.85">${escapeHtml(c.vision || 'Visi belum diisi.')}</p>
+          <small style="color:${c.is_active ? 'var(--gold)' : 'var(--red)'}">${c.is_active ? 'AKTIF DI BILIK' : 'NONAKTIF'}</small>
+        </div>
+        <button class="btn alt edit-cand-btn" data-id="${escapeHtml(c.id)}" style="padding:8px 14px;font-size:10px">Edit Biodata</button>
+      </div>`).join('');
+    document.querySelectorAll('.edit-cand-btn').forEach(btn => {
+      btn.addEventListener('click', () => openCandidateModal(btn.dataset.id));
+    });
+  } else {
+    $('candidatesList').innerHTML = '<div class="notice">Belum ada calon terdaftar. Klik "+ Tambah Calon Baru" di atas.</div>';
   }
 }
 
 // SAVE HOMEPAGE PANELS
 async function saveAllPanels() {
-  if (!currentPin || !db) return;
   const heroSlides = [];
   for (let i = 0; i < 3; i++) {
     heroSlides.push({
-      image: $(`heroImage${i}`).value.trim() || `assets/ig-panel-${i+1}.jpg`,
-      caption: $(`heroCaption${i}`).value.trim()
+      image: $(`heroImage${i}`).value.trim() || `assets/ig-panel-${i + 1}.jpg`,
+      caption: $(`heroCaption${i}`).value.trim().replace(/\n/g, '<br>')
     });
   }
-
-  const marqueeText = $('panelMarquee').value.trim();
-  const aboutStatement = $('panelAboutStatement').value.trim();
-  const aboutInfo = $('panelAboutInfo').value.trim();
-
   const timelineItems = [];
   for (let i = 0; i < 4; i++) {
     timelineItems.push({
-      no: `0${i+1}`,
       title: $(`timeTitle${i}`).value.trim(),
       desc: $(`timeDesc${i}`).value.trim(),
       date: $(`timeDate${i}`).value.trim()
     });
   }
-
-  const { data, error } = await db.rpc('admin_save_panels', {
-    p_pin: currentPin,
-    p_hero_slides: heroSlides,
-    p_marquee_text: marqueeText,
-    p_about_statement: aboutStatement,
-    p_about_info: aboutInfo,
-    p_timeline_items: timelineItems
-  });
-
-  if (error) {
-    alert(error.message);
-  } else {
-    alert('Pengaturan panel beranda berhasil disimpan dan langsung aktif di web publik!');
+  try {
+    await api('save_panels', {
+      hero_slides: heroSlides,
+      marquee_text: $('panelMarquee').value.trim(),
+      about_statement: $('panelAboutStatement').value.trim(),
+      about_info: $('panelAboutInfo').value.trim(),
+      timeline_items: timelineItems
+    });
+    alert('Pengaturan panel beranda berhasil disimpan dan langsung aktif di web publik.');
     await refreshDashboard();
+  } catch (err) {
+    alert(err.message);
   }
 }
 
@@ -683,7 +685,7 @@ function openCandidateModal(id) {
     $('candBatch').value = c.batch || '';
     $('candNim').value = c.nim || '';
     $('candPhoto').value = c.photo_url || '';
-    $('candPhotoPreview').src = c.photo_url || 'assets/ig-panel-1.jpg';
+    $('candPhotoPreview').src = safeImage(c.photo_url, 'assets/ig-panel-1.jpg');
     $('candHistory').value = c.organization_history || '';
     $('candVision').value = c.vision || '';
     $('candMission').value = (c.mission || []).join('\n');
@@ -691,15 +693,16 @@ function openCandidateModal(id) {
     $('candActive').checked = c.is_active ?? true;
     show('deleteCandBtn', true);
   } else {
+    const fallback = `assets/ig-panel-${(loadedCandidates.length % 6) + 1}.jpg`;
     $('modalModeLabel').textContent = 'TAMBAH CALON BARU';
     $('modalCandidateTitle').textContent = 'Paslon Baru';
     $('candId').value = '';
-    $('candOrder').value = (loadedCandidates.length + 1);
+    $('candOrder').value = loadedCandidates.length + 1;
     $('candName').value = '';
     $('candBatch').value = '2023';
     $('candNim').value = '';
-    $('candPhoto').value = `assets/ig-panel-${(loadedCandidates.length % 6) + 1}.jpg`;
-    $('candPhotoPreview').src = `assets/ig-panel-${(loadedCandidates.length % 6) + 1}.jpg`;
+    $('candPhoto').value = fallback;
+    $('candPhotoPreview').src = fallback;
     $('candHistory').value = '';
     $('candVision').value = '';
     $('candMission').value = '';
@@ -719,41 +722,28 @@ candModal.onclick = e => { if (e.target === candModal) closeCandidateModal(); };
 
 $('candidateForm').onsubmit = async e => {
   e.preventDefault();
-  $('candidateFormErr').textContent = 'Menyimpan data paslon ke database...';
-  
-  const id = $('candId').value || null;
-  const orderNumber = parseInt($('candOrder').value, 10);
-  const name = $('candName').value.trim();
-  const batch = $('candBatch').value.trim() || null;
-  const nim = $('candNim').value.trim() || null;
-  const photoUrl = $('candPhoto').value.trim() || null;
-  const history = $('candHistory').value.trim() || '';
-  const vision = $('candVision').value.trim();
-  const mission = $('candMission').value.split('\n').map(s => s.trim()).filter(Boolean);
-  const programs = $('candPrograms').value.split('\n').map(s => s.trim()).filter(Boolean);
-  const isActive = $('candActive').checked;
-
-  const { data, error } = await db.rpc('admin_save_candidate', {
-    p_pin: currentPin,
-    p_id: id,
-    p_order_number: orderNumber,
-    p_name: name,
-    p_batch: batch,
-    p_nim: nim,
-    p_photo_url: photoUrl,
-    p_vision: vision,
-    p_mission: mission,
-    p_programs: programs,
-    p_organization_history: history,
-    p_is_active: isActive
-  });
-
-  if (error) {
-    $('candidateFormErr').textContent = error.message;
-  } else {
+  $('candidateFormErr').textContent = 'Menyimpan data paslon...';
+  try {
+    await api('save_candidate', {
+      candidate: {
+        id: $('candId').value || null,
+        order_number: $('candOrder').value,
+        name: $('candName').value,
+        batch: $('candBatch').value,
+        nim: $('candNim').value,
+        photo_url: $('candPhoto').value,
+        organization_history: $('candHistory').value,
+        vision: $('candVision').value,
+        mission: $('candMission').value.split('\n'),
+        programs: $('candPrograms').value.split('\n'),
+        is_active: $('candActive').checked
+      }
+    });
     closeCandidateModal();
-    alert('Data paslon berhasil disimpan!');
+    alert('Data paslon berhasil disimpan.');
     await refreshDashboard();
+  } catch (err) {
+    $('candidateFormErr').textContent = err.message;
   }
 };
 
@@ -761,95 +751,58 @@ $('deleteCandBtn').onclick = async () => {
   const id = $('candId').value;
   if (!id) return;
   if (!confirm('Yakin ingin menghapus calon ini dari daftar pemilwa?')) return;
-  const { error } = await db.rpc('admin_delete_candidate', { p_pin: currentPin, p_id: id });
-  if (error) {
-    alert(error.message);
-  } else {
+  try {
+    await api('delete_candidate', { id });
     closeCandidateModal();
-    alert('Calon berhasil dihapus!');
+    alert('Calon berhasil dihapus.');
     await refreshDashboard();
+  } catch (err) {
+    alert(err.message);
   }
 };
 
-$('loginForm').onsubmit = async e => {
-  e.preventDefault();
-  $('loginErr').textContent = 'Memverifikasi PIN...';
-  const pin = $('pinInput').value.trim();
-  await verifyAndLoad(pin);
-};
+async function runAction(action, payload, successMsg) {
+  try {
+    await api(action, payload);
+    if (successMsg) alert(successMsg);
+    await refreshDashboard();
+  } catch (err) {
+    alert(err.message);
+  }
+}
 
-$('logout').onclick = () => {
-  sessionStorage.removeItem('kmtedi_admin_pin');
-  location.reload();
-};
-
-$('toggleVotingBtn').onclick = async () => {
+$('toggleVotingBtn').onclick = () => {
   if (!confirm('Ubah status buka/tutup bilik suara sekarang?')) return;
-  const { error } = await db.rpc('admin_toggle_switch', { p_pin: currentPin, p_field: 'voting_open' });
-  if (error) alert(error.message);
-  else await refreshDashboard();
+  runAction('toggle', { field: 'voting_open' });
 };
 
-
-$('resetVotesBtn').onclick = async () => {
-  if (!confirm('PERHATIAN: Yakin ingin mengosongkan seluruh kotak suara dan me-reset status semua pemilih menjadi belum memilih?')) return;
-  const { data, error } = await db.rpc('admin_reset_votes', { p_pin: currentPin });
-  if (error) alert(error.message);
-  else {
-    alert('Kotak suara berhasil dikosongkan!');
-    await refreshDashboard();
-  }
+$('toggleResultsBtn').onclick = () => {
+  if (!confirm('Ubah status visibilitas hasil suara publik?')) return;
+  runAction('toggle', { field: 'results_published' });
 };
 
-$('saveScheduleBtn').onclick = async () => {
+$('resetVotesBtn').onclick = () => {
+  const typed = prompt('PERHATIAN: seluruh kotak suara dan daftar hadir pemilih akan dikosongkan. Bilik suara harus ditutup dulu.\n\nKetik RESET untuk melanjutkan.');
+  if (typed !== 'RESET') return;
+  runAction('reset', { confirm: 'RESET' }, 'Kotak suara berhasil dikosongkan.');
+};
+
+$('saveScheduleBtn').onclick = () => {
   const startVal = $('inputVotingStart').value;
   const endVal = $('inputVotingEnd').value;
-
-  const p_start = startVal ? new Date(startVal).toISOString() : null;
-  const p_end = endVal ? new Date(endVal).toISOString() : null;
-
   $('scheduleStatusText').textContent = 'Menyimpan jadwal...';
-
-  const { data, error } = await db.rpc('admin_set_schedule', {
-    p_pin: currentPin,
-    p_start: p_start,
-    p_end: p_end
-  });
-
-  if (error) {
-    alert('Gagal menyimpan jadwal: ' + error.message);
-  } else {
-    alert('Jadwal countdown berhasil disimpan!');
-    await refreshDashboard();
-  }
+  runAction('schedule', {
+    start: startVal ? new Date(startVal).toISOString() : null,
+    end: endVal ? new Date(endVal).toISOString() : null
+  }, 'Jadwal countdown berhasil disimpan.');
 };
 
-$('clearScheduleBtn').onclick = async () => {
+$('clearScheduleBtn').onclick = () => {
   if (!confirm('Hapus jadwal countdown dan kembali ke mode manual?')) return;
-  const { data, error } = await db.rpc('admin_set_schedule', {
-    p_pin: currentPin,
-    p_start: null,
-    p_end: null
-  });
-  if (error) alert(error.message);
-  else {
-    $('inputVotingStart').value = '';
-    $('inputVotingEnd').value = '';
-    alert('Jadwal berhasil dihapus!');
-    await refreshDashboard();
-  }
+  runAction('schedule', { start: null, end: null }, 'Jadwal berhasil dihapus.');
 };
 
-$('toggleResultsBtn').onclick = async () => {
-  if (!confirm('Ubah status visibilitas hasil suara publik?')) return;
-  const { error } = await db.rpc('admin_toggle_switch', { p_pin: currentPin, p_field: 'results_published' });
-  if (error) alert(error.message);
-  else await refreshDashboard();
-};
-
-if (currentPin) {
-  verifyAndLoad(currentPin);
-}
+if (sessionToken) enterDashboard();
 </script>
 </body>
 </html>
