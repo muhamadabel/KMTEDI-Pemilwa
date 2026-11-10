@@ -1409,8 +1409,8 @@ async function loadPublicData() {
   if (!db) return;
   try {
     const [{ data: settings }, { data: rows }] = await Promise.all([
-      db.from('election_settings').select('*').single(),
-      db.from('candidates').select('*').eq('is_active', true).order('order_number')
+      db.from('election_settings').select('id,title,subtitle,voting_open,voting_start,voting_end,results_published,hero_slides,marquee_text,about_statement,about_info,timeline_items').single(),
+      db.from('candidates').select('id,order_number,name,batch,photo_url,vision,mission,programs,organization_history,social_links,is_active').eq('is_active', true).order('order_number')
     ]);
     
     if (settings) {

@@ -486,7 +486,7 @@ async function refreshDashboard() {
     const [statsRes, resultsRes, candidatesRes, votersRes] = await Promise.all([
       db.rpc('admin_get_stats_by_pin', { p_pin: currentPin }),
       db.rpc('admin_get_results_by_pin', { p_pin: currentPin }),
-      db.from('candidates').select('*').order('order_number'),
+      db.from('candidates').select('id,order_number,name,batch,photo_url,vision,mission,programs,organization_history,social_links,is_active').order('order_number'),
       db.rpc('admin_get_voters_by_pin', { p_pin: currentPin })
     ]);
 
