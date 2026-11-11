@@ -41,7 +41,7 @@ Dokumen operasional resmi untuk AI coding agent yang melanjutkan pengembangan si
 
 ## 4. Admin Panel & Master PIN
 - **Route:** `/admin`
-- **Master PIN Aktif:** `abelganteng` (PIN lama `KMTEDI2026` sudah tidak berlaku).
+- **Master PIN Aktif:** disimpan di tabel `settings` Supabase (`admin_pin`), tidak ditulis di repo.
 - **Fitur Admin:**
   1. Saklar Bilik Suara (`voting_open` true/false).
   2. Kontrol Countdown Jadwal (`voting_start` dan `voting_end`).
