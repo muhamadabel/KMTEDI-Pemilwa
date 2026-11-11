@@ -9,7 +9,7 @@ Dokumen Panduan Lengkap untuk Claude / AI Coding Agent
 * **Repositori Git:** `https://github.com/muhamadabel/KMTEDI-Pemilwa` (Branch: `main`)
 * **Live Production:** [https://kmtedi-pemilwa.vercel.app](https://kmtedi-pemilwa.vercel.app)
 * **Panel Admin:** [https://kmtedi-pemilwa.vercel.app/admin](https://kmtedi-pemilwa.vercel.app/admin) (Sengaja tidak ada link di navbar publik demi privasi)
-* **Master PIN Admin:** `abelganteng`
+* **Master PIN Admin:** disimpan di tabel `settings` Supabase (`admin_pin`), tidak ditulis di repo. Tanyakan ke pemilik proyek.
 
 ---
 
@@ -26,9 +26,9 @@ Dokumen Panduan Lengkap untuk Claude / AI Coding Agent
 
 ## 3. Environment Variables (Vercel Production)
 * `SUPABASE_URL`: `https://geoqhztzaputpuiyheqm.supabase.co`
-* `SUPABASE_ANON_KEY`: `sb_publishable_3pevMC-bvGNU5xPy2SYJjA_ysQUSBxR`
+* `SUPABASE_ANON_KEY`: key publishable dari dashboard Supabase (lihat `.env.example`)
 * `SMTP_USER`: `muhamadabelugm@gmail.com`
-* `SMTP_PASS`: `zyecrctyadwyfbgp` (Google App Password 16 karakter panitia)
+* `SMTP_PASS`: Google App Password 16 karakter panitia (hanya di Vercel env, JANGAN ditulis di repo)
 
 ---
 
