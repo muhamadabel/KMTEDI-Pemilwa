@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
       secure: true,
       auth: {
         user: process.env.SMTP_USER || 'muhamadabelugm@gmail.com',
-        pass: process.env.SMTP_PASS || 'zyecrctyadwyfbgp'
+        pass: process.env.SMTP_PASS
       }
     });
 
