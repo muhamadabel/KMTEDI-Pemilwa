@@ -714,7 +714,6 @@ section { padding: 85px 0; position: relative; }
     <a href="#acara">Acara</a>
     <a href="#calon">Calon</a>
     <a href="#timeline">Alur</a>
-    <a href="#cara">Cara Memilih</a>
     <!-- Top Right User Status Greeting or Verification Button -->
     <span id="userStatusWrapper">
       <button class="btn-nav-verify" onclick="openVoterModal()">
@@ -861,45 +860,10 @@ section { padding: 85px 0; position: relative; }
   <div class="wrap">
     <div class="section-kicker">
       <h2>Alur<br>Pemilwa.</h2>
-      <span class="number">03 / TIMELINE</span>
+      <span class="number">03 / ALUR</span>
     </div>
-    <div class="timeline-list">
-      <div class="time-row">
-        <div class="time-no">01</div>
-        <h3>Pendaftaran</h3>
-        <p>Calon ketua menyiapkan berkas pencalonan dan verifikasi panitia.</p>
-        <div class="time-date">SELESAI</div>
-      </div>
-      <div class="time-row">
-        <div class="time-no">02</div>
-        <h3>Masa Kampanye</h3>
-        <p>Penyampaian visi misi, debat kandidat, dan publikasi program kerja.</p>
-        <div class="time-date">SEDANG BERJALAN</div>
-      </div>
-      <div class="time-row">
-        <div class="time-no">03</div>
-        <h3>Pemungutan Suara</h3>
-        <p>Bilik suara dibuka. Mahasiswa memasukkan NIM dan verifikasi OTP email UGM.</p>
-        <div class="time-date">SEGERA</div>
-      </div>
-      <div class="time-row">
-        <div class="time-no">04</div>
-        <h3>Pengumuman</h3>
-        <p>Rekapitulasi resmi selesai dan hasil dibuka untuk seluruh mahasiswa.</p>
-        <div class="time-date">AKHIR</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CARA MEMILIH -->
-<section class="howto" id="cara">
-  <div class="wrap">
-    <div class="section-kicker">
-      <h2>Cara<br>Memilih.</h2>
-      <span class="number">04 / PANDUAN</span>
-    </div>
-    <p class="howto-intro">Lima langkah, kurang dari tiga menit. Yang kamu butuhkan hanya NIM dan akses ke email UGM.</p>
+    <p class="timeline-intro">Panduan tata cara pemungutan suara yang ringkas dan aman untuk seluruh mahasiswa aktif KMTEDI.</p>
+    
     <ol class="howto-steps">
       <li class="howto-step">
         <span class="howto-no">01</span>
@@ -909,27 +873,58 @@ section { padding: 85px 0; position: relative; }
       <li class="howto-step">
         <span class="howto-no">02</span>
         <h3>Isi NIM dan Email</h3>
-        <p>Tekan tombol <b>Verifikasi Pemilih</b>. Tulis NIM dan nama depan email UGM saja, bagian @mail.ugm.ac.id sudah terisi otomatis.</p>
+        <p>Tekan tombol <b>Verifikasi Pemilih</b>. Tulis NIM dan username email UGM, bagian @mail.ugm.ac.id terisi otomatis.</p>
       </li>
       <li class="howto-step">
         <span class="howto-no">03</span>
         <h3>Masukkan Kode OTP</h3>
-        <p>Buka email UGM, salin 6 angka kode, lalu masukkan. Kode berlaku 5 menit. Tidak ada di kotak masuk? Cek folder Spam.</p>
+        <p>Buka email UGM, salin 6 angka kode verifikasi. Kode berlaku 10 menit. Tidak ada di kotak masuk? Cek folder Spam.</p>
       </li>
       <li class="howto-step">
         <span class="howto-no">04</span>
         <h3>Pilih Calon</h3>
-        <p>Baca profil, visi misi, dan program kerja. Tekan <b>Pilih</b> pada calon yang kamu dukung, lalu periksa sekali lagi di layar konfirmasi.</p>
+        <p>Pelajari profil, visi misi, dan program kerja. Tekan <b>Pilih</b> pada calon yang kamu dukung dan konfirmasi pilihanmu.</p>
       </li>
       <li class="howto-step">
         <span class="howto-no">05</span>
         <h3>Suara Tercatat</h3>
-        <p>Selesai. Pilihanmu disimpan secara rahasia dan tidak bisa dilihat siapa pun. Satu NIM hanya bisa memilih satu kali.</p>
+        <p>Selesai. Suaramu tersimpan secara rahasia dan anonim. Satu NIM hanya berhak memberikan satu suara sah.</p>
       </li>
     </ol>
     <div class="howto-foot">
-      <button type="button" class="btn howto-btn" onclick="openVoterModal()">Mulai Verifikasi</button>
-      <span class="howto-note">Kendala saat memilih? Hubungi panitia Pemilwa KMTEDI.</span>
+      <button type="button" class="btn howto-btn" onclick="openVoterModal()">Mulai Verifikasi Pemilih</button>
+      <span class="howto-note">Kendala saat memilih? Hubungi panitia resmi Pemilwa KMTEDI.</span>
+    </div>
+
+    <!-- TAHAPAN PELAKSANAAN PEMILWA -->
+    <div class="timeline-milestones" style="margin-top:44px;padding-top:28px;border-top:1px solid rgba(255,249,239,.18)">
+      <div style="font:700 11px 'Space Mono';letter-spacing:.15em;color:var(--brand-amber);text-transform:uppercase;margin-bottom:14px">Tahapan Pelaksanaan Pemilwa 2026</div>
+      <div class="timeline-list">
+        <div class="time-row">
+          <div class="time-no">01</div>
+          <h3>Pendaftaran</h3>
+          <p>Calon ketua menyiapkan berkas pencalonan dan verifikasi panitia.</p>
+          <div class="time-date">SELESAI</div>
+        </div>
+        <div class="time-row">
+          <div class="time-no">02</div>
+          <h3>Masa Kampanye</h3>
+          <p>Penyampaian visi misi, debat kandidat, dan publikasi program kerja.</p>
+          <div class="time-date">SEDANG BERJALAN</div>
+        </div>
+        <div class="time-row">
+          <div class="time-no">03</div>
+          <h3>Pemungutan Suara</h3>
+          <p>Bilik suara dibuka. Mahasiswa memasukkan NIM dan verifikasi OTP email UGM.</p>
+          <div class="time-date">SEGERA</div>
+        </div>
+        <div class="time-row">
+          <div class="time-no">04</div>
+          <h3>Pengumuman</h3>
+          <p>Rekapitulasi resmi selesai dan hasil dibuka untuk seluruh mahasiswa.</p>
+          <div class="time-date">AKHIR</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -939,7 +934,7 @@ section { padding: 85px 0; position: relative; }
   <div class="wrap vote-grid">
     <div>
       <div class="section-kicker">
-        <span class="number">05 / STATUS</span>
+        <span class="number">04 / STATUS</span>
         <h2>Bilik<br>Suara.</h2>
       </div>
       <p class="vote-copy" id="voteCopyText">Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.</p>
@@ -1628,6 +1623,9 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
     const voter = data.voter;
     sessionStorage.setItem('kmtedi_voter_nim', voter.nim);
     sessionStorage.setItem('kmtedi_voter_email', voter.email);
+    if (data.ballot_token) {
+      sessionStorage.setItem('kmtedi_ballot_token', data.ballot_token);
+    }
     sessionStorage.setItem('kmtedi_has_voted', 'false');
 
     closeVoterModal();
@@ -1825,7 +1823,7 @@ function closeDoubleCheck() {
 
 // SUBMIT VOTE FINAL KE DATABASE
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
-  if (!candidateToVote || !db) return;
+  if (!candidateToVote) return;
   const v = getVoter();
   if (!v.nim || !v.email) {
     closeDoubleCheck();
@@ -1838,20 +1836,35 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
   btn.disabled = true;
 
   try {
-    const { data, error } = await db.rpc('cast_vote_by_nim_and_email', {
-      p_candidate_id: candidateToVote[2],
-      p_nim: v.nim,
-      p_email: v.email
-    });
-    
-    if (error) {
-      alert('Gagal Mengirim Suara:\n\n' + error.message);
-      btn.textContent = 'Kirim Suara Sah';
-      btn.disabled = false;
-      return;
+    const ballotToken = sessionStorage.getItem('kmtedi_ballot_token');
+    let resData = null;
+
+    if (ballotToken) {
+      const res = await fetch('/api/cast-vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ballot_token: ballotToken,
+          candidate_id: candidateToVote[2]
+        })
+      });
+      resData = await res.json().catch(() => ({}));
+      if (!res.ok || !resData.success) {
+        throw new Error(resData?.error || 'Gagal mengirim suara.');
+      }
+    } else if (db) {
+      const { data, error } = await db.rpc('cast_vote_by_nim_and_email', {
+        p_candidate_id: candidateToVote[2],
+        p_nim: v.nim,
+        p_email: v.email
+      });
+      if (error) throw error;
+    } else {
+      throw new Error('Sesi pemilih tidak valid. Silakan verifikasi ulang.');
     }
 
     sessionStorage.setItem('kmtedi_has_voted', 'true');
+    sessionStorage.removeItem('kmtedi_ballot_token');
     hasVoted = true;
 
     closeDoubleCheck();
@@ -1866,7 +1879,11 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     updateVoterUI();
 
   } catch (err) {
-    alert('Terjadi kesalahan: ' + err.message);
+    showNotice({
+      eyebrow: 'GAGAL MEMILIH',
+      title: 'Suara Belum Masuk',
+      message: err.message || 'Terjadi gangguan saat mencatat suara. Silakan coba lagi.'
+    });
     btn.textContent = 'Kirim Suara Sah';
     btn.disabled = false;
   }

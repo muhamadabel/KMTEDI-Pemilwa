@@ -464,39 +464,35 @@ body::before { display: none; }
   .admin-page .admin-brand > .brand-logo { width: 44px; height: 44px; }
 }
 
-/* 04 / PANDUAN: CARA MEMILIH (Light / Warm Cream Section) */
-.howto { background: var(--cream); color: var(--brand-navy); }
-.howto .section-kicker h2 { color: var(--brand-burgundy); }
-.howto .section-kicker .number { color: var(--red); font-weight: 700; font-size: 12px; }
-.howto-intro { max-width: 560px; margin: -10px 0 40px; font-size: 17px; line-height: 1.5; color: #5C3A44; font-weight: 500; }
-.howto-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-top: 2px solid var(--brand-burgundy); }
-.howto-step { padding: 24px 22px 28px 0; border-right: 1px solid rgba(37, 0, 20, .18); }
+/* 03 / ALUR: TATA CARA PEMILIHAN (Burgundy Section) */
+.timeline-intro { max-width: 640px; margin: -10px 0 36px; font-size: 16.5px; line-height: 1.5; color: var(--cream); opacity: .9; font-weight: 500; }
+.howto-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-top: 2px solid var(--brand-amber); }
+.howto-step { padding: 24px 22px 28px 0; border-right: 1px solid rgba(255, 249, 239, .2); }
 .howto-step + .howto-step { padding-left: 22px; }
 .howto-step:last-child { border-right: 0; }
-.howto-no { display: block; font: 400 44px/1 var(--display); color: var(--brand-orange); margin-bottom: 18px; }
-.howto-step h3 { font: 400 24px/1.05 var(--display); text-transform: uppercase; color: var(--brand-burgundy); margin: 0 0 10px; }
-.howto-step p { margin: 0; font-size: 14.5px; line-height: 1.55; color: #4A2A35; }
-.howto-step b { color: var(--brand-burgundy); }
-.howto-foot { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(37, 0, 20, .18); }
-.howto-btn { background: var(--brand-burgundy); color: var(--cream); border: 0; min-height: 48px; padding: 0 26px; cursor: pointer; }
-.howto-btn:hover { background: var(--brand-orange); color: var(--brand-navy); }
-.howto-btn:focus-visible { outline: 3px solid var(--brand-orange); outline-offset: 3px; }
-.howto-note { font-size: 13px; color: #5C3A44; }
+.howto-no { display: block; font: 400 44px/1 var(--display); color: var(--brand-amber); margin-bottom: 18px; }
+.howto-step h3 { font: 400 24px/1.05 var(--display); text-transform: uppercase; color: var(--cream); margin: 0 0 10px; }
+.howto-step p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--cream); opacity: .88; }
+.howto-step b { color: var(--brand-amber); }
+.howto-foot { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(255, 249, 239, .2); }
+.howto-btn { background: var(--brand-amber); color: var(--brand-navy); border: 0; min-height: 48px; padding: 0 26px; cursor: pointer; font-weight: 700; font-family: 'Space Mono', monospace; letter-spacing: .05em; text-transform: uppercase; transition: .2s; }
+.howto-btn:hover { background: var(--cream); color: var(--brand-navy); transform: translateY(-2px); }
+.howto-btn:focus-visible { outline: 3px solid var(--brand-amber); outline-offset: 3px; }
+.howto-note { font-size: 13px; color: var(--cream); opacity: .75; }
 @media (max-width: 1080px) {
   .howto-steps { grid-template-columns: repeat(2, 1fr); }
-  .howto-step, .howto-step + .howto-step { padding: 22px 20px 24px 0; border-right: 0; border-bottom: 1px solid rgba(37, 0, 20, .18); }
-  .howto-step:nth-child(even) { padding-left: 20px; border-left: 1px solid rgba(37, 0, 20, .18); }
+  .howto-step, .howto-step + .howto-step { padding: 22px 20px 24px 0; border-right: 0; border-bottom: 1px solid rgba(255, 249, 239, .2); }
+  .howto-step:nth-child(even) { padding-left: 20px; border-left: 1px solid rgba(255, 249, 239, .2); }
 }
 @media (max-width: 640px) {
-  .howto { padding: 60px 0 !important; }
-  .howto-intro { font-size: 15px; margin-bottom: 28px; }
+  .timeline-intro { font-size: 15px; margin-bottom: 24px; }
   .howto-steps { grid-template-columns: 1fr; }
-  .howto-step, .howto-step + .howto-step, .howto-step:nth-child(even) { display: grid; grid-template-columns: 52px 1fr; column-gap: 14px; padding: 20px 0; border-left: 0; }
+  .howto-step, .howto-step + .howto-step, .howto-step:nth-child(even) { display: grid; grid-template-columns: 52px 1fr; column-gap: 14px; padding: 20px 0; border-left: 0; border-bottom: 1px solid rgba(255, 249, 239, .2); }
   .howto-no { grid-row: span 2; font-size: 34px; margin: 0; }
   .howto-step h3 { font-size: 21px; margin-bottom: 6px; }
   .howto-step:last-child { border-bottom: 0; }
-  .howto-foot { flex-direction: column; align-items: stretch; gap: 14px; margin-top: 8px; }
-  .howto-btn { width: 100%; }
+  .howto-foot { flex-direction: column; align-items: stretch; gap: 14px; margin-top: 10px; }
+  .howto-btn { width: 100%; text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
