@@ -9,7 +9,10 @@ module.exports = handler(async (body, req) => {
   await rateLimit(db, 'verify-ip', clientIp(req), 150, 15 * 60);
 
   const { data, error } = await db.rpc('voter_verify_otp', { p_email: email, p_otp: otp });
-  if (error) throw dbFailure(error);
+  if (error) {
+    console.error('voter_verify_otp error:', error);
+    throw new HttpError(400, `DB error: ${error.message} (${error.code || ''})`);
+  }
   if (!data.ok) throw new HttpError(400, data.error);
 
   return {
