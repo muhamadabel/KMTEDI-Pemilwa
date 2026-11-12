@@ -1,8 +1,7 @@
-const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFailure, handler, HttpError } = require('../lib/server');
+const { serviceDb, clientIp, rateLimit, normalizeEmail, str, dbFailure, handler, HttpError } = require('../lib/server');
 
 module.exports = handler(async (body, req) => {
   const email = normalizeEmail(body.email);
-  const nim = normalizeNim(body.nim);
   const otp = str(body.otp, 12);
   if (!/^\d{6}$/.test(otp)) throw new HttpError(400, 'Kode OTP harus 6 digit angka.');
 

@@ -1606,6 +1606,7 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        nim: pendingVoterData.nim,
         email: pendingVoterData.email,
         otp: otp
       })
