@@ -1,4 +1,4 @@
-const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFailure, handler, HttpError } = require('../lib/server');
+const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFailure, handler, HttpError, signBallot } = require('../lib/server');
 
 module.exports = handler(async (body, req) => {
   const email = normalizeEmail(body.email);
@@ -17,9 +17,11 @@ module.exports = handler(async (body, req) => {
   if (error) throw dbFailure(error);
   if (!data.ok) throw new HttpError(400, data.error);
 
+  const ballotToken = signBallot(data.nim, data.email);
+
   return {
     voter: { nim: data.nim, email: data.email },
-    ballot_token: data.ballot_token,
+    ballot_token: ballotToken,
     message: 'Verifikasi berhasil.'
   };
 });

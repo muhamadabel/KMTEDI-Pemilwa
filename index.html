@@ -1230,9 +1230,9 @@ if (heroCard) {
 
 // CANDIDATES DATA
 let candidates = [
-  ['Calon Satu', 'assets/ig-panel-3.jpg', null, 1, 'KANDIDAT 01', 'Mewujudkan KMTEDI yang progresif, inklusif, dan berdaya saing.', ['Memperkuat kolaborasi antardepartemen', 'Optimalisasi ruang karya mahasiswa'], ['KMTEDI Berdaya', 'Ruang Temu Mahasiswa'], 'Staf Divisi Kaderisasi KMTEDI 2024\nKetua Pelaksana Open House 2024'],
-  ['Calon Dua', 'assets/ig-panel-4.jpg', null, 2, 'KANDIDAT 02', 'Menjadikan KMTEDI sebagai wadah sinergi, inovasi, dan integritas.', ['Membangun kultur riset dan teknologi', 'Meningkatkan jejaring industri'], ['Inkubasi Proyek', 'KMTEDI Connect'], 'Staf Departemen Keilmuan KMTEDI 2024\nKoordinator Workshop IoT 2024'],
-  ['Calon Tiga', 'assets/ig-panel-5.jpg', null, 3, 'KANDIDAT 03', 'Transformasi KMTEDI yang adaptif dan solutif terhadap kebutuhan mahasiswa.', ['Kanal advokasi mahasiswa yang transparan', 'Pengembangan talenta digital'], ['Advokasi Cepat', 'KMTEDI Bootcamp'], 'Staf Advokasi dan Kesejahteraan Mahasiswa 2024\nTim Media & Informasi KMTEDI']
+  ['Calon Satu', 'assets/ig-panel-3.jpg', 'b1061e68-13e2-4fbe-888c-19b0aecbabbd', 1, 'KANDIDAT 01', 'Mewujudkan KMTEDI yang progresif, inklusif, dan berdaya saing.', ['Memperkuat kolaborasi antardepartemen', 'Optimalisasi ruang karya mahasiswa'], ['KMTEDI Berdaya', 'Ruang Temu Mahasiswa'], 'Staf Divisi Kaderisasi KMTEDI 2024\nKetua Pelaksana Open House 2024'],
+  ['Calon Dua', 'assets/ig-panel-4.jpg', '8d2f622e-1d78-48cc-aa1e-5f01e8eecc0c', 2, 'KANDIDAT 02', 'Menjadikan KMTEDI sebagai wadah sinergi, inovasi, dan integritas.', ['Membangun kultur riset dan teknologi', 'Meningkatkan jejaring industri'], ['Inkubasi Proyek', 'KMTEDI Connect'], 'Staf Departemen Keilmuan KMTEDI 2024\nKoordinator Workshop IoT 2024'],
+  ['Calon Tiga', 'assets/ig-panel-5.jpg', 'a8031e53-6fe6-41f5-98b3-e75ebc93159c', 3, 'KANDIDAT 03', 'Transformasi KMTEDI yang adaptif dan solutif terhadap kebutuhan mahasiswa.', ['Kanal advokasi mahasiswa yang transparan', 'Pengembangan talenta digital'], ['Advokasi Cepat', 'KMTEDI Bootcamp'], 'Staf Advokasi dan Kesejahteraan Mahasiswa 2024\nTim Media & Informasi KMTEDI']
 ];
 
 let selected = 0;
@@ -1579,6 +1579,7 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
     document.getElementById('inputOtp').focus();
     btn.textContent = 'Kirim Kode OTP ke Email UGM';
     btn.disabled = false;
+    startResendCooldown(60);
 
   } catch (err) {
     errBox.textContent = 'Terjadi gangguan jaringan: ' + err.message;
@@ -1586,6 +1587,40 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
     btn.disabled = false;
   }
 };
+
+// COOLDOWN KIRIM ULANG OTP (1 MENIT / ANTI-SPAM)
+let resendCooldownTimer = null;
+let resendSecondsLeft = 0;
+
+function startResendCooldown(seconds = 60) {
+  const resendBtn = document.getElementById('btnResendOtp');
+  if (!resendBtn) return;
+  if (resendCooldownTimer) {
+    clearInterval(resendCooldownTimer);
+    resendCooldownTimer = null;
+  }
+  resendSecondsLeft = seconds;
+  resendBtn.disabled = true;
+  resendBtn.style.cursor = 'not-allowed';
+  resendBtn.style.opacity = '0.55';
+  resendBtn.style.textDecoration = 'none';
+  resendBtn.textContent = `Kirim Ulang (${resendSecondsLeft}d)`;
+
+  resendCooldownTimer = setInterval(() => {
+    resendSecondsLeft--;
+    if (resendSecondsLeft <= 0) {
+      clearInterval(resendCooldownTimer);
+      resendCooldownTimer = null;
+      resendBtn.disabled = false;
+      resendBtn.style.cursor = 'pointer';
+      resendBtn.style.opacity = '1';
+      resendBtn.style.textDecoration = 'underline';
+      resendBtn.textContent = 'Kirim Ulang Kode OTP';
+    } else {
+      resendBtn.textContent = `Kirim Ulang (${resendSecondsLeft}d)`;
+    }
+  }, 1000);
+}
 
 // STEP 2: VERIFY 6-DIGIT OTP
 document.getElementById('voterFormStep2').onsubmit = async e => {
@@ -1665,8 +1700,54 @@ document.getElementById('btnBackToStep1').onclick = () => {
   document.getElementById('voterStep2').style.display = 'none';
 };
 
-document.getElementById('btnResendOtp').onclick = () => {
-  document.getElementById('voterFormStep1').requestSubmit();
+document.getElementById('btnResendOtp').onclick = async () => {
+  if (resendSecondsLeft > 0) return;
+  const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || '';
+  const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
+  const prefix = vEmail.replace(/@.*$/, '');
+  const errBox = document.getElementById('voterModalErr');
+  const btn = document.getElementById('btnResendOtp');
+
+  if (!vNim || !prefix) {
+    document.getElementById('btnBackToStep1').click();
+    return;
+  }
+
+  errBox.style.color = 'var(--red)';
+  errBox.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Mengirim Ulang...';
+
+  try {
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nim: vNim,
+        email_prefix: prefix
+      })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      errBox.textContent = data.error || 'Gagal mengirim ulang kode OTP.';
+      btn.disabled = false;
+      btn.textContent = 'Kirim Ulang Kode OTP';
+      return;
+    }
+    startResendCooldown(60);
+    errBox.style.color = 'var(--brand-amber)';
+    errBox.textContent = 'Kode OTP baru telah berhasil dikirim ke email Anda.';
+    setTimeout(() => {
+      if (errBox.textContent.includes('berhasil')) {
+        errBox.textContent = '';
+        errBox.style.color = 'var(--red)';
+      }
+    }, 4000);
+  } catch (err) {
+    errBox.textContent = 'Gangguan jaringan: ' + err.message;
+    btn.disabled = false;
+    btn.textContent = 'Kirim Ulang Kode OTP';
+  }
 };
 
 // CANDIDATE PROFILE MODAL
