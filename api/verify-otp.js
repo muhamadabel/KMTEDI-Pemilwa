@@ -1,18 +1,20 @@
-const { serviceDb, clientIp, rateLimit, normalizeEmail, str, dbFailure, handler, HttpError } = require('../lib/server');
+const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFailure, handler, HttpError } = require('../lib/server');
 
 module.exports = handler(async (body, req) => {
   const email = normalizeEmail(body.email);
+  const nim = normalizeNim(body.nim);
   const otp = str(body.otp, 12);
   if (!/^\d{6}$/.test(otp)) throw new HttpError(400, 'Kode OTP harus 6 digit angka.');
 
   const db = serviceDb();
   await rateLimit(db, 'verify-ip', clientIp(req), 150, 15 * 60);
 
-  const { data, error } = await db.rpc('voter_verify_otp', { p_email: email, p_otp: otp });
-  if (error) {
-    console.error('voter_verify_otp error:', error);
-    throw new HttpError(400, `DB error: ${error.message} (${error.code || ''})`);
-  }
+  const { data, error } = await db.rpc('voter_verify_otp', {
+    p_email: email,
+    p_nim: nim,
+    p_otp: otp
+  });
+  if (error) throw dbFailure(error);
   if (!data.ok) throw new HttpError(400, data.error);
 
   return {
