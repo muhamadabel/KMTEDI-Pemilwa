@@ -2,10 +2,7 @@ const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFai
 
 module.exports = handler(async (body, req) => {
   const email = normalizeEmail(body.email);
-  if (!body.nim) {
-    throw new HttpError(400, 'Sesi verifikasi belum tersinkron. Silakan refresh halaman atau klik Ubah NIM / Email lalu coba lagi.');
-  }
-  const nim = normalizeNim(body.nim);
+  const nim = normalizeNim(body.nim, email);
   const otp = str(body.otp, 12);
   if (!/^\d{6}$/.test(otp)) throw new HttpError(400, 'Kode OTP harus 6 digit angka.');
 

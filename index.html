@@ -983,8 +983,8 @@ section { padding: 85px 0; position: relative; }
       
       <form id="voterFormStep1">
         <div style="margin-bottom:16px">
-          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NIM MAHASISWA *</label>
-          <input type="text" id="inputNim" placeholder="Contoh: 22/505123/SV/21456" required style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:700 13px var(--mono);background:#fff;color:var(--night)">
+          <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">NIM (OPSIONAL / CATATAN)</label>
+          <input type="text" id="inputNim" placeholder="Contoh: 22/505123/SV/21456 (Boleh kosong)" style="width:100%;padding:12px 14px;border:1px solid rgba(74,16,33,.3);font:700 13px var(--mono);background:#fff;color:var(--night)">
         </div>
         <div style="margin-bottom:20px">
           <label style="display:block;font:700 10px var(--mono);margin-bottom:6px;color:var(--maroon)">EMAIL RESMI UGM *</label>
@@ -1537,8 +1537,8 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
   const errBox = document.getElementById('voterModalErr');
   const btn = document.getElementById('btnRequestOtp');
 
-  if (!rawNim || !prefix) {
-    errBox.textContent = 'NIM dan Email UGM wajib diisi!';
+  if (!prefix) {
+    errBox.textContent = 'Email UGM wajib diisi!';
     return;
   }
 
@@ -1551,7 +1551,7 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        nim: rawNim,
+        nim: rawNim || '',
         email_prefix: prefix
       })
     });
@@ -1565,11 +1565,12 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
       return;
     }
 
+    const assignedNim = data.nim || rawNim || '';
     pendingVoterData = {
-      nim: rawNim,
+      nim: assignedNim,
       email: data.email
     };
-    sessionStorage.setItem('kmtedi_pending_nim', rawNim);
+    sessionStorage.setItem('kmtedi_pending_nim', assignedNim);
     sessionStorage.setItem('kmtedi_pending_email', data.email);
 
     document.getElementById('displayTargetEmail').textContent = data.email;
@@ -1637,7 +1638,7 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
   const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || document.getElementById('inputNim')?.value?.trim() || '';
   const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
 
-  if (!vNim || !vEmail) {
+  if (!vEmail) {
     errBox.textContent = 'Data sesi verifikasi tidak ditemukan. Silakan klik Ubah NIM / Email lalu kirim ulang.';
     return;
   }
@@ -1708,7 +1709,7 @@ document.getElementById('btnResendOtp').onclick = async () => {
   const errBox = document.getElementById('voterModalErr');
   const btn = document.getElementById('btnResendOtp');
 
-  if (!vNim || !prefix) {
+  if (!prefix) {
     document.getElementById('btnBackToStep1').click();
     return;
   }

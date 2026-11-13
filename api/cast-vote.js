@@ -57,8 +57,9 @@ module.exports = handler(async (body, req) => {
   }
 
   // 4. Catat presensi pemilih (NIM & Email)
+  const voterNim = nim || normalizeNim('', email);
   const { error: insErr } = await db.from('registered_voters').insert({
-    nim,
+    nim: voterNim,
     email,
     has_voted: true,
     voted_at: new Date().toISOString()
@@ -66,7 +67,7 @@ module.exports = handler(async (body, req) => {
 
   if (insErr) {
     if (insErr.code === '23505') {
-      throw new HttpError(400, 'NIM atau email ini sudah menggunakan hak suara.');
+      throw new HttpError(400, 'Akun email ini sudah menggunakan hak suara.');
     }
     console.error('Insert registered_voter error:', insErr);
     throw dbFailure(insErr);

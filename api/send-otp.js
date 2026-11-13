@@ -17,8 +17,8 @@ function mailer() {
 }
 
 module.exports = handler(async (body, req) => {
-  const nim = normalizeNim(body.nim);
   const email = normalizeEmail(body.email_prefix);
+  const nim = normalizeNim(body.nim, email);
   const db = serviceDb();
 
   // Banyak mahasiswa bisa berbagi satu IP publik (wifi kampus), jadi batas per IP
@@ -47,5 +47,9 @@ module.exports = handler(async (body, req) => {
     `
   });
 
-  return { email: data.email, message: `Kode OTP telah dikirim ke ${data.email}.` };
+  return {
+    email: data.email,
+    nim: data.nim,
+    message: `Kode OTP telah dikirim ke ${data.email}.`
+  };
 });
