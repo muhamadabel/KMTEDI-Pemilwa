@@ -1634,11 +1634,11 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
     return;
   }
 
-  const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || '';
+  const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || document.getElementById('inputNim')?.value?.trim() || '';
   const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
 
   if (!vNim || !vEmail) {
-    errBox.textContent = 'Data sesi verifikasi tidak ditemukan. Silakan ulangi langkah 1.';
+    errBox.textContent = 'Data sesi verifikasi tidak ditemukan. Silakan klik Ubah NIM / Email lalu kirim ulang.';
     return;
   }
 
