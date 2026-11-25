@@ -1,27 +1,40 @@
-const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFailure, handler, HttpError, signBallot } = require('../lib/server');
+const { serviceDb, clientIp, rateLimit, normalizeEmail, str, dbFailure, handler, HttpError } = require('../lib/server');
 
-module.exports = handler(async (body, req) => {
-  const email = normalizeEmail(body.email);
-  const nim = normalizeNim(body.nim, email);
-  const otp = str(body.otp, 12);
-  if (!/^\d{6}$/.test(otp)) throw new HttpError(400, 'Kode OTP harus 6 digit angka.');
+const BALLOT_TOKEN_RE = /^[0-9a-f]{64}$/;
 
-  const db = serviceDb();
-  await rateLimit(db, 'verify-ip', clientIp(req), 150, 15 * 60);
+function createVerifyOtpHandler(deps = {}) {
+  const getDb = deps.getDb || serviceDb;
 
-  const { data, error } = await db.rpc('voter_verify_otp', {
-    p_email: email,
-    p_nim: nim,
-    p_otp: otp
+  return handler(async (body, req) => {
+    const email = normalizeEmail(body.email);
+    const otp = str(body.otp, 12);
+    if (!/^\d{6}$/.test(otp)) throw new HttpError(400, 'Kode OTP harus 6 digit angka.');
+
+    const db = getDb();
+    await rateLimit(db, 'verify-ip', clientIp(req), 600, 15 * 60);
+
+    // Verifikasi OTP murni berdasarkan email ternormalisasi + kode OTP.
+    // Nilai NIM dari klien sengaja tidak menjadi syarat verifikasi.
+    const { data, error } = await db.rpc('voter_verify_otp', {
+      p_email: email,
+      p_otp: otp
+    });
+    if (error) throw dbFailure(error);
+    if (!data || !data.ok) {
+      throw new HttpError(400, (data && data.error) || 'Kode OTP tidak valid atau kedaluwarsa.');
+    }
+    if (!BALLOT_TOKEN_RE.test(String(data.ballot_token || ''))) {
+      throw new HttpError(500, 'Terjadi gangguan pada server. Coba lagi.');
+    }
+
+    return {
+      voter: { nim: data.nim || null, email: data.email },
+      ballot_token: data.ballot_token,
+      message: 'Verifikasi berhasil.'
+    };
   });
-  if (error) throw dbFailure(error);
-  if (!data.ok) throw new HttpError(400, data.error);
+}
 
-  const ballotToken = signBallot(data.nim, data.email);
-
-  return {
-    voter: { nim: data.nim, email: data.email },
-    ballot_token: ballotToken,
-    message: 'Verifikasi berhasil.'
-  };
-});
+const verifyOtpHandler = createVerifyOtpHandler();
+verifyOtpHandler.createHandler = createVerifyOtpHandler;
+module.exports = verifyOtpHandler;

@@ -3,6 +3,7 @@ const {
 } = require('../lib/server');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const GENERIC_LOGIN_ERROR = 'Login admin ditolak. Periksa PIN atau coba lagi nanti.';
 
 function bearer(req) {
   const auth = String(req.headers.authorization || '');
@@ -98,27 +99,71 @@ const actions = {
   }
 };
 
-module.exports = handler(async (body, req) => {
-  const db = serviceDb();
-  const action = str(body.action, 40);
+function createAdminHandler(deps = {}) {
+  const getDb = deps.getDb || serviceDb;
 
-  if (action === 'login') {
-    const ip = clientIp(req);
-    await rateLimit(db, 'admin-login-ip', ip, 10, 15 * 60).catch(() => {});
-    const pin = str(body.pin, 200);
-    const validPins = ['kastrad26', 'abelganteng2026', 'abelganteng'];
-    let ok = validPins.includes(pin);
-    if (!ok) {
-      ok = await call(db, 'admin_check_pin', { p_pin: pin }).catch(() => false);
+  return handler(async (body, req) => {
+    const db = getDb();
+    const action = str(body.action, 40);
+
+    if (action === 'login') {
+      const ip = clientIp(req);
+
+      // Fail-closed: pembatas percobaan wajib berhasil dijalankan.
+      // Jika terjadi gangguan pada rate limiter, login ditolak dengan pesan seragam.
+      try {
+        await rateLimit(db, 'admin-login-ip', ip, 10, 15 * 60);
+        await rateLimit(db, 'admin-login-global', 'all', 40, 15 * 60);
+      } catch (err) {
+        if (err instanceof HttpError && err.status === 429) {
+          throw new HttpError(429, 'Terlalu banyak percobaan login. Coba lagi beberapa menit lagi.');
+        }
+        console.error('Admin login rate-limit check failed:', { code: err?.code || null });
+        throw new HttpError(401, GENERIC_LOGIN_ERROR);
+      }
+
+      const pin = str(body.pin, 200);
+      if (!pin) {
+        throw new HttpError(401, GENERIC_LOGIN_ERROR);
+      }
+
+      // Satu sumber kredensial admin saja: hash bcrypt di database (private.admin_credentials).
+      // Tidak ada PIN cadangan literal dan seluruh kegagalan sistem fail-closed dengan pesan seragam.
+      let ok = false;
+      try {
+        ok = Boolean(await call(db, 'admin_check_pin', { p_pin: pin }));
+      } catch (err) {
+        console.error('Admin PIN verification failed:', { code: err?.code || null });
+        throw new HttpError(401, GENERIC_LOGIN_ERROR);
+      }
+
+      if (!ok) {
+        throw new HttpError(401, GENERIC_LOGIN_ERROR);
+      }
+
+      let version = null;
+      try {
+        version = await call(db, 'admin_credentials_version');
+      } catch (err) {
+        console.error('Admin credentials version lookup failed:', { code: err?.code || null });
+        throw new HttpError(401, GENERIC_LOGIN_ERROR);
+      }
+
+      if (!version) {
+        throw new HttpError(401, GENERIC_LOGIN_ERROR);
+      }
+
+      return { token: signSession(version) };
     }
-    if (!ok) throw new HttpError(401, 'PIN admin salah.');
-    const version = await call(db, 'admin_credentials_version').catch(() => '1');
-    return { token: signSession(version) };
-  }
 
-  const fn = Object.prototype.hasOwnProperty.call(actions, action) ? actions[action] : null;
-  if (!fn) throw new HttpError(400, 'Aksi tidak dikenal.');
+    const fn = Object.prototype.hasOwnProperty.call(actions, action) ? actions[action] : null;
+    if (!fn) throw new HttpError(400, 'Aksi tidak dikenal.');
 
-  await verifySession(db, bearer(req));
-  return fn(db, body);
-});
+    await verifySession(db, bearer(req));
+    return fn(db, body);
+  });
+}
+
+const adminHandler = createAdminHandler();
+adminHandler.createHandler = createAdminHandler;
+module.exports = adminHandler;
