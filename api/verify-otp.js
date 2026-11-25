@@ -1,4 +1,4 @@
-const { serviceDb, clientIp, rateLimit, normalizeEmail, normalizeNim, str, dbFailure, handler, HttpError } = require('../lib/server');
+const { serviceDb, clientIp, rateLimit, normalizeEmail, str, dbFailure, handler, HttpError } = require('../lib/server');
 
 const BALLOT_TOKEN_RE = /^[0-9a-f]{64}$/;
 
@@ -7,16 +7,16 @@ function createVerifyOtpHandler(deps = {}) {
 
   return handler(async (body, req) => {
     const email = normalizeEmail(body.email);
-    const nim = normalizeNim(body.nim, email);
     const otp = str(body.otp, 12);
     if (!/^\d{6}$/.test(otp)) throw new HttpError(400, 'Kode OTP harus 6 digit angka.');
 
     const db = getDb();
     await rateLimit(db, 'verify-ip', clientIp(req), 600, 15 * 60);
 
+    // Verifikasi OTP murni berdasarkan email ternormalisasi + kode OTP.
+    // Nilai NIM dari klien sengaja tidak menjadi syarat verifikasi.
     const { data, error } = await db.rpc('voter_verify_otp', {
       p_email: email,
-      p_nim: nim,
       p_otp: otp
     });
     if (error) throw dbFailure(error);
@@ -28,7 +28,7 @@ function createVerifyOtpHandler(deps = {}) {
     }
 
     return {
-      voter: { nim: data.nim, email: data.email },
+      voter: { nim: data.nim || null, email: data.email },
       ballot_token: data.ballot_token,
       message: 'Verifikasi berhasil.'
     };

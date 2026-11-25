@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const {
-  serviceDb, clientIp, rateLimit, normalizeNim, normalizeEmail, dbFailure, handler, escapeHtml, requireEnv, HttpError
+  serviceDb, clientIp, rateLimit, normalizeOptionalNim, normalizeEmail, dbFailure, handler, escapeHtml, requireEnv, HttpError
 } = require('../lib/server');
 
 let transporter = null;
@@ -23,7 +23,7 @@ function createSendOtpHandler(deps = {}) {
 
   return handler(async (body, req) => {
     const email = normalizeEmail(body.email_prefix);
-    const nim = normalizeNim(body.nim, email);
+    const nim = normalizeOptionalNim(body.nim);
     const db = getDb();
 
     // Banyak mahasiswa bisa berbagi satu IP publik (wifi kampus), jadi batas per IP

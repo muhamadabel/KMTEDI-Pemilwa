@@ -717,7 +717,7 @@ section { padding: 85px 0; position: relative; }
     <!-- Top Right User Status Greeting or Verification Button -->
     <span id="userStatusWrapper">
       <button class="btn-nav-verify" onclick="openVoterModal()">
-        Verifikasi Pemilih (NIM)
+        Verifikasi Email UGM
       </button>
     </span>
   </div>
@@ -775,7 +775,7 @@ section { padding: 85px 0; position: relative; }
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
-        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan NIM dan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id) untuk mencegah kecurangan identitas. Setiap pemilih hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
+        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id), sedangkan NIM bersifat opsional sebagai catatan. Setiap akun email hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
         <div class="info-pills">
           <span class="pill">VERIFIKASI EMAIL UGM (OTP)</span>
           <span class="pill">ONE STUDENT ONE VOTE</span>
@@ -872,8 +872,8 @@ section { padding: 85px 0; position: relative; }
       </li>
       <li class="howto-step">
         <span class="howto-no">02</span>
-        <h3>Isi NIM dan Email</h3>
-        <p>Tekan tombol <b>Verifikasi Pemilih</b>. Tulis NIM dan username email UGM, bagian @mail.ugm.ac.id terisi otomatis.</p>
+        <h3>Isi Email UGM</h3>
+        <p>Tekan tombol <b>Verifikasi Email UGM</b>. Tulis username email UGM kamu, bagian @mail.ugm.ac.id terisi otomatis. NIM boleh dikosongkan.</p>
       </li>
       <li class="howto-step">
         <span class="howto-no">03</span>
@@ -888,7 +888,7 @@ section { padding: 85px 0; position: relative; }
       <li class="howto-step">
         <span class="howto-no">05</span>
         <h3>Suara Tercatat</h3>
-        <p>Selesai. Suaramu tersimpan secara rahasia dan anonim. Satu NIM hanya berhak memberikan satu suara sah.</p>
+        <p>Selesai. Suaramu tersimpan secara rahasia. Satu akun email UGM hanya berhak memberikan satu suara sah.</p>
       </li>
     </ol>
     <div class="howto-foot">
@@ -941,7 +941,7 @@ section { padding: 85px 0; position: relative; }
       
       <div id="voterActionContainer">
         <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
-          Verifikasi Pemilih (NIM & Email UGM)
+          Verifikasi Pemilih (Email UGM)
         </button>
       </div>
     </div>
@@ -979,7 +979,7 @@ section { padding: 85px 0; position: relative; }
     <!-- TAHAP 1: FORM NIM & EMAIL UGM -->
     <div id="voterStep1">
       <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
-      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan email resmi UGM Anda. Kode OTP rahasia akan dikirimkan langsung ke email kampus Anda untuk memastikan hak suara aman (anti-curang).</p>
+      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan email resmi UGM Anda untuk menerima kode OTP rahasia. Kolom NIM bersifat opsional sebagai catatan panitia.</p>
       
       <form id="voterFormStep1">
         <div style="margin-bottom:16px">
@@ -1256,8 +1256,13 @@ const profileModal = document.getElementById('profileModal');
 const confirmVoteModal = document.getElementById('confirmVoteModal');
 const successModal = document.getElementById('successModal');
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+}
+
 function getVoter() {
-  const nim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
+  const rawNim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
+  const nim = rawNim && rawNim !== 'NULL' ? rawNim : '';
   const email = (sessionStorage.getItem('kmtedi_voter_email') || '').trim().toLowerCase();
   const voted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
   return {
@@ -1267,6 +1272,10 @@ function getVoter() {
   };
 }
 
+function formatVoterLabel(v) {
+  return v.nim ? `${v.email} (NIM: ${v.nim})` : v.email;
+}
+
 function updateVoterUI() {
   const v = getVoter();
   const container = document.getElementById('userStatusWrapper');
@@ -1274,13 +1283,16 @@ function updateVoterUI() {
   const copyText = document.getElementById('voteCopyText');
   const heroBtn = document.getElementById('heroVoteBtn');
 
-  if (v.nim && v.email) {
+  if (v.email) {
     hasVoted = v.hasVoted;
+    const safeEmail = escapeHtml(v.email);
+    const safeNim = escapeHtml(v.nim);
+    const shortId = escapeHtml(v.email.replace(/@mail\.ugm\.ac\.id$/, ''));
 
-    // TOP RIGHT NAVBAR: Sapaan NIM + badge hijau bersih
+    // TOP RIGHT NAVBAR: Sapaan email UGM terverifikasi + badge status
     container.innerHTML = `
       <div class="user-pill">
-        <span class="user-greeting">NIM: <b>${v.nim}</b></span>
+        <span class="user-greeting"><b>${shortId}</b>${safeNim ? ` (${safeNim})` : ''}</span>
         <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">
           ${hasVoted ? 'Sudah Memilih' : 'Siap Memilih'}
         </span>
@@ -1289,35 +1301,35 @@ function updateVoterUI() {
     `;
 
     if (hasVoted) {
-      copyText.innerHTML = `NIM <b>${v.nim}</b> (${v.email}): Hak suara Anda <b>sudah sah tercatat</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
-      mainBtn.innerHTML = `Sudah Memilih`;
+      copyText.innerHTML = `Akun <b>${safeEmail}</b>${safeNim ? ` (NIM: ${safeNim})` : ''}: Hak suara Anda <b>sudah sah tercatat</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
+      mainBtn.textContent = 'Sudah Memilih';
       mainBtn.disabled = true;
       mainBtn.style.opacity = '0.6';
       if (heroBtn) {
-        heroBtn.innerHTML = `Sudah Memilih`;
+        heroBtn.textContent = 'Sudah Memilih';
         heroBtn.style.opacity = '0.7';
       }
     } else {
-      copyText.innerHTML = `Terverifikasi: NIM <b>${v.nim}</b> (${v.email}). Silakan tentukan calon ketua pilihan Anda di atas.`;
-      mainBtn.innerHTML = `Pilih Calon di Atas`;
+      copyText.innerHTML = `Terverifikasi: <b>${safeEmail}</b>${safeNim ? ` (NIM: ${safeNim})` : ''}. Silakan tentukan calon ketua pilihan Anda di atas.`;
+      mainBtn.textContent = 'Pilih Calon di Atas';
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
       if (heroBtn) {
-        heroBtn.innerHTML = `Lihat Calon & Pilih`;
+        heroBtn.textContent = 'Lihat Calon & Pilih';
       }
     }
   } else {
     hasVoted = false;
     container.innerHTML = `
       <button class="btn-nav-verify" onclick="openVoterModal()">
-        Verifikasi Pemilih (NIM)
+        Verifikasi Email UGM
       </button>
     `;
-    copyText.innerHTML = `Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `Verifikasi Pemilih (NIM & Email UGM)`;
+    copyText.textContent = 'Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.';
+    mainBtn.textContent = 'Verifikasi Pemilih (Email UGM)';
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
-    if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih`;
+    if (heroBtn) heroBtn.textContent = 'Lihat Calon & Pilih';
   }
 
   renderCandidateCards();
@@ -1326,6 +1338,7 @@ function updateVoterUI() {
 function clearVoterSession() {
   sessionStorage.removeItem('kmtedi_voter_nim');
   sessionStorage.removeItem('kmtedi_voter_email');
+  sessionStorage.removeItem('kmtedi_ballot_token');
   sessionStorage.removeItem('kmtedi_has_voted');
   hasVoted = false;
   updateVoterUI();
@@ -1711,7 +1724,6 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
     return;
   }
 
-  const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || document.getElementById('inputNim')?.value?.trim() || '';
   const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
 
   if (!vEmail) {
@@ -1719,6 +1731,7 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
     return;
   }
 
+  errBox.style.color = 'var(--red)';
   errBox.textContent = '';
   btn.textContent = 'Memverifikasi OTP...';
   btn.disabled = true;
@@ -1728,13 +1741,12 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        nim: vNim,
         email: vEmail,
         otp: otp
       })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok || !data.success) {
       errBox.textContent = data.error || 'Kode OTP salah atau kedaluwarsa.';
@@ -1743,9 +1755,9 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
       return;
     }
 
-    const voter = data.voter;
-    sessionStorage.setItem('kmtedi_voter_nim', voter.nim);
-    sessionStorage.setItem('kmtedi_voter_email', voter.email);
+    const voter = data.voter || {};
+    sessionStorage.setItem('kmtedi_voter_nim', voter.nim || '');
+    sessionStorage.setItem('kmtedi_voter_email', voter.email || vEmail);
     if (data.ballot_token) {
       sessionStorage.setItem('kmtedi_ballot_token', data.ballot_token);
     }
@@ -1963,7 +1975,7 @@ function triggerVote(index) {
   }
   
   const v = getVoter();
-  if (!v.nim || !v.email) {
+  if (!v.email) {
     openVoterModal(index);
     return;
   }
@@ -1972,7 +1984,7 @@ function triggerVote(index) {
     showNotice({
       eyebrow: 'VERIFIKASI SUARA',
       title: 'Hak Suara Telah Digunakan',
-      message: `NIM <b>${v.nim}</b> sudah tercatat pernah memberikan hak suara.<br><br>Sesuai asas Pemilwa KMTEDI (Satu Mahasiswa, Satu Suara), pemilihan hanya dapat dilakukan 1 kali dan tidak dapat diubah kembali.`,
+      message: `Akun ${formatVoterLabel(v)} sudah tercatat pernah memberikan hak suara.\n\nSesuai asas Pemilwa KMTEDI (Satu Mahasiswa, Satu Suara), pemilihan hanya dapat dilakukan 1 kali dan tidak dapat diubah kembali.`,
       primaryText: 'Mengerti'
     });
     return;
@@ -1985,7 +1997,7 @@ function triggerVote(index) {
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
   document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
-  document.getElementById('confirmVoterDetails').textContent = `NIM: ${v.nim} · ${v.email}`;
+  document.getElementById('confirmVoterDetails').textContent = formatVoterLabel(v);
 
   closeProfile();
   confirmVoteModal.classList.add('open');
@@ -2003,7 +2015,7 @@ function closeDoubleCheck() {
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
   if (!candidateToVote) return;
   const v = getVoter();
-  if (!v.nim || !v.email) {
+  if (!v.email) {
     closeDoubleCheck();
     openVoterModal();
     return;
@@ -2048,7 +2060,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     closeDoubleCheck();
     
     document.getElementById('successReceiptText').innerHTML = `
-      NIM: <b>${v.nim}</b> (${v.email}).<br>
+      Akun <b>${escapeHtml(v.email)}</b>${v.nim ? ` (NIM: ${escapeHtml(v.nim)})` : ''}.<br>
       Hak suara Anda telah berhasil dicatat secara sah dan rahasia ke kotak suara Pemilwa KMTEDI 2026.
     `;
     successModal.classList.add('open');
@@ -2174,7 +2186,7 @@ document.getElementById('voteFromModalBtn').onclick = () => {
 // MAIN VOTE BUTTON HANDLER
 function handleMainVoteClick() {
   const v = getVoter();
-  if (!v.nim || !v.email) {
+  if (!v.email) {
     openVoterModal();
   } else if (!hasVoted) {
     document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });

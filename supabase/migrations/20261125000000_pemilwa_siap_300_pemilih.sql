@@ -121,6 +121,7 @@ create table if not exists private.voter_otps (
 
 alter table private.voter_otps add column if not exists window_start timestamptz;
 alter table private.voter_otps add column if not exists sends int not null default 0;
+alter table private.voter_otps alter column nim drop not null;
 
 create table if not exists private.ballot_tokens (
   token_hash text primary key,
@@ -128,6 +129,8 @@ create table if not exists private.ballot_tokens (
   email text not null,
   expires_at timestamptz not null
 );
+
+alter table private.ballot_tokens alter column nim drop not null;
 
 create table if not exists public.eligible_voters (
   nim text primary key,
@@ -194,7 +197,7 @@ returns text
 language sql
 immutable
 as $$
-  select upper(regexp_replace(coalesce(p_nim, ''), '\s+', '', 'g'));
+  select nullif(left(upper(regexp_replace(coalesce(p_nim, ''), '[^0-9A-Za-z/.-]+', '', 'g')), 32), '');
 $$;
 
 create or replace function private.check_voter_identity(p_nim text, p_email text)
@@ -343,7 +346,17 @@ begin
 end;
 $$;
 
-create or replace function public.voter_verify_otp(p_email text, p_nim text, p_otp text)
+-- Pekerjaan 6: Verifikasi OTP tidak bergantung pada nilai NIM dari klien.
+-- Drop seluruh overload lama agar tidak ada konflik signature saat dipanggil
+-- dengan { p_email, p_otp } maupun { p_email, p_otp, p_nim }.
+drop function if exists public.voter_verify_otp(text, text);
+drop function if exists public.voter_verify_otp(text, text, text);
+
+create or replace function public.voter_verify_otp(
+  p_email text,
+  p_otp text,
+  p_nim text default null
+)
 returns jsonb
 language plpgsql
 security definer set search_path = public, private, extensions
@@ -353,6 +366,8 @@ declare
   rec private.voter_otps%rowtype;
   raw_token text;
 begin
+  -- Parameter p_nim sengaja tidak diperiksa agar NIM opsional tidak pernah
+  -- menggagalkan verifikasi OTP yang sah.
   select * into rec from private.voter_otps where email = clean_email for update;
   if not found or rec.otp_hash = '' then
     return jsonb_build_object('ok', false, 'error', 'Kode OTP tidak ditemukan. Silakan minta kode baru.');
