@@ -1514,9 +1514,24 @@ async function loadPublicData() {
 // VOTER MODAL (2-STEP OTP)
 function openVoterModal(withCandidateIndex = null) {
   pendingVoteIndex = withCandidateIndex;
-  document.getElementById('voterModalErr').textContent = '';
-  document.getElementById('voterStep1').style.display = 'block';
-  document.getElementById('voterStep2').style.display = 'none';
+  const errBox = document.getElementById('voterModalErr');
+  errBox.style.color = 'var(--red)';
+  errBox.textContent = '';
+
+  const savedPendingEmail = (pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '').trim().toLowerCase();
+  const remaining = savedPendingEmail ? getOtpCooldownRemaining(savedPendingEmail) : 0;
+
+  if (savedPendingEmail && remaining > 0) {
+    pendingVoterData.email = savedPendingEmail;
+    pendingVoterData.nim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || '';
+    document.getElementById('displayTargetEmail').textContent = savedPendingEmail;
+    document.getElementById('voterStep1').style.display = 'none';
+    document.getElementById('voterStep2').style.display = 'block';
+    syncResendCooldownUI(savedPendingEmail);
+  } else {
+    document.getElementById('voterStep1').style.display = 'block';
+    document.getElementById('voterStep2').style.display = 'none';
+  }
   voterModal.classList.add('open');
   voterModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -1529,11 +1544,12 @@ function closeVoterModal() {
 document.getElementById('voterModalClose').onclick = closeVoterModal;
 voterModal.onclick = e => { if (e.target === voterModal) closeVoterModal(); };
 
-// STEP 1: REQUEST OTP TO @MAIL.UGM.AC.ID (NIM & EMAIL ONLY)
+// STEP 1: REQUEST OTP TO @MAIL.UGM.AC.ID (NIM OPSIONAL & EMAIL UGM)
 document.getElementById('voterFormStep1').onsubmit = async e => {
   e.preventDefault();
   const rawNim = document.getElementById('inputNim').value.trim();
   const prefix = document.getElementById('inputEmailPrefix').value.trim().toLowerCase().replace(/@.*$/, '');
+  const fullEmail = prefix ? `${prefix}@mail.ugm.ac.id` : '';
   const errBox = document.getElementById('voterModalErr');
   const btn = document.getElementById('btnRequestOtp');
 
@@ -1542,6 +1558,14 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
     return;
   }
 
+  const localLeft = getOtpCooldownRemaining(fullEmail);
+  if (localLeft > 0) {
+    errBox.style.color = 'var(--red)';
+    errBox.textContent = `Tunggu ${localLeft} detik sebelum meminta kode OTP baru untuk ${fullEmail}.`;
+    return;
+  }
+
+  errBox.style.color = 'var(--red)';
   errBox.textContent = '';
   btn.textContent = 'Mengirim Kode OTP...';
   btn.disabled = true;
@@ -1556,10 +1580,14 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
       })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok || !data.success) {
-      errBox.textContent = data.error || 'Gagal mengirim kode OTP.';
+      if (res.status === 429 && Number(data.retry_after) > 0) {
+        setOtpCooldown(fullEmail, Number(data.retry_after));
+        syncResendCooldownUI(fullEmail);
+      }
+      errBox.textContent = data.error || 'Gagal mengirim kode OTP. Silakan coba lagi.';
       btn.textContent = 'Kirim Kode OTP ke Email UGM';
       btn.disabled = false;
       return;
@@ -1580,48 +1608,96 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
     document.getElementById('inputOtp').focus();
     btn.textContent = 'Kirim Kode OTP ke Email UGM';
     btn.disabled = false;
-    startResendCooldown(60);
+    startResendCooldown(Number(data.cooldown_seconds) || 60, data.email);
 
   } catch (err) {
-    errBox.textContent = 'Terjadi gangguan jaringan: ' + err.message;
+    errBox.textContent = 'Terjadi gangguan koneksi. Silakan periksa internet kamu lalu coba lagi.';
     btn.textContent = 'Kirim Kode OTP ke Email UGM';
     btn.disabled = false;
   }
 };
 
-// COOLDOWN KIRIM ULANG OTP (1 MENIT / ANTI-SPAM)
+// COOLDOWN KIRIM ULANG OTP (60 DETIK, PERSISTEN LINTAS RELOAD & TAB)
+const OTP_COOLDOWN_PREFIX = 'kmtedi_otp_cooldown_until:';
 let resendCooldownTimer = null;
 let resendSecondsLeft = 0;
 
-function startResendCooldown(seconds = 60) {
+function otpCooldownKey(email) {
+  return OTP_COOLDOWN_PREFIX + String(email || '').trim().toLowerCase();
+}
+
+function setOtpCooldown(email, seconds = 60) {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized || seconds <= 0) return;
+  const until = Date.now() + Math.ceil(seconds) * 1000;
+  try { localStorage.setItem(otpCooldownKey(normalized), String(until)); } catch {}
+}
+
+function getOtpCooldownRemaining(email) {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized) return 0;
+  try {
+    const raw = Number(localStorage.getItem(otpCooldownKey(normalized)) || 0);
+    if (!raw) return 0;
+    const left = Math.ceil((raw - Date.now()) / 1000);
+    if (left <= 0) {
+      localStorage.removeItem(otpCooldownKey(normalized));
+      return 0;
+    }
+    return left;
+  } catch {
+    return 0;
+  }
+}
+
+function syncResendCooldownUI(email) {
   const resendBtn = document.getElementById('btnResendOtp');
   if (!resendBtn) return;
+  const normalized = String(email || pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '').trim().toLowerCase();
+
   if (resendCooldownTimer) {
     clearInterval(resendCooldownTimer);
     resendCooldownTimer = null;
   }
-  resendSecondsLeft = seconds;
-  resendBtn.disabled = true;
-  resendBtn.style.cursor = 'not-allowed';
-  resendBtn.style.opacity = '0.55';
-  resendBtn.style.textDecoration = 'none';
-  resendBtn.textContent = `Kirim Ulang (${resendSecondsLeft}d)`;
 
-  resendCooldownTimer = setInterval(() => {
-    resendSecondsLeft--;
+  function renderTick() {
+    resendSecondsLeft = getOtpCooldownRemaining(normalized);
     if (resendSecondsLeft <= 0) {
-      clearInterval(resendCooldownTimer);
-      resendCooldownTimer = null;
+      if (resendCooldownTimer) {
+        clearInterval(resendCooldownTimer);
+        resendCooldownTimer = null;
+      }
       resendBtn.disabled = false;
       resendBtn.style.cursor = 'pointer';
       resendBtn.style.opacity = '1';
       resendBtn.style.textDecoration = 'underline';
       resendBtn.textContent = 'Kirim Ulang Kode OTP';
     } else {
+      resendBtn.disabled = true;
+      resendBtn.style.cursor = 'not-allowed';
+      resendBtn.style.opacity = '0.55';
+      resendBtn.style.textDecoration = 'none';
       resendBtn.textContent = `Kirim Ulang (${resendSecondsLeft}d)`;
     }
-  }, 1000);
+  }
+
+  renderTick();
+  if (resendSecondsLeft > 0) {
+    resendCooldownTimer = setInterval(renderTick, 500);
+  }
 }
+
+function startResendCooldown(seconds = 60, email = '') {
+  const targetEmail = email || pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
+  setOtpCooldown(targetEmail, seconds);
+  syncResendCooldownUI(targetEmail);
+}
+
+window.addEventListener('storage', e => {
+  if (e.key && e.key.startsWith(OTP_COOLDOWN_PREFIX)) {
+    syncResendCooldownUI();
+  }
+});
 
 // STEP 2: VERIFY 6-DIGIT OTP
 document.getElementById('voterFormStep2').onsubmit = async e => {
@@ -1702,9 +1778,12 @@ document.getElementById('btnBackToStep1').onclick = () => {
 };
 
 document.getElementById('btnResendOtp').onclick = async () => {
-  if (resendSecondsLeft > 0) return;
   const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || '';
   const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
+  if (getOtpCooldownRemaining(vEmail) > 0) {
+    syncResendCooldownUI(vEmail);
+    return;
+  }
   const prefix = vEmail.replace(/@.*$/, '');
   const errBox = document.getElementById('voterModalErr');
   const btn = document.getElementById('btnResendOtp');
@@ -1728,14 +1807,18 @@ document.getElementById('btnResendOtp').onclick = async () => {
         email_prefix: prefix
       })
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
+      if (res.status === 429 && Number(data.retry_after) > 0) {
+        startResendCooldown(Number(data.retry_after), vEmail);
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Kirim Ulang Kode OTP';
+      }
       errBox.textContent = data.error || 'Gagal mengirim ulang kode OTP.';
-      btn.disabled = false;
-      btn.textContent = 'Kirim Ulang Kode OTP';
       return;
     }
-    startResendCooldown(60);
+    startResendCooldown(Number(data.cooldown_seconds) || 60, vEmail);
     errBox.style.color = 'var(--brand-amber)';
     errBox.textContent = 'Kode OTP baru telah berhasil dikirim ke email Anda.';
     setTimeout(() => {
@@ -1745,7 +1828,7 @@ document.getElementById('btnResendOtp').onclick = async () => {
       }
     }, 4000);
   } catch (err) {
-    errBox.textContent = 'Gangguan jaringan: ' + err.message;
+    errBox.textContent = 'Terjadi gangguan koneksi. Silakan coba lagi sebentar lagi.';
     btn.disabled = false;
     btn.textContent = 'Kirim Ulang Kode OTP';
   }

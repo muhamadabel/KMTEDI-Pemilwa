@@ -12,6 +12,7 @@ const castVoteMod = require('../../api/cast-vote.js');
 async function issueBallotToken(db, email, nim = null) {
   const otpRes = await db.rpc('voter_request_otp', { p_nim: nim || '', p_email: email });
   assert.equal(otpRes.error, null, `OTP request failed for ${email}: ${otpRes.error?.message}`);
+  assert.equal(otpRes.data.ok, true, `OTP request rejected for ${email}: ${otpRes.data?.error}`);
   const verifyRes = await db.rpc('voter_verify_otp', {
     p_email: email,
     p_nim: nim || '',

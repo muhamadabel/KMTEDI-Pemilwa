@@ -203,42 +203,107 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_voter_otps_normalize_email on private.voter_otps;
+create trigger trg_voter_otps_normalize_email
+before insert or update on private.voter_otps
+for each row execute function private.normalize_email_trigger();
+
 create or replace function public.voter_request_otp(p_nim text, p_email text)
 returns jsonb
 language plpgsql
 security definer set search_path = public, private, extensions
 as $$
 declare
-  clean_nim text := private.normalize_nim(p_nim);
+  clean_nim text := nullif(private.normalize_nim(p_nim), '');
   clean_email text := lower(trim(coalesce(p_email, '')));
   now_ts timestamptz := timezone('utc', now());
   code text;
   prev private.voter_otps%rowtype;
   new_window timestamptz;
   new_sends int;
+  retry_after int;
+  is_ineligible boolean := false;
+  already_voted boolean := false;
 begin
-  if not private.voting_is_open() then
-    raise exception 'Bilik suara sedang ditutup.' using errcode = 'P0001';
+  if clean_email !~ '^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?@mail[.]ugm[.]ac[.]id$' then
+    return jsonb_build_object(
+      'ok', false,
+      'status', 400,
+      'error', 'Email harus akun resmi @mail.ugm.ac.id.'
+    );
   end if;
 
-  perform private.check_voter_identity(clean_nim, clean_email);
+  if not private.voting_is_open() then
+    return jsonb_build_object(
+      'ok', false,
+      'status', 400,
+      'error', 'Bilik suara sedang ditutup.'
+    );
+  end if;
+
+  -- Kunci transaksi per email agar request paralel pertama maupun ulangan
+  -- untuk akun yang sama diserialisasi secara atomik, tanpa memblokir akun lain.
+  perform pg_advisory_xact_lock(hashtext('voter_otp:' || clean_email));
 
   select * into prev from private.voter_otps where email = clean_email for update;
   if found then
     if prev.created_at > now_ts - interval '60 seconds' then
-      raise exception 'Tunggu 60 detik sebelum meminta kode baru.' using errcode = 'P0429';
+      retry_after := greatest(1, ceil(extract(epoch from (prev.created_at + interval '60 seconds' - now_ts)))::int);
+      return jsonb_build_object(
+        'ok', false,
+        'status', 429,
+        'retry_after', retry_after,
+        'error', format('Permintaan kode OTP terlalu cepat. Tunggu %s detik sebelum meminta kode baru.', retry_after)
+      );
     end if;
+
     if prev.window_start is not null and prev.window_start > now_ts - interval '1 hour' and prev.sends >= 6 then
-      raise exception 'Kode OTP sudah diminta terlalu sering. Coba lagi dalam 1 jam.' using errcode = 'P0429';
+      retry_after := greatest(1, ceil(extract(epoch from (prev.window_start + interval '1 hour' - now_ts)))::int);
+      return jsonb_build_object(
+        'ok', false,
+        'status', 429,
+        'retry_after', retry_after,
+        'error', 'Permintaan kode OTP sudah mencapai batas sementara. Coba lagi dalam beberapa saat.'
+      );
     end if;
   end if;
 
-  if prev.window_start is null or prev.window_start <= now_ts - interval '1 hour' then
+  if not found or prev.window_start is null or prev.window_start <= now_ts - interval '1 hour' then
     new_window := now_ts;
     new_sends := 1;
   else
     new_window := prev.window_start;
     new_sends := prev.sends + 1;
+  end if;
+
+  -- Cek kelayakan DPT (jika tabel DPT diisi) dan status sudah memilih.
+  -- Keduanya menghasilkan respons penolakan identik agar tidak membocorkan
+  -- apakah sebuah alamat email terdaftar atau tidak.
+  if exists (select 1 from public.eligible_voters)
+     and not exists (select 1 from public.eligible_voters where lower(trim(email)) = clean_email) then
+    is_ineligible := true;
+  end if;
+
+  if exists (select 1 from public.registered_voters where lower(trim(email)) = clean_email and has_voted = true) then
+    already_voted := true;
+  end if;
+
+  if is_ineligible or already_voted then
+    insert into private.voter_otps (email, nim, otp_hash, expires_at, attempts, created_at, window_start, sends)
+    values (clean_email, null, '', now_ts, 0, now_ts, new_window, new_sends)
+    on conflict (email) do update set
+      otp_hash = '',
+      expires_at = excluded.expires_at,
+      attempts = 0,
+      created_at = excluded.created_at,
+      window_start = excluded.window_start,
+      sends = excluded.sends;
+
+    return jsonb_build_object(
+      'ok', false,
+      'status', 400,
+      'error', 'Permintaan kode OTP tidak dapat diproses untuk alamat email ini. Pastikan email @mail.ugm.ac.id memenuhi syarat dan belum memilih.'
+    );
   end if;
 
   code := lpad((abs(('x' || encode(gen_random_bytes(4), 'hex'))::bit(32)::bigint) % 1000000)::text, 6, '0');
@@ -255,7 +320,13 @@ begin
     window_start = excluded.window_start,
     sends = excluded.sends;
 
-  return jsonb_build_object('nim', clean_nim, 'email', clean_email, 'otp_code', code);
+  return jsonb_build_object(
+    'ok', true,
+    'nim', clean_nim,
+    'email', clean_email,
+    'otp_code', code,
+    'cooldown_seconds', 60
+  );
 end;
 $$;
 
