@@ -26,10 +26,14 @@ async function invoke(fn, { body = {}, headers = {} } = {}) {
   return { statusCode, headers: resHeaders, payload };
 }
 
-test('api/send-otp retains Gmail SMTP (Decision 2) and does not add alternative email providers', () => {
+test('api/send-otp keeps Gmail SMTP as the default and selects HTTPS providers only via EMAIL_PROVIDER', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'api', 'send-otp.js'), 'utf8');
   assert.match(src, /smtp\.gmail\.com/);
-  assert.doesNotMatch(src, /resend|sendgrid|brevo|mailgun/i);
+  // Default provider tetap Gmail. Provider lain hanya aktif bila EMAIL_PROVIDER diisi,
+  // karena pemilihan 1000 peserta melampaui kuota harian Gmail.
+  assert.match(src, /process\.env\.EMAIL_PROVIDER \|\| 'gmail'/);
+  assert.match(src, /api\.brevo\.com/);
+  assert.match(src, /api\.resend\.com/);
 });
 
 test('api/send-otp returns 429 with Retry-After header when server-side cooldown blocks request', async () => {

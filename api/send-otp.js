@@ -3,23 +3,95 @@ const {
   serviceDb, clientIp, rateLimit, normalizeOptionalNim, normalizeEmail, dbFailure, handler, escapeHtml, requireEnv, HttpError
 } = require('../lib/server');
 
-let transporter = null;
-function defaultMailer() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
+let smtpTransporter = null;
+function gmailMailer() {
+  if (!smtpTransporter) {
+    smtpTransporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
       secure: true,
       auth: { user: requireEnv('SMTP_USER'), pass: requireEnv('SMTP_PASS') }
     });
   }
-  return transporter;
+  return smtpTransporter;
+}
+
+// Pengirim berbasis HTTPS API. Dipakai untuk pemilihan berskala besar karena
+// Gmail SMTP dibatasi sekitar 500 email per hari, sedangkan 1000 pemilih
+// membutuhkan lebih dari itu. Pemilihan provider ditentukan EMAIL_PROVIDER.
+function httpApiMailer(provider) {
+  return {
+    async sendMail(message) {
+      if (provider === 'brevo') {
+        const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'api-key': requireEnv('BREVO_API_KEY'),
+            'content-type': 'application/json',
+            accept: 'application/json'
+          },
+          body: JSON.stringify({
+            sender: { name: 'Pemilwa KMTEDI 2026', email: requireEnv('MAIL_FROM_ADDRESS') },
+            to: (Array.isArray(message.to) ? message.to : [message.to]).map((address) => ({ email: address })),
+            subject: message.subject,
+            textContent: message.text,
+            htmlContent: message.html
+          })
+        });
+        if (!res.ok) {
+          const detail = await res.text().catch(() => '');
+          const err = new Error('Brevo request failed');
+          err.code = 'EPROVIDER';
+          err.responseCode = res.status;
+          err.providerMessage = detail.slice(0, 200);
+          throw err;
+        }
+        return { accepted: message.to };
+      }
+
+      if (provider === 'resend') {
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${requireEnv('RESEND_API_KEY')}`,
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: `Pemilwa KMTEDI 2026 <${requireEnv('MAIL_FROM_ADDRESS')}>`,
+            to: message.to,
+            subject: message.subject,
+            text: message.text,
+            html: message.html
+          })
+        });
+        if (!res.ok) {
+          const detail = await res.text().catch(() => '');
+          const err = new Error('Resend request failed');
+          err.code = 'EPROVIDER';
+          err.responseCode = res.status;
+          err.providerMessage = detail.slice(0, 200);
+          throw err;
+        }
+        return { accepted: message.to };
+      }
+
+      throw new HttpError(503, 'Pengiriman email belum dikonfigurasi dengan benar.');
+    }
+  };
+}
+
+function defaultMailer() {
+  const provider = (process.env.EMAIL_PROVIDER || 'gmail').toLowerCase();
+  return provider === 'gmail' ? gmailMailer() : httpApiMailer(provider);
 }
 
 function createSendOtpHandler(deps = {}) {
   const getDb = deps.getDb || serviceDb;
   const getMailer = deps.getMailer || defaultMailer;
-  const getFromAddress = deps.getFromAddress || (() => requireEnv('SMTP_USER'));
+  const getFromAddress = deps.getFromAddress
+    || (() => (process.env.EMAIL_PROVIDER || 'gmail').toLowerCase() === 'gmail'
+      ? requireEnv('SMTP_USER')
+      : requireEnv('MAIL_FROM_ADDRESS'));
 
   return handler(async (body, req) => {
     const email = normalizeEmail(body.email_prefix);
@@ -70,7 +142,9 @@ function createSendOtpHandler(deps = {}) {
       });
     } catch (mailErr) {
       // Log kode error ringkas saja, jangan pernah mencetak OTP atau kredensial SMTP.
-      console.error('SMTP send failed:', {
+      console.error('Email send failed:', {
+        name: mailErr?.name || null,
+        message: String(mailErr?.message || '').slice(0, 160),
         code: mailErr?.code || null,
         responseCode: mailErr?.responseCode || null
       });
