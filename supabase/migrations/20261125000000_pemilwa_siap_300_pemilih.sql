@@ -12,8 +12,77 @@ create schema if not exists private;
 revoke all on schema private from public, anon, authenticated;
 
 -- -------------------------------------------------------------------------
--- 1. Pastikan tabel internal dan vote_tallies tersedia tanpa merusak data
+-- 0. Hapus fungsi fallback lama yang dapat melewati alur token & DB lock
 -- -------------------------------------------------------------------------
+drop function if exists public.cast_vote_by_nim_and_email(uuid, text, text);
+drop function if exists public.cast_vote_by_nim_and_name(uuid, text, text);
+drop function if exists public.cast_vote_by_nim_and_name(uuid, text, text, text);
+drop function if exists public.cast_vote_by_nim(uuid, text, text, text);
+drop function if exists public.cast_vote(uuid);
+drop function if exists public.generate_voter_otp(text, text);
+drop function if exists public.generate_voter_otp(text, text, text);
+drop function if exists public.verify_voter_otp(text, text);
+drop function if exists public.verify_voter(text, text);
+
+-- -------------------------------------------------------------------------
+-- 1. Pastikan tabel internal, vote_tallies, dan constraint email unik aktif
+-- -------------------------------------------------------------------------
+-- Pekerjaan 2: Satu email satu suara di level database (case-insensitive)
+-- Normalisasi data eksisting secara aman tanpa menghapus baris pemilih.
+drop policy if exists voters_anon_read on public.registered_voters;
+
+update public.registered_voters
+set email = lower(trim(email))
+where email is not null and email <> lower(trim(email));
+
+do $$
+declare
+  pk_cols text;
+begin
+  select string_agg(a.attname, ',' order by k.ord) into pk_cols
+  from pg_constraint c
+  join unnest(c.conkey) with ordinality as k(attnum, ord) on true
+  join pg_attribute a on a.attrelid = c.conrelid and a.attnum = k.attnum
+  where c.conrelid = 'public.registered_voters'::regclass and c.contype = 'p';
+
+  if pk_cols is distinct from 'email' then
+    if pk_cols is not null then
+      execute 'alter table public.registered_voters drop constraint registered_voters_pkey';
+    end if;
+    alter table public.registered_voters alter column nim drop not null;
+    alter table public.registered_voters add constraint registered_voters_pkey primary key (email);
+  else
+    alter table public.registered_voters alter column nim drop not null;
+  end if;
+end $$;
+
+create unique index if not exists registered_voters_email_lower_uidx
+  on public.registered_voters (lower(trim(email)));
+
+alter table public.registered_voters
+  drop constraint if exists registered_voters_email_normalized_chk;
+alter table public.registered_voters
+  add constraint registered_voters_email_normalized_chk
+  check (
+    email = lower(trim(email))
+    and email ~ '^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?@mail[.]ugm[.]ac[.]id$'
+  );
+
+create or replace function private.normalize_email_trigger()
+returns trigger
+language plpgsql
+security definer set search_path = public, private
+as $$
+begin
+  new.email := lower(trim(coalesce(new.email, '')));
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_registered_voters_normalize_email on public.registered_voters;
+create trigger trg_registered_voters_normalize_email
+before insert or update on public.registered_voters
+for each row execute function private.normalize_email_trigger();
 create table if not exists private.admin_credentials (
   id boolean primary key default true check (id = true),
   pin_hash text not null,
@@ -286,9 +355,23 @@ begin
   end if;
 
   -- Catat presensi pemilih tanpa kolom candidate_id (Keputusan 1).
+  -- Menggunakan ON CONFLICT (email) DO UPDATE ... WHERE has_voted = false
+  -- agar jaminan 1 email 1 suara berlaku atomik di level database baik untuk
+  -- baris baru maupun baris legacy dengan has_voted = false.
+  declare
+    recorded_voter_rows int := 0;
   begin
-    insert into public.registered_voters (nim, email, has_voted, voted_at)
-    values (tok.nim, clean_email, true, now_ts);
+    insert into public.registered_voters (email, nim, has_voted, voted_at)
+    values (clean_email, nullif(trim(coalesce(tok.nim, '')), ''), true, now_ts)
+    on conflict (email) do update
+      set has_voted = true,
+          voted_at = now_ts,
+          nim = coalesce(excluded.nim, public.registered_voters.nim)
+      where public.registered_voters.has_voted = false;
+    get diagnostics recorded_voter_rows = row_count;
+    if recorded_voter_rows <> 1 then
+      raise exception 'Akun email ini sudah menggunakan hak suara.' using errcode = 'P0001';
+    end if;
   exception when unique_violation then
     raise exception 'Akun email ini sudah menggunakan hak suara.' using errcode = 'P0001';
   end;
