@@ -41,7 +41,7 @@ Dokumen operasional resmi untuk AI coding agent yang melanjutkan pengembangan si
 
 ## 4. Admin Panel & Master PIN
 - **Route:** `/admin`
-- **Master PIN Aktif:** `kastrad26` (diotentikasi aman via endpoint serverless `/api/admin`).
+- **Autentikasi Admin:** PIN admin di-hash bcrypt di database (`private.admin_credentials`) dan diverifikasi lewat `/api/admin`. Nilai PIN tidak dicantumkan di repo.
 - **Fitur Admin:**
   1. Saklar Bilik Suara (`voting_open` true/false).
   2. Kontrol Countdown Jadwal (`voting_start` dan `voting_end`).

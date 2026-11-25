@@ -23,6 +23,19 @@ drop function if exists public.generate_voter_otp(text, text);
 drop function if exists public.generate_voter_otp(text, text, text);
 drop function if exists public.verify_voter_otp(text, text);
 drop function if exists public.verify_voter(text, text);
+drop function if exists public.admin_verify_pin(text);
+drop function if exists public.admin_get_stats_by_pin(text);
+drop function if exists public.admin_get_results_by_pin(text);
+drop function if exists public.admin_get_voters_by_pin(text);
+drop function if exists public.admin_toggle_switch(text, text);
+drop function if exists public.admin_save_candidate(text, uuid, integer, text, text, text, text, text, text[], text[], text, boolean);
+drop function if exists public.admin_delete_candidate(text, uuid);
+drop function if exists public.admin_save_panels(text, jsonb, text, text, text, jsonb);
+drop function if exists public.admin_reset_votes(text);
+drop function if exists public.admin_set_schedule(text, timestamptz, timestamptz);
+
+-- Hapus kolom PIN plaintext lama jika masih ada di election_settings
+alter table public.election_settings drop column if exists admin_pin;
 
 -- -------------------------------------------------------------------------
 -- 1. Pastikan tabel internal, vote_tallies, dan constraint email unik aktif
@@ -479,22 +492,291 @@ end;
 $$;
 
 -- -------------------------------------------------------------------------
--- 4. Hak akses: semua RPC pemilih & rate limit hanya untuk service_role
+-- 4. Pekerjaan 4: Satu sumber kredensial admin (bcrypt di schema private)
+--    beserta RPC panel admin yang aman pg_safeupdate
+-- -------------------------------------------------------------------------
+create or replace function private.set_admin_pin(p_pin text)
+returns text
+language plpgsql
+security definer set search_path = private, public, extensions
+as $$
+begin
+  if length(coalesce(p_pin, '')) < 12 then
+    raise exception 'PIN admin minimal 12 karakter.' using errcode = 'P0001';
+  end if;
+  insert into private.admin_credentials (id, pin_hash, updated_at)
+  values (true, crypt(p_pin, gen_salt('bf', 10)), timezone('utc', now()))
+  on conflict (id) do update set
+    pin_hash = excluded.pin_hash,
+    updated_at = excluded.updated_at;
+  return 'PIN admin berhasil diperbarui.';
+end;
+$$;
+
+create or replace function public.admin_check_pin(p_pin text)
+returns boolean
+language plpgsql
+security definer set search_path = private, public, extensions
+as $$
+declare
+  stored text;
+begin
+  select pin_hash into stored from private.admin_credentials where id = true;
+  if stored is null then
+    return false;
+  end if;
+  return crypt(coalesce(p_pin, ''), stored) = stored;
+end;
+$$;
+
+create or replace function public.admin_credentials_version()
+returns text
+language sql
+stable
+security definer set search_path = private
+as $$
+  select extract(epoch from updated_at)::bigint::text
+  from private.admin_credentials
+  where id = true;
+$$;
+
+create or replace function private.safe_media_url(p_url text)
+returns boolean
+language sql
+immutable
+as $$
+  select p_url is null
+      or p_url ~ '^data:image/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$'
+      or p_url ~ '^https://[^\s"''<>]+$'
+      or p_url ~ '^assets/[A-Za-z0-9_./-]+$';
+$$;
+
+create or replace function public.admin_dashboard()
+returns jsonb
+language plpgsql
+security definer set search_path = public, private
+as $$
+declare
+  s public.election_settings%rowtype;
+  open_now boolean := private.voting_is_open();
+begin
+  select * into s from public.election_settings where id = true;
+  return jsonb_build_object(
+    'settings', to_jsonb(s),
+    'voting_open_now', open_now,
+    'voted_count', (select count(*) from public.registered_voters where has_voted = true),
+    'eligible_count', (select count(*) from public.eligible_voters),
+    'results', case when open_now then null else (
+      select coalesce(jsonb_agg(jsonb_build_object(
+        'candidate_id', c.id, 'order_number', c.order_number,
+        'candidate_name', c.name, 'vote_count', coalesce(t.votes, 0)
+      ) order by c.order_number), '[]'::jsonb)
+      from public.candidates c left join public.vote_tallies t on t.candidate_id = c.id
+    ) end,
+    'voters', (
+      select coalesce(jsonb_agg(jsonb_build_object('nim', r.nim, 'email', r.email, 'voted_at', r.voted_at)
+        order by r.voted_at desc), '[]'::jsonb)
+      from public.registered_voters r
+      where r.has_voted = true
+    ),
+    'candidates', (
+      select coalesce(jsonb_agg(to_jsonb(c) order by c.order_number), '[]'::jsonb)
+      from public.candidates c
+    )
+  );
+end;
+$$;
+
+create or replace function public.admin_toggle(p_field text)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+declare new_state boolean;
+begin
+  if p_field = 'voting_open' then
+    update public.election_settings set voting_open = not voting_open where id = true returning voting_open into new_state;
+  elsif p_field = 'results_published' then
+    update public.election_settings set results_published = not results_published where id = true returning results_published into new_state;
+  else
+    raise exception 'Field tidak dikenal.' using errcode = 'P0001';
+  end if;
+  return jsonb_build_object('field', p_field, 'new_state', new_state);
+end;
+$$;
+
+create or replace function public.admin_set_schedule(p_start timestamptz, p_end timestamptz)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if p_start is not null and p_end is not null and p_end <= p_start then
+    raise exception 'Waktu penutupan harus setelah waktu pembukaan.' using errcode = 'P0001';
+  end if;
+  update public.election_settings set voting_start = p_start, voting_end = p_end where id = true;
+  return jsonb_build_object('success', true);
+end;
+$$;
+
+create or replace function public.admin_save_candidate(
+  p_id uuid,
+  p_order_number integer,
+  p_name text,
+  p_batch text,
+  p_nim text,
+  p_photo_url text,
+  p_vision text,
+  p_mission text[],
+  p_programs text[],
+  p_organization_history text,
+  p_is_active boolean
+)
+returns jsonb
+language plpgsql
+security definer set search_path = public, private
+as $$
+declare saved_id uuid;
+begin
+  if p_order_number is null or p_order_number < 1 then
+    raise exception 'Nomor urut harus angka positif.' using errcode = 'P0001';
+  end if;
+  if trim(coalesce(p_name, '')) = '' or length(p_name) > 120 then
+    raise exception 'Nama calon wajib diisi (maks. 120 karakter).' using errcode = 'P0001';
+  end if;
+  if not private.safe_media_url(nullif(trim(p_photo_url), '')) then
+    raise exception 'URL foto tidak valid. Gunakan unggahan gambar, https://, atau assets/.' using errcode = 'P0001';
+  end if;
+  if length(coalesce(p_photo_url, '')) > 1500000 then
+    raise exception 'Ukuran foto terlalu besar.' using errcode = 'P0001';
+  end if;
+
+  if p_id is not null then
+    update public.candidates set
+      order_number = p_order_number,
+      name = trim(p_name),
+      batch = nullif(trim(p_batch), ''),
+      nim = nullif(trim(p_nim), ''),
+      photo_url = nullif(trim(p_photo_url), ''),
+      vision = coalesce(trim(p_vision), ''),
+      mission = coalesce(p_mission, '{}'),
+      programs = coalesce(p_programs, '{}'),
+      organization_history = coalesce(trim(p_organization_history), ''),
+      is_active = coalesce(p_is_active, true)
+    where id = p_id
+    returning id into saved_id;
+    if saved_id is null then
+      raise exception 'Calon tidak ditemukan.' using errcode = 'P0001';
+    end if;
+  else
+    insert into public.candidates (order_number, name, batch, nim, photo_url, vision, mission, programs, organization_history, is_active)
+    values (p_order_number, trim(p_name), nullif(trim(p_batch), ''), nullif(trim(p_nim), ''),
+            nullif(trim(p_photo_url), ''), coalesce(trim(p_vision), ''), coalesce(p_mission, '{}'),
+            coalesce(p_programs, '{}'), coalesce(trim(p_organization_history), ''), coalesce(p_is_active, true))
+    returning id into saved_id;
+    insert into public.vote_tallies (candidate_id, votes) values (saved_id, 0) on conflict do nothing;
+  end if;
+
+  return jsonb_build_object('success', true, 'id', saved_id);
+end;
+$$;
+
+create or replace function public.admin_delete_candidate(p_id uuid)
+returns jsonb
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if exists (select 1 from public.vote_tallies where candidate_id = p_id and votes > 0) then
+    raise exception 'Calon sudah memiliki suara dan tidak bisa dihapus. Nonaktifkan saja.' using errcode = 'P0001';
+  end if;
+  delete from public.vote_tallies where candidate_id = p_id;
+  delete from public.candidates where id = p_id;
+  return jsonb_build_object('success', true);
+end;
+$$;
+
+create or replace function public.admin_save_panels(
+  p_hero_slides jsonb,
+  p_marquee_text text,
+  p_about_statement text,
+  p_about_info text,
+  p_timeline_items jsonb
+)
+returns jsonb
+language plpgsql
+security definer set search_path = public, private
+as $$
+declare slide jsonb;
+begin
+  if p_hero_slides is not null then
+    if jsonb_typeof(p_hero_slides) <> 'array' or jsonb_array_length(p_hero_slides) > 6 then
+      raise exception 'Format slide hero tidak valid.' using errcode = 'P0001';
+    end if;
+    for slide in select * from jsonb_array_elements(p_hero_slides) loop
+      if not private.safe_media_url(nullif(slide ->> 'image', '')) then
+        raise exception 'Gambar slide hero tidak valid.' using errcode = 'P0001';
+      end if;
+    end loop;
+  end if;
+  if p_timeline_items is not null and (jsonb_typeof(p_timeline_items) <> 'array' or jsonb_array_length(p_timeline_items) > 8) then
+    raise exception 'Format timeline tidak valid.' using errcode = 'P0001';
+  end if;
+
+  update public.election_settings set
+    hero_slides = coalesce(p_hero_slides, hero_slides),
+    marquee_text = coalesce(nullif(trim(p_marquee_text), ''), marquee_text),
+    about_statement = coalesce(nullif(trim(p_about_statement), ''), about_statement),
+    about_info = coalesce(nullif(trim(p_about_info), ''), about_info),
+    timeline_items = coalesce(p_timeline_items, timeline_items)
+  where id = true;
+  return jsonb_build_object('success', true);
+end;
+$$;
+
+create or replace function public.admin_reset_all()
+returns jsonb
+language plpgsql
+security definer set search_path = public, private
+as $$
+begin
+  if private.voting_is_open() then
+    raise exception 'Tutup bilik suara terlebih dahulu sebelum reset.' using errcode = 'P0001';
+  end if;
+  update public.vote_tallies set votes = 0 where candidate_id is not null;
+  delete from public.registered_voters where email is not null;
+  delete from private.voter_otps where email is not null;
+  delete from private.ballot_tokens where token_hash is not null;
+  return jsonb_build_object('success', true);
+end;
+$$;
+
+-- -------------------------------------------------------------------------
+-- 5. Hak akses: semua RPC pemilih, admin, & rate limit hanya untuk service_role
 -- -------------------------------------------------------------------------
 grant usage on schema private to service_role;
 revoke all on all tables in schema private from public, anon, authenticated;
 
-revoke all on function public.api_rate_hit(text, int, int) from public, anon, authenticated;
-grant execute on function public.api_rate_hit(text, int, int) to service_role;
-
-revoke all on function public.voter_request_otp(text, text) from public, anon, authenticated;
-grant execute on function public.voter_request_otp(text, text) to service_role;
-
-revoke all on function public.voter_verify_otp(text, text, text) from public, anon, authenticated;
-grant execute on function public.voter_verify_otp(text, text, text) to service_role;
-
-revoke all on function public.voter_cast_ballot(text, uuid) from public, anon, authenticated;
-grant execute on function public.voter_cast_ballot(text, uuid) to service_role;
+do $$
+declare f record;
+begin
+  for f in
+    select p.oid::regprocedure as sig
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname in ('public', 'private')
+      and p.prokind = 'f'
+      and p.proname in (
+        'api_rate_hit', 'voter_request_otp', 'voter_verify_otp', 'voter_cast_ballot',
+        'admin_check_pin', 'admin_credentials_version', 'admin_dashboard', 'admin_toggle',
+        'admin_set_schedule', 'admin_save_candidate', 'admin_delete_candidate',
+        'admin_save_panels', 'admin_reset_all', 'voting_is_open', 'normalize_nim',
+        'check_voter_identity', 'safe_media_url', 'set_admin_pin', 'normalize_email_trigger'
+      )
+  loop
+    execute 'revoke all on function ' || f.sig || ' from public, anon, authenticated';
+    execute 'grant execute on function ' || f.sig || ' to service_role';
+  end loop;
+end $$;
 
 revoke all on public.registered_voters from anon, authenticated;
 revoke all on public.eligible_voters from anon, authenticated;
