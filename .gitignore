@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 supabase-config.js
+dist/
 node_modules/
 .vercel/
 .supabase/

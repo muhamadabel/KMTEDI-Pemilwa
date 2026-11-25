@@ -9,7 +9,7 @@ Dokumen Panduan Lengkap untuk Claude / AI Coding Agent
 * **Repositori Git:** `https://github.com/muhamadabel/KMTEDI-Pemilwa` (Branch: `main`)
 * **Live Production:** [https://kmtedi-pemilwa.vercel.app](https://kmtedi-pemilwa.vercel.app)
 * **Panel Admin:** [https://kmtedi-pemilwa.vercel.app/admin](https://kmtedi-pemilwa.vercel.app/admin) (Sengaja tidak ada link di navbar publik demi privasi)
-* **Master PIN Admin:** `kastrad26` (diotentikasi aman melalui serverless endpoint `/api/admin`).
+* **Autentikasi Admin:** PIN admin di-hash bcrypt di database (`private.admin_credentials`) dan diverifikasi lewat `/api/admin`. Nilai PIN tidak dicantumkan di repo.
 
 ---
 

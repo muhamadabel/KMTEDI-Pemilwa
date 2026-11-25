@@ -1,95 +1,39 @@
-const { serviceDb, clientIp, rateLimit, str, dbFailure, handler, HttpError, verifyBallot } = require('../lib/server');
+const { serviceDb, clientIp, rateLimit, str, dbFailure, handler, HttpError } = require('../lib/server');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const BALLOT_TOKEN_RE = /^[0-9a-f]{64}$/;
 
-module.exports = handler(async (body, req) => {
-  const token = str(body.ballot_token, 500);
-  const candidateId = str(body.candidate_id, 64);
-  if (!UUID_RE.test(candidateId)) throw new HttpError(400, 'Calon tidak valid.');
+function createCastVoteHandler(deps = {}) {
+  const getDb = deps.getDb || serviceDb;
 
-  const db = serviceDb();
-  await rateLimit(db, 'vote-ip', clientIp(req), 150, 15 * 60);
+  return handler(async (body, req) => {
+    const token = str(body.ballot_token, 128);
+    const candidateId = str(body.candidate_id, 64);
 
-  // 1. Verifikasi token surat suara (HMAC signed token atau fallback)
-  let voter = null;
-  if (token.includes('.')) {
-    voter = verifyBallot(token);
-  } else if (/^[0-9a-f]{64}$/.test(token)) {
-    // Coba jalur RPC lama jika format token 64 hex
-    const { error: rpcErr } = await db.rpc('voter_cast_ballot', { p_token: token, p_candidate_id: candidateId });
-    if (!rpcErr) {
-      return { message: 'Suara kamu sudah tercatat secara sah dan rahasia.' };
+    if (!UUID_RE.test(candidateId)) {
+      throw new HttpError(400, 'Calon tidak valid.');
     }
-    if (rpcErr.code === 'P0001') throw new HttpError(400, rpcErr.message);
-    throw new HttpError(401, 'Sesi pemilih kedaluwarsa. Silakan verifikasi ulang lewat OTP.');
-  } else {
-    throw new HttpError(401, 'Sesi pemilih tidak valid. Verifikasi ulang lewat OTP.');
-  }
+    if (!BALLOT_TOKEN_RE.test(token)) {
+      throw new HttpError(401, 'Sesi pemilih tidak valid. Verifikasi ulang lewat OTP.');
+    }
 
-  const { nim, email } = voter;
+    const db = getDb();
+    // Batas per IP longgar agar ratusan mahasiswa di jaringan Wi-Fi kampus
+    // tidak saling memblokir saat voting berlangsung bersamaan.
+    await rateLimit(db, 'vote-ip', clientIp(req), 600, 15 * 60);
 
-  // 2. Cek apakah bilik suara terbuka
-  const { data: settings } = await db
-    .from('election_settings')
-    .select('voting_open, voting_start, voting_end')
-    .eq('id', true)
-    .single();
+    // Seluruh validasi token, pengecekan bilik/calon, pencatatan presensi,
+    // dan penambahan tally berjalan dalam satu transaksi PostgreSQL atomik.
+    const { error } = await db.rpc('voter_cast_ballot', {
+      p_token: token,
+      p_candidate_id: candidateId
+    });
+    if (error) throw dbFailure(error);
 
-  const now = new Date();
-  const isOpen = settings?.voting_open &&
-    (!settings.voting_start || now >= new Date(settings.voting_start)) &&
-    (!settings.voting_end || now <= new Date(settings.voting_end));
-
-  if (!isOpen) {
-    throw new HttpError(400, 'Bilik suara sedang ditutup.');
-  }
-
-  // 3. Cek calon aktif
-  const { data: cand } = await db
-    .from('candidates')
-    .select('id')
-    .eq('id', candidateId)
-    .eq('is_active', true)
-    .single();
-
-  if (!cand) {
-    throw new HttpError(400, 'Calon yang dipilih tidak valid.');
-  }
-
-  // 4. Catat presensi pemilih (NIM & Email)
-  const voterNim = nim || normalizeNim('', email);
-  const { error: insErr } = await db.from('registered_voters').insert({
-    nim: voterNim,
-    email,
-    has_voted: true,
-    voted_at: new Date().toISOString()
+    return { message: 'Suara kamu sudah tercatat secara sah dan rahasia.' };
   });
+}
 
-  if (insErr) {
-    if (insErr.code === '23505') {
-      throw new HttpError(400, 'Akun email ini sudah menggunakan hak suara.');
-    }
-    console.error('Insert registered_voter error:', insErr);
-    throw dbFailure(insErr);
-  }
-
-  // 5. Tambah perolehan suara calon di vote_tallies (menggunakan WHERE clause)
-  const { data: tally } = await db
-    .from('vote_tallies')
-    .select('votes')
-    .eq('candidate_id', candidateId)
-    .single();
-
-  const count = tally ? Number(tally.votes || 0) : 0;
-  const { error: updErr } = await db
-    .from('vote_tallies')
-    .update({ votes: count + 1 })
-    .eq('candidate_id', candidateId);
-
-  if (updErr) {
-    console.error('Update vote_tallies error:', updErr);
-    throw dbFailure(updErr);
-  }
-
-  return { message: 'Suara kamu sudah tercatat secara sah dan rahasia.' };
-});
+const castVoteHandler = createCastVoteHandler();
+castVoteHandler.createHandler = createCastVoteHandler;
+module.exports = castVoteHandler;

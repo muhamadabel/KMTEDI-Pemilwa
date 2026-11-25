@@ -4,7 +4,9 @@
   "description": "Website Pemilwa KMTEDI",
   "scripts": {
     "build": "node build.js",
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "test:db": "node --test tests/db/*.db.test.mjs",
+    "test:load": "node scripts/load-test-300.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

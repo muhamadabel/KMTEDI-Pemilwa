@@ -717,7 +717,7 @@ section { padding: 85px 0; position: relative; }
     <!-- Top Right User Status Greeting or Verification Button -->
     <span id="userStatusWrapper">
       <button class="btn-nav-verify" onclick="openVoterModal()">
-        Verifikasi Pemilih (NIM)
+        Verifikasi Email UGM
       </button>
     </span>
   </div>
@@ -775,7 +775,7 @@ section { padding: 85px 0; position: relative; }
       </div>
       <div class="about-info">
         <strong>Yang Perlu Kamu Tahu</strong>
-        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan NIM dan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id) untuk mencegah kecurangan identitas. Setiap pemilih hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
+        <span id="aboutInfoText">Seluruh mahasiswa aktif KMTEDI berhak memberikan satu suara sah. Verifikasi hak suara menggunakan kode OTP rahasia yang dikirimkan ke email resmi UGM (@mail.ugm.ac.id), sedangkan NIM bersifat opsional sebagai catatan. Setiap akun email hanya dapat memilih tepat 1 kali. Pilihan tersimpan secara rahasia.</span>
         <div class="info-pills">
           <span class="pill">VERIFIKASI EMAIL UGM (OTP)</span>
           <span class="pill">ONE STUDENT ONE VOTE</span>
@@ -872,8 +872,8 @@ section { padding: 85px 0; position: relative; }
       </li>
       <li class="howto-step">
         <span class="howto-no">02</span>
-        <h3>Isi NIM dan Email</h3>
-        <p>Tekan tombol <b>Verifikasi Pemilih</b>. Tulis NIM dan username email UGM, bagian @mail.ugm.ac.id terisi otomatis.</p>
+        <h3>Isi Email UGM</h3>
+        <p>Tekan tombol <b>Verifikasi Email UGM</b>. Tulis username email UGM kamu, bagian @mail.ugm.ac.id terisi otomatis. NIM boleh dikosongkan.</p>
       </li>
       <li class="howto-step">
         <span class="howto-no">03</span>
@@ -888,7 +888,7 @@ section { padding: 85px 0; position: relative; }
       <li class="howto-step">
         <span class="howto-no">05</span>
         <h3>Suara Tercatat</h3>
-        <p>Selesai. Suaramu tersimpan secara rahasia dan anonim. Satu NIM hanya berhak memberikan satu suara sah.</p>
+        <p>Selesai. Suaramu tersimpan secara rahasia. Satu akun email UGM hanya berhak memberikan satu suara sah.</p>
       </li>
     </ol>
     <div class="howto-foot">
@@ -941,7 +941,7 @@ section { padding: 85px 0; position: relative; }
       
       <div id="voterActionContainer">
         <button class="btn btn-primary" id="mainVoteBtn" onclick="handleMainVoteClick()">
-          Verifikasi Pemilih (NIM & Email UGM)
+          Verifikasi Pemilih (Email UGM)
         </button>
       </div>
     </div>
@@ -979,7 +979,7 @@ section { padding: 85px 0; position: relative; }
     <!-- TAHAP 1: FORM NIM & EMAIL UGM -->
     <div id="voterStep1">
       <h2 style="font:400 36px var(--display);margin:8px 0 10px;text-transform:uppercase;color:var(--maroon);line-height:0.92">Verifikasi Hak Suara</h2>
-      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan NIM dan email resmi UGM Anda. Kode OTP rahasia akan dikirimkan langsung ke email kampus Anda untuk memastikan hak suara aman (anti-curang).</p>
+      <p style="color:#77515a;margin:0 0 18px;font-size:13.5px;line-height:1.5">Masukkan email resmi UGM Anda untuk menerima kode OTP rahasia. Kolom NIM bersifat opsional sebagai catatan panitia.</p>
       
       <form id="voterFormStep1">
         <div style="margin-bottom:16px">
@@ -1155,13 +1155,32 @@ const heroCaption = document.getElementById('heroCaption');
 const heroNumber = document.getElementById('heroIndex');
 const heroDots = [...document.querySelectorAll('.hero-dot')];
 
+function safeImage(url, fallback) {
+  const u = String(url || '').trim();
+  return /^(data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+|https:\/\/[^\s"'<>]+|assets\/[A-Za-z0-9_./-]+)$/.test(u)
+    ? u
+    : fallback;
+}
+
+function setMultilineText(el, value, { allowBr = false } = {}) {
+  if (!el) return;
+  const raw = String(value ?? '');
+  const normalized = allowBr ? raw.replace(/<br\s*\/?>/gi, '\n') : raw;
+  const lines = normalized.split(/\r?\n/);
+  el.textContent = '';
+  lines.forEach((line, idx) => {
+    if (idx > 0) el.appendChild(document.createElement('br'));
+    el.appendChild(document.createTextNode(line));
+  });
+}
+
 function setHero(i) {
   heroIndex = (i + heroSlides.length) % heroSlides.length;
   if (!heroCard) return;
   heroCard.classList.add('changing');
   setTimeout(() => {
-    heroImg.src = heroSlides[heroIndex][0];
-    heroCaption.innerHTML = heroSlides[heroIndex][1];
+    heroImg.src = safeImage(heroSlides[heroIndex][0], `assets/ig-panel-${(heroIndex % 6) + 1}.jpg`);
+    setMultilineText(heroCaption, heroSlides[heroIndex][1], { allowBr: true });
     heroNumber.textContent = `0${heroIndex+1} / 03`;
     heroDots.forEach((d, n) => d.classList.toggle('active', n === heroIndex));
     heroCard.classList.remove('changing');
@@ -1256,8 +1275,13 @@ const profileModal = document.getElementById('profileModal');
 const confirmVoteModal = document.getElementById('confirmVoteModal');
 const successModal = document.getElementById('successModal');
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+}
+
 function getVoter() {
-  const nim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
+  const rawNim = (sessionStorage.getItem('kmtedi_voter_nim') || '').trim().toUpperCase();
+  const nim = rawNim && rawNim !== 'NULL' ? rawNim : '';
   const email = (sessionStorage.getItem('kmtedi_voter_email') || '').trim().toLowerCase();
   const voted = sessionStorage.getItem('kmtedi_has_voted') === 'true';
   return {
@@ -1267,6 +1291,10 @@ function getVoter() {
   };
 }
 
+function formatVoterLabel(v) {
+  return v.nim ? `${v.email} (NIM: ${v.nim})` : v.email;
+}
+
 function updateVoterUI() {
   const v = getVoter();
   const container = document.getElementById('userStatusWrapper');
@@ -1274,13 +1302,16 @@ function updateVoterUI() {
   const copyText = document.getElementById('voteCopyText');
   const heroBtn = document.getElementById('heroVoteBtn');
 
-  if (v.nim && v.email) {
+  if (v.email) {
     hasVoted = v.hasVoted;
+    const safeEmail = escapeHtml(v.email);
+    const safeNim = escapeHtml(v.nim);
+    const shortId = escapeHtml(v.email.replace(/@mail\.ugm\.ac\.id$/, ''));
 
-    // TOP RIGHT NAVBAR: Sapaan NIM + badge hijau bersih
+    // TOP RIGHT NAVBAR: Sapaan email UGM terverifikasi + badge status
     container.innerHTML = `
       <div class="user-pill">
-        <span class="user-greeting">NIM: <b>${v.nim}</b></span>
+        <span class="user-greeting"><b>${shortId}</b>${safeNim ? ` (${safeNim})` : ''}</span>
         <span class="user-badge ${hasVoted ? 'voted' : 'ready'}">
           ${hasVoted ? 'Sudah Memilih' : 'Siap Memilih'}
         </span>
@@ -1289,35 +1320,35 @@ function updateVoterUI() {
     `;
 
     if (hasVoted) {
-      copyText.innerHTML = `NIM <b>${v.nim}</b> (${v.email}): Hak suara Anda <b>sudah sah tercatat</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
-      mainBtn.innerHTML = `Sudah Memilih`;
+      copyText.innerHTML = `Akun <b>${safeEmail}</b>${safeNim ? ` (NIM: ${safeNim})` : ''}: Hak suara Anda <b>sudah sah tercatat</b> dalam Pemilwa KMTEDI 2026. Terima kasih atas partisipasi Anda.`;
+      mainBtn.textContent = 'Sudah Memilih';
       mainBtn.disabled = true;
       mainBtn.style.opacity = '0.6';
       if (heroBtn) {
-        heroBtn.innerHTML = `Sudah Memilih`;
+        heroBtn.textContent = 'Sudah Memilih';
         heroBtn.style.opacity = '0.7';
       }
     } else {
-      copyText.innerHTML = `Terverifikasi: NIM <b>${v.nim}</b> (${v.email}). Silakan tentukan calon ketua pilihan Anda di atas.`;
-      mainBtn.innerHTML = `Pilih Calon di Atas`;
+      copyText.innerHTML = `Terverifikasi: <b>${safeEmail}</b>${safeNim ? ` (NIM: ${safeNim})` : ''}. Silakan tentukan calon ketua pilihan Anda di atas.`;
+      mainBtn.textContent = 'Pilih Calon di Atas';
       mainBtn.disabled = false;
       mainBtn.style.opacity = '1';
       if (heroBtn) {
-        heroBtn.innerHTML = `Lihat Calon & Pilih`;
+        heroBtn.textContent = 'Lihat Calon & Pilih';
       }
     }
   } else {
     hasVoted = false;
     container.innerHTML = `
       <button class="btn-nav-verify" onclick="openVoterModal()">
-        Verifikasi Pemilih (NIM)
+        Verifikasi Email UGM
       </button>
     `;
-    copyText.innerHTML = `Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.`;
-    mainBtn.innerHTML = `Verifikasi Pemilih (NIM & Email UGM)`;
+    copyText.textContent = 'Verifikasi hak suara Anda melalui email UGM untuk mengaktifkan bilik suara dan memberikan suara sah.';
+    mainBtn.textContent = 'Verifikasi Pemilih (Email UGM)';
     mainBtn.disabled = false;
     mainBtn.style.opacity = '1';
-    if (heroBtn) heroBtn.innerHTML = `Lihat Calon & Pilih`;
+    if (heroBtn) heroBtn.textContent = 'Lihat Calon & Pilih';
   }
 
   renderCandidateCards();
@@ -1326,6 +1357,7 @@ function updateVoterUI() {
 function clearVoterSession() {
   sessionStorage.removeItem('kmtedi_voter_nim');
   sessionStorage.removeItem('kmtedi_voter_email');
+  sessionStorage.removeItem('kmtedi_ballot_token');
   sessionStorage.removeItem('kmtedi_has_voted');
   hasVoted = false;
   updateVoterUI();
@@ -1340,7 +1372,7 @@ function renderCandidateCards() {
     if (!c) { card.style.display = 'none'; continue; }
     
     card.style.display = '';
-    card.querySelector('img').src = c[1];
+    card.querySelector('img').src = safeImage(c[1], `assets/ig-panel-${(i % 6) + 1}.jpg`);
     card.querySelector('img').alt = `Visual ${c[0]}`;
     card.querySelector('.candidate-no').textContent = String(c[3] || i + 1).padStart(2, '0');
     card.querySelector('.candidate-name').textContent = c[0];
@@ -1469,11 +1501,11 @@ async function loadPublicData() {
 
       if (settings.about_statement) {
         const stmt = document.querySelector('.about-statement');
-        if (stmt) stmt.innerHTML = settings.about_statement;
+        if (stmt) stmt.textContent = settings.about_statement;
       }
       if (settings.about_info) {
         const info = document.getElementById('aboutInfoText');
-        if (info) info.innerHTML = settings.about_info;
+        if (info) info.textContent = settings.about_info;
       }
 
       if (settings.timeline_items && settings.timeline_items.length) {
@@ -1481,10 +1513,10 @@ async function loadPublicData() {
         if (tlList) {
           tlList.innerHTML = settings.timeline_items.map((t, idx) => `
             <div class="time-row">
-              <div class="time-no">${t.no || '0' + (idx + 1)}</div>
-              <h3>${t.title || 'Tahap'}</h3>
-              <p>${t.desc || ''}</p>
-              <div class="time-date">${t.date || ''}</div>
+              <div class="time-no">${escapeHtml(t.no || '0' + (idx + 1))}</div>
+              <h3>${escapeHtml(t.title || 'Tahap')}</h3>
+              <p>${escapeHtml(t.desc || '')}</p>
+              <div class="time-date">${escapeHtml(t.date || '')}</div>
             </div>
           `).join('');
         }
@@ -1514,9 +1546,24 @@ async function loadPublicData() {
 // VOTER MODAL (2-STEP OTP)
 function openVoterModal(withCandidateIndex = null) {
   pendingVoteIndex = withCandidateIndex;
-  document.getElementById('voterModalErr').textContent = '';
-  document.getElementById('voterStep1').style.display = 'block';
-  document.getElementById('voterStep2').style.display = 'none';
+  const errBox = document.getElementById('voterModalErr');
+  errBox.style.color = 'var(--red)';
+  errBox.textContent = '';
+
+  const savedPendingEmail = (pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '').trim().toLowerCase();
+  const remaining = savedPendingEmail ? getOtpCooldownRemaining(savedPendingEmail) : 0;
+
+  if (savedPendingEmail && remaining > 0) {
+    pendingVoterData.email = savedPendingEmail;
+    pendingVoterData.nim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || '';
+    document.getElementById('displayTargetEmail').textContent = savedPendingEmail;
+    document.getElementById('voterStep1').style.display = 'none';
+    document.getElementById('voterStep2').style.display = 'block';
+    syncResendCooldownUI(savedPendingEmail);
+  } else {
+    document.getElementById('voterStep1').style.display = 'block';
+    document.getElementById('voterStep2').style.display = 'none';
+  }
   voterModal.classList.add('open');
   voterModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -1529,11 +1576,12 @@ function closeVoterModal() {
 document.getElementById('voterModalClose').onclick = closeVoterModal;
 voterModal.onclick = e => { if (e.target === voterModal) closeVoterModal(); };
 
-// STEP 1: REQUEST OTP TO @MAIL.UGM.AC.ID (NIM & EMAIL ONLY)
+// STEP 1: REQUEST OTP TO @MAIL.UGM.AC.ID (NIM OPSIONAL & EMAIL UGM)
 document.getElementById('voterFormStep1').onsubmit = async e => {
   e.preventDefault();
   const rawNim = document.getElementById('inputNim').value.trim();
   const prefix = document.getElementById('inputEmailPrefix').value.trim().toLowerCase().replace(/@.*$/, '');
+  const fullEmail = prefix ? `${prefix}@mail.ugm.ac.id` : '';
   const errBox = document.getElementById('voterModalErr');
   const btn = document.getElementById('btnRequestOtp');
 
@@ -1542,6 +1590,14 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
     return;
   }
 
+  const localLeft = getOtpCooldownRemaining(fullEmail);
+  if (localLeft > 0) {
+    errBox.style.color = 'var(--red)';
+    errBox.textContent = `Tunggu ${localLeft} detik sebelum meminta kode OTP baru untuk ${fullEmail}.`;
+    return;
+  }
+
+  errBox.style.color = 'var(--red)';
   errBox.textContent = '';
   btn.textContent = 'Mengirim Kode OTP...';
   btn.disabled = true;
@@ -1556,10 +1612,14 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
       })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok || !data.success) {
-      errBox.textContent = data.error || 'Gagal mengirim kode OTP.';
+      if (res.status === 429 && Number(data.retry_after) > 0) {
+        setOtpCooldown(fullEmail, Number(data.retry_after));
+        syncResendCooldownUI(fullEmail);
+      }
+      errBox.textContent = data.error || 'Gagal mengirim kode OTP. Silakan coba lagi.';
       btn.textContent = 'Kirim Kode OTP ke Email UGM';
       btn.disabled = false;
       return;
@@ -1580,48 +1640,96 @@ document.getElementById('voterFormStep1').onsubmit = async e => {
     document.getElementById('inputOtp').focus();
     btn.textContent = 'Kirim Kode OTP ke Email UGM';
     btn.disabled = false;
-    startResendCooldown(60);
+    startResendCooldown(Number(data.cooldown_seconds) || 60, data.email);
 
   } catch (err) {
-    errBox.textContent = 'Terjadi gangguan jaringan: ' + err.message;
+    errBox.textContent = 'Terjadi gangguan koneksi. Silakan periksa internet kamu lalu coba lagi.';
     btn.textContent = 'Kirim Kode OTP ke Email UGM';
     btn.disabled = false;
   }
 };
 
-// COOLDOWN KIRIM ULANG OTP (1 MENIT / ANTI-SPAM)
+// COOLDOWN KIRIM ULANG OTP (60 DETIK, PERSISTEN LINTAS RELOAD & TAB)
+const OTP_COOLDOWN_PREFIX = 'kmtedi_otp_cooldown_until:';
 let resendCooldownTimer = null;
 let resendSecondsLeft = 0;
 
-function startResendCooldown(seconds = 60) {
+function otpCooldownKey(email) {
+  return OTP_COOLDOWN_PREFIX + String(email || '').trim().toLowerCase();
+}
+
+function setOtpCooldown(email, seconds = 60) {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized || seconds <= 0) return;
+  const until = Date.now() + Math.ceil(seconds) * 1000;
+  try { localStorage.setItem(otpCooldownKey(normalized), String(until)); } catch {}
+}
+
+function getOtpCooldownRemaining(email) {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized) return 0;
+  try {
+    const raw = Number(localStorage.getItem(otpCooldownKey(normalized)) || 0);
+    if (!raw) return 0;
+    const left = Math.ceil((raw - Date.now()) / 1000);
+    if (left <= 0) {
+      localStorage.removeItem(otpCooldownKey(normalized));
+      return 0;
+    }
+    return left;
+  } catch {
+    return 0;
+  }
+}
+
+function syncResendCooldownUI(email) {
   const resendBtn = document.getElementById('btnResendOtp');
   if (!resendBtn) return;
+  const normalized = String(email || pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '').trim().toLowerCase();
+
   if (resendCooldownTimer) {
     clearInterval(resendCooldownTimer);
     resendCooldownTimer = null;
   }
-  resendSecondsLeft = seconds;
-  resendBtn.disabled = true;
-  resendBtn.style.cursor = 'not-allowed';
-  resendBtn.style.opacity = '0.55';
-  resendBtn.style.textDecoration = 'none';
-  resendBtn.textContent = `Kirim Ulang (${resendSecondsLeft}d)`;
 
-  resendCooldownTimer = setInterval(() => {
-    resendSecondsLeft--;
+  function renderTick() {
+    resendSecondsLeft = getOtpCooldownRemaining(normalized);
     if (resendSecondsLeft <= 0) {
-      clearInterval(resendCooldownTimer);
-      resendCooldownTimer = null;
+      if (resendCooldownTimer) {
+        clearInterval(resendCooldownTimer);
+        resendCooldownTimer = null;
+      }
       resendBtn.disabled = false;
       resendBtn.style.cursor = 'pointer';
       resendBtn.style.opacity = '1';
       resendBtn.style.textDecoration = 'underline';
       resendBtn.textContent = 'Kirim Ulang Kode OTP';
     } else {
+      resendBtn.disabled = true;
+      resendBtn.style.cursor = 'not-allowed';
+      resendBtn.style.opacity = '0.55';
+      resendBtn.style.textDecoration = 'none';
       resendBtn.textContent = `Kirim Ulang (${resendSecondsLeft}d)`;
     }
-  }, 1000);
+  }
+
+  renderTick();
+  if (resendSecondsLeft > 0) {
+    resendCooldownTimer = setInterval(renderTick, 500);
+  }
 }
+
+function startResendCooldown(seconds = 60, email = '') {
+  const targetEmail = email || pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
+  setOtpCooldown(targetEmail, seconds);
+  syncResendCooldownUI(targetEmail);
+}
+
+window.addEventListener('storage', e => {
+  if (e.key && e.key.startsWith(OTP_COOLDOWN_PREFIX)) {
+    syncResendCooldownUI();
+  }
+});
 
 // STEP 2: VERIFY 6-DIGIT OTP
 document.getElementById('voterFormStep2').onsubmit = async e => {
@@ -1635,7 +1743,6 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
     return;
   }
 
-  const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || document.getElementById('inputNim')?.value?.trim() || '';
   const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
 
   if (!vEmail) {
@@ -1643,6 +1750,7 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
     return;
   }
 
+  errBox.style.color = 'var(--red)';
   errBox.textContent = '';
   btn.textContent = 'Memverifikasi OTP...';
   btn.disabled = true;
@@ -1652,13 +1760,12 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        nim: vNim,
         email: vEmail,
         otp: otp
       })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok || !data.success) {
       errBox.textContent = data.error || 'Kode OTP salah atau kedaluwarsa.';
@@ -1667,9 +1774,9 @@ document.getElementById('voterFormStep2').onsubmit = async e => {
       return;
     }
 
-    const voter = data.voter;
-    sessionStorage.setItem('kmtedi_voter_nim', voter.nim);
-    sessionStorage.setItem('kmtedi_voter_email', voter.email);
+    const voter = data.voter || {};
+    sessionStorage.setItem('kmtedi_voter_nim', voter.nim || '');
+    sessionStorage.setItem('kmtedi_voter_email', voter.email || vEmail);
     if (data.ballot_token) {
       sessionStorage.setItem('kmtedi_ballot_token', data.ballot_token);
     }
@@ -1702,9 +1809,12 @@ document.getElementById('btnBackToStep1').onclick = () => {
 };
 
 document.getElementById('btnResendOtp').onclick = async () => {
-  if (resendSecondsLeft > 0) return;
   const vNim = pendingVoterData.nim || sessionStorage.getItem('kmtedi_pending_nim') || '';
   const vEmail = pendingVoterData.email || sessionStorage.getItem('kmtedi_pending_email') || '';
+  if (getOtpCooldownRemaining(vEmail) > 0) {
+    syncResendCooldownUI(vEmail);
+    return;
+  }
   const prefix = vEmail.replace(/@.*$/, '');
   const errBox = document.getElementById('voterModalErr');
   const btn = document.getElementById('btnResendOtp');
@@ -1728,14 +1838,18 @@ document.getElementById('btnResendOtp').onclick = async () => {
         email_prefix: prefix
       })
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
+      if (res.status === 429 && Number(data.retry_after) > 0) {
+        startResendCooldown(Number(data.retry_after), vEmail);
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Kirim Ulang Kode OTP';
+      }
       errBox.textContent = data.error || 'Gagal mengirim ulang kode OTP.';
-      btn.disabled = false;
-      btn.textContent = 'Kirim Ulang Kode OTP';
       return;
     }
-    startResendCooldown(60);
+    startResendCooldown(Number(data.cooldown_seconds) || 60, vEmail);
     errBox.style.color = 'var(--brand-amber)';
     errBox.textContent = 'Kode OTP baru telah berhasil dikirim ke email Anda.';
     setTimeout(() => {
@@ -1745,7 +1859,7 @@ document.getElementById('btnResendOtp').onclick = async () => {
       }
     }, 4000);
   } catch (err) {
-    errBox.textContent = 'Gangguan jaringan: ' + err.message;
+    errBox.textContent = 'Terjadi gangguan koneksi. Silakan coba lagi sebentar lagi.';
     btn.disabled = false;
     btn.textContent = 'Kirim Ulang Kode OTP';
   }
@@ -1755,7 +1869,7 @@ document.getElementById('btnResendOtp').onclick = async () => {
 function renderModal() {
   const c = candidates[selected];
   document.getElementById('modalTitle').textContent = c[0];
-  document.getElementById('modalImage').src = c[1];
+  document.getElementById('modalImage').src = safeImage(c[1], `assets/ig-panel-${(selected % 6) + 1}.jpg`);
   document.getElementById('modalNo').textContent = String(c[3] || selected + 1).padStart(2, '0');
   document.getElementById('modalLabel').textContent = `CALON ${String(c[3] || selected + 1).padStart(2, '0')} / PROFIL`;
   
@@ -1767,11 +1881,15 @@ function renderModal() {
   // Panel 2: Visi & Misi
   document.getElementById('slideVision').textContent = c[5] || 'Visi kandidat.';
   const missionList = document.getElementById('slideMission');
-  missionList.innerHTML = (c[6] && c[6].length) ? c[6].map(m => `<li>${m}</li>`).join('') : '<li>Misi kandidat</li>';
+  missionList.innerHTML = (c[6] && c[6].length)
+    ? c[6].map(m => `<li>${escapeHtml(m)}</li>`).join('')
+    : '<li>Misi kandidat</li>';
   
   // Panel 3: Program Kerja
   const progList = document.getElementById('slidePrograms');
-  progList.innerHTML = (c[7] && c[7].length) ? c[7].map(p => `<li>${p}</li>`).join('') : '<li>Program kerja unggulan</li>';
+  progList.innerHTML = (c[7] && c[7].length)
+    ? c[7].map(p => `<li>${escapeHtml(p)}</li>`).join('')
+    : '<li>Program kerja unggulan</li>';
 
   for (let i = 0; i < 3; i++) {
     const s = document.getElementById(`slide${i}`);
@@ -1863,7 +1981,7 @@ function triggerVote(index) {
       showNotice({
         eyebrow: 'STATUS BILIK SUARA',
         title: 'Bilik Suara Belum Dibuka',
-        message: `Bilik suara dijadwalkan dibuka resmi pada <b>${startTime.toLocaleDateString('id-ID', opts)} WIB</b>.<br><br>Sambil menunggu, Anda dapat mempelajari profil lengkap, visi misi, dan program kerja calon ketua terlebih dahulu.`,
+        message: `Bilik suara dijadwalkan dibuka resmi pada ${startTime.toLocaleDateString('id-ID', opts)} WIB.\n\nSambil menunggu, Anda dapat mempelajari profil lengkap, visi misi, dan program kerja calon ketua terlebih dahulu.`,
         primaryText: 'Mengerti',
         secondaryText: 'Lihat Visi Misi',
         onSecondary: () => openProfile(index)
@@ -1872,7 +1990,7 @@ function triggerVote(index) {
       showNotice({
         eyebrow: 'STATUS BILIK SUARA',
         title: 'Bilik Suara Ditutup',
-        message: 'Bilik suara saat ini sedang ditutup sementara oleh panitia pemilwa.<br><br>Silakan pantau jadwal dan pengumuman resmi dari panitia.',
+        message: 'Bilik suara saat ini sedang ditutup sementara oleh panitia pemilwa.\n\nSilakan pantau jadwal dan pengumuman resmi dari panitia.',
         primaryText: 'Mengerti'
       });
     }
@@ -1880,7 +1998,7 @@ function triggerVote(index) {
   }
   
   const v = getVoter();
-  if (!v.nim || !v.email) {
+  if (!v.email) {
     openVoterModal(index);
     return;
   }
@@ -1889,7 +2007,7 @@ function triggerVote(index) {
     showNotice({
       eyebrow: 'VERIFIKASI SUARA',
       title: 'Hak Suara Telah Digunakan',
-      message: `NIM <b>${v.nim}</b> sudah tercatat pernah memberikan hak suara.<br><br>Sesuai asas Pemilwa KMTEDI (Satu Mahasiswa, Satu Suara), pemilihan hanya dapat dilakukan 1 kali dan tidak dapat diubah kembali.`,
+      message: `Akun ${formatVoterLabel(v)} sudah tercatat pernah memberikan hak suara.\n\nSesuai asas Pemilwa KMTEDI (Satu Mahasiswa, Satu Suara), pemilihan hanya dapat dilakukan 1 kali dan tidak dapat diubah kembali.`,
       primaryText: 'Mengerti'
     });
     return;
@@ -1898,11 +2016,11 @@ function triggerVote(index) {
   candidateToVote = candidates[index];
   if (!candidateToVote) return;
 
-  document.getElementById('confirmPhoto').src = candidateToVote[1];
+  document.getElementById('confirmPhoto').src = safeImage(candidateToVote[1], `assets/ig-panel-${(index % 6) + 1}.jpg`);
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
   document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
-  document.getElementById('confirmVoterDetails').textContent = `NIM: ${v.nim} · ${v.email}`;
+  document.getElementById('confirmVoterDetails').textContent = formatVoterLabel(v);
 
   closeProfile();
   confirmVoteModal.classList.add('open');
@@ -1920,7 +2038,7 @@ function closeDoubleCheck() {
 document.getElementById('submitVoteFinalBtn').onclick = async () => {
   if (!candidateToVote) return;
   const v = getVoter();
-  if (!v.nim || !v.email) {
+  if (!v.email) {
     closeDoubleCheck();
     openVoterModal();
     return;
@@ -1932,30 +2050,21 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
 
   try {
     const ballotToken = sessionStorage.getItem('kmtedi_ballot_token');
-    let resData = null;
+    if (!ballotToken) {
+      throw new Error('Sesi pemilih tidak ditemukan atau sudah digunakan. Silakan verifikasi ulang lewat email UGM.');
+    }
 
-    if (ballotToken) {
-      const res = await fetch('/api/cast-vote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ballot_token: ballotToken,
-          candidate_id: candidateToVote[2]
-        })
-      });
-      resData = await res.json().catch(() => ({}));
-      if (!res.ok || !resData.success) {
-        throw new Error(resData?.error || 'Gagal mengirim suara.');
-      }
-    } else if (db) {
-      const { data, error } = await db.rpc('cast_vote_by_nim_and_email', {
-        p_candidate_id: candidateToVote[2],
-        p_nim: v.nim,
-        p_email: v.email
-      });
-      if (error) throw error;
-    } else {
-      throw new Error('Sesi pemilih tidak valid. Silakan verifikasi ulang.');
+    const res = await fetch('/api/cast-vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ballot_token: ballotToken,
+        candidate_id: candidateToVote[2]
+      })
+    });
+    const resData = await res.json().catch(() => ({}));
+    if (!res.ok || !resData.success) {
+      throw new Error(resData?.error || 'Gagal mengirim suara.');
     }
 
     sessionStorage.setItem('kmtedi_has_voted', 'true');
@@ -1965,7 +2074,7 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
     closeDoubleCheck();
     
     document.getElementById('successReceiptText').innerHTML = `
-      NIM: <b>${v.nim}</b> (${v.email}).<br>
+      Akun <b>${escapeHtml(v.email)}</b>${v.nim ? ` (NIM: ${escapeHtml(v.nim)})` : ''}.<br>
       Hak suara Anda telah berhasil dicatat secara sah dan rahasia ke kotak suara Pemilwa KMTEDI 2026.
     `;
     successModal.classList.add('open');
@@ -2011,7 +2120,7 @@ function showNotice({
   document.getElementById('noticeTitle').textContent = title;
   
   const msgEl = document.getElementById('noticeMessage');
-  msgEl.innerHTML = String(message).replace(/\n/g, '<br>');
+  setMultilineText(msgEl, String(message ?? ''));
   
   const pBtn = document.getElementById('noticePrimaryBtn');
   pBtn.textContent = primaryText;
@@ -2091,7 +2200,7 @@ document.getElementById('voteFromModalBtn').onclick = () => {
 // MAIN VOTE BUTTON HANDLER
 function handleMainVoteClick() {
   const v = getVoter();
-  if (!v.nim || !v.email) {
+  if (!v.email) {
     openVoterModal();
   } else if (!hasVoted) {
     document.getElementById('calon').scrollIntoView({ behavior: 'smooth' });
