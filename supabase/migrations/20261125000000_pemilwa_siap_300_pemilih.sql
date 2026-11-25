@@ -76,10 +76,15 @@ alter table public.registered_voters
   drop constraint if exists registered_voters_email_normalized_chk;
 alter table public.registered_voters
   add constraint registered_voters_email_normalized_chk
-  check (
-    email = lower(trim(email))
-    and email ~ '^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?@mail[.]ugm[.]ac[.]id$'
-  );
+  check (email = lower(trim(email)) and email <> '');
+
+-- Validasi domain @mail.ugm.ac.id berlaku untuk seluruh INSERT/UPDATE baru
+-- dengan NOT VALID agar migrasi tetap aman bila terdapat baris historis lama.
+alter table public.registered_voters
+  drop constraint if exists registered_voters_email_domain_chk;
+alter table public.registered_voters
+  add constraint registered_voters_email_domain_chk
+  check (email ~ '^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?@mail[.]ugm[.]ac[.]id$') not valid;
 
 create or replace function private.normalize_email_trigger()
 returns trigger

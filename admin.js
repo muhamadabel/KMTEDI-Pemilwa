@@ -232,7 +232,7 @@ async function refreshDashboard() {
             <b style="font-size:14px;color:var(--cream)">${i + 1}. ${escapeHtml(v.email || '-')}</b><br>
             <small style="color:var(--gold)">NIM (catatan): ${escapeHtml(v.nim || '-')}</small>
           </div>
-          <small style="color:var(--muted)">${escapeHtml(new Date(v.voted_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))} WIB</small>
+          <small style="color:var(--muted)">${escapeHtml(v.voted_at ? new Date(v.voted_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB' : '-')}</small>
         </div>`).join('')}
     </div>` : '<div class="notice">Belum ada mahasiswa yang memilih.</div>';
 

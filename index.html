@@ -1155,13 +1155,32 @@ const heroCaption = document.getElementById('heroCaption');
 const heroNumber = document.getElementById('heroIndex');
 const heroDots = [...document.querySelectorAll('.hero-dot')];
 
+function safeImage(url, fallback) {
+  const u = String(url || '').trim();
+  return /^(data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+|https:\/\/[^\s"'<>]+|assets\/[A-Za-z0-9_./-]+)$/.test(u)
+    ? u
+    : fallback;
+}
+
+function setMultilineText(el, value, { allowBr = false } = {}) {
+  if (!el) return;
+  const raw = String(value ?? '');
+  const normalized = allowBr ? raw.replace(/<br\s*\/?>/gi, '\n') : raw;
+  const lines = normalized.split(/\r?\n/);
+  el.textContent = '';
+  lines.forEach((line, idx) => {
+    if (idx > 0) el.appendChild(document.createElement('br'));
+    el.appendChild(document.createTextNode(line));
+  });
+}
+
 function setHero(i) {
   heroIndex = (i + heroSlides.length) % heroSlides.length;
   if (!heroCard) return;
   heroCard.classList.add('changing');
   setTimeout(() => {
-    heroImg.src = heroSlides[heroIndex][0];
-    heroCaption.innerHTML = heroSlides[heroIndex][1];
+    heroImg.src = safeImage(heroSlides[heroIndex][0], `assets/ig-panel-${(heroIndex % 6) + 1}.jpg`);
+    setMultilineText(heroCaption, heroSlides[heroIndex][1], { allowBr: true });
     heroNumber.textContent = `0${heroIndex+1} / 03`;
     heroDots.forEach((d, n) => d.classList.toggle('active', n === heroIndex));
     heroCard.classList.remove('changing');
@@ -1353,7 +1372,7 @@ function renderCandidateCards() {
     if (!c) { card.style.display = 'none'; continue; }
     
     card.style.display = '';
-    card.querySelector('img').src = c[1];
+    card.querySelector('img').src = safeImage(c[1], `assets/ig-panel-${(i % 6) + 1}.jpg`);
     card.querySelector('img').alt = `Visual ${c[0]}`;
     card.querySelector('.candidate-no').textContent = String(c[3] || i + 1).padStart(2, '0');
     card.querySelector('.candidate-name').textContent = c[0];
@@ -1482,11 +1501,11 @@ async function loadPublicData() {
 
       if (settings.about_statement) {
         const stmt = document.querySelector('.about-statement');
-        if (stmt) stmt.innerHTML = settings.about_statement;
+        if (stmt) stmt.textContent = settings.about_statement;
       }
       if (settings.about_info) {
         const info = document.getElementById('aboutInfoText');
-        if (info) info.innerHTML = settings.about_info;
+        if (info) info.textContent = settings.about_info;
       }
 
       if (settings.timeline_items && settings.timeline_items.length) {
@@ -1494,10 +1513,10 @@ async function loadPublicData() {
         if (tlList) {
           tlList.innerHTML = settings.timeline_items.map((t, idx) => `
             <div class="time-row">
-              <div class="time-no">${t.no || '0' + (idx + 1)}</div>
-              <h3>${t.title || 'Tahap'}</h3>
-              <p>${t.desc || ''}</p>
-              <div class="time-date">${t.date || ''}</div>
+              <div class="time-no">${escapeHtml(t.no || '0' + (idx + 1))}</div>
+              <h3>${escapeHtml(t.title || 'Tahap')}</h3>
+              <p>${escapeHtml(t.desc || '')}</p>
+              <div class="time-date">${escapeHtml(t.date || '')}</div>
             </div>
           `).join('');
         }
@@ -1850,7 +1869,7 @@ document.getElementById('btnResendOtp').onclick = async () => {
 function renderModal() {
   const c = candidates[selected];
   document.getElementById('modalTitle').textContent = c[0];
-  document.getElementById('modalImage').src = c[1];
+  document.getElementById('modalImage').src = safeImage(c[1], `assets/ig-panel-${(selected % 6) + 1}.jpg`);
   document.getElementById('modalNo').textContent = String(c[3] || selected + 1).padStart(2, '0');
   document.getElementById('modalLabel').textContent = `CALON ${String(c[3] || selected + 1).padStart(2, '0')} / PROFIL`;
   
@@ -1862,11 +1881,15 @@ function renderModal() {
   // Panel 2: Visi & Misi
   document.getElementById('slideVision').textContent = c[5] || 'Visi kandidat.';
   const missionList = document.getElementById('slideMission');
-  missionList.innerHTML = (c[6] && c[6].length) ? c[6].map(m => `<li>${m}</li>`).join('') : '<li>Misi kandidat</li>';
+  missionList.innerHTML = (c[6] && c[6].length)
+    ? c[6].map(m => `<li>${escapeHtml(m)}</li>`).join('')
+    : '<li>Misi kandidat</li>';
   
   // Panel 3: Program Kerja
   const progList = document.getElementById('slidePrograms');
-  progList.innerHTML = (c[7] && c[7].length) ? c[7].map(p => `<li>${p}</li>`).join('') : '<li>Program kerja unggulan</li>';
+  progList.innerHTML = (c[7] && c[7].length)
+    ? c[7].map(p => `<li>${escapeHtml(p)}</li>`).join('')
+    : '<li>Program kerja unggulan</li>';
 
   for (let i = 0; i < 3; i++) {
     const s = document.getElementById(`slide${i}`);
@@ -1958,7 +1981,7 @@ function triggerVote(index) {
       showNotice({
         eyebrow: 'STATUS BILIK SUARA',
         title: 'Bilik Suara Belum Dibuka',
-        message: `Bilik suara dijadwalkan dibuka resmi pada <b>${startTime.toLocaleDateString('id-ID', opts)} WIB</b>.<br><br>Sambil menunggu, Anda dapat mempelajari profil lengkap, visi misi, dan program kerja calon ketua terlebih dahulu.`,
+        message: `Bilik suara dijadwalkan dibuka resmi pada ${startTime.toLocaleDateString('id-ID', opts)} WIB.\n\nSambil menunggu, Anda dapat mempelajari profil lengkap, visi misi, dan program kerja calon ketua terlebih dahulu.`,
         primaryText: 'Mengerti',
         secondaryText: 'Lihat Visi Misi',
         onSecondary: () => openProfile(index)
@@ -1967,7 +1990,7 @@ function triggerVote(index) {
       showNotice({
         eyebrow: 'STATUS BILIK SUARA',
         title: 'Bilik Suara Ditutup',
-        message: 'Bilik suara saat ini sedang ditutup sementara oleh panitia pemilwa.<br><br>Silakan pantau jadwal dan pengumuman resmi dari panitia.',
+        message: 'Bilik suara saat ini sedang ditutup sementara oleh panitia pemilwa.\n\nSilakan pantau jadwal dan pengumuman resmi dari panitia.',
         primaryText: 'Mengerti'
       });
     }
@@ -1993,7 +2016,7 @@ function triggerVote(index) {
   candidateToVote = candidates[index];
   if (!candidateToVote) return;
 
-  document.getElementById('confirmPhoto').src = candidateToVote[1];
+  document.getElementById('confirmPhoto').src = safeImage(candidateToVote[1], `assets/ig-panel-${(index % 6) + 1}.jpg`);
   document.getElementById('confirmNo').textContent = `PASLON NOMOR URUT 0${candidateToVote[3] || index + 1}`;
   document.getElementById('confirmName').textContent = candidateToVote[0];
   document.getElementById('confirmBatch').textContent = candidateToVote[4] || 'CALON KETUA KMTEDI';
@@ -2027,30 +2050,21 @@ document.getElementById('submitVoteFinalBtn').onclick = async () => {
 
   try {
     const ballotToken = sessionStorage.getItem('kmtedi_ballot_token');
-    let resData = null;
+    if (!ballotToken) {
+      throw new Error('Sesi pemilih tidak ditemukan atau sudah digunakan. Silakan verifikasi ulang lewat email UGM.');
+    }
 
-    if (ballotToken) {
-      const res = await fetch('/api/cast-vote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ballot_token: ballotToken,
-          candidate_id: candidateToVote[2]
-        })
-      });
-      resData = await res.json().catch(() => ({}));
-      if (!res.ok || !resData.success) {
-        throw new Error(resData?.error || 'Gagal mengirim suara.');
-      }
-    } else if (db) {
-      const { data, error } = await db.rpc('cast_vote_by_nim_and_email', {
-        p_candidate_id: candidateToVote[2],
-        p_nim: v.nim,
-        p_email: v.email
-      });
-      if (error) throw error;
-    } else {
-      throw new Error('Sesi pemilih tidak valid. Silakan verifikasi ulang.');
+    const res = await fetch('/api/cast-vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ballot_token: ballotToken,
+        candidate_id: candidateToVote[2]
+      })
+    });
+    const resData = await res.json().catch(() => ({}));
+    if (!res.ok || !resData.success) {
+      throw new Error(resData?.error || 'Gagal mengirim suara.');
     }
 
     sessionStorage.setItem('kmtedi_has_voted', 'true');
@@ -2106,7 +2120,7 @@ function showNotice({
   document.getElementById('noticeTitle').textContent = title;
   
   const msgEl = document.getElementById('noticeMessage');
-  msgEl.innerHTML = String(message).replace(/\n/g, '<br>');
+  setMultilineText(msgEl, String(message ?? ''));
   
   const pBtn = document.getElementById('noticePrimaryBtn');
   pBtn.textContent = primaryText;
